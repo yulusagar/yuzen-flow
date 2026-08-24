@@ -2,7 +2,7 @@
 <html><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
 <title>Yuzen · Bike Assessment</title>
-<meta name="build-id" content="7d1f17a478d4">
+<meta name="build-id" content="53d618ce53d2">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#ffffff">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -3403,23 +3403,59 @@ body{
     color: var(--content-secondary);
   }
 
-  /* ---- Readings ---------------------------------------------------------- */
-  /* 3 x 2 on the 24 inset with 16 gaps. The frame draws each tile 103 wide, which
-     is 341 across three — a pixel short of the 342 it also draws — so its three
-     x-positions (24 / 143 / 262) cannot all be hit by a grid that fills the band.
-     1fr is chosen over a fixed 103 anyway: installed, the frame is 100vw, and on
-     a 375px phone three 103s plus two 16s overflow the 327 available. So the
-     third tile lands at 263 rather than 262, and the grid stays flush with every
-     other band at both edges. */
+  /* ---- Readings — 2729:22356 --------------------------------------------- */
+  /* The three states are ONE card now, split by hairlines, rather than three
+     tiles. The frame draws it 341 wide against the 342 every other band on this
+     screen uses; it is 342 here, because a one-pixel-narrower card in a stack of
+     full-width ones reads as a mistake and the frame's own arithmetic is what is
+     inconsistent.
+
+     space-between with fixed 64px cells, which is how shared/vcard.css solves the
+     same problem: it puts the outer cells hard against the 20px padding and
+     centres the middle one, landing all three on the frame's 76 / 195 / 314. Even
+     thirds would drift the outer two by 5px. */
+  #scrRnm .bi__band{
+    position: relative;
+    margin: 0 var(--s6) var(--s4);
+    height: 68px;
+    box-sizing: border-box;
+    padding: 0 20px;
+    border-radius: var(--s2);
+    background: var(--surface-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #scrRnm .bi__cell{
+    width: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+  }
+  /* 36 tall and centred, so the rules stop short of the card's own rounding
+     rather than running edge to edge. Absolute, because as flex items they would
+     take a share of the space-between distribution and drag the cells off the
+     frame's centres. 111 and 230 are the frame's 135 and 254 less the 24 inset. */
+  #scrRnm .bi__bandrule{
+    position: absolute;
+    top: var(--s4);
+    width: 1px;
+    height: 36px;
+    background: var(--border-primary);
+  }
+  #scrRnm .bi__bandrule--a{ left: 111px; }
+  #scrRnm .bi__bandrule--b{ left: 230px; }
+
+  /* The three measurements stay separate tiles: 16 + 16 value + 4 + 16 label + 16.
+     1fr rather than the frame's fixed 103 — installed, the frame is 100vw, and on
+     a 375px phone three 103s plus two 16s overflow the 327 available. */
   #scrRnm .bi__stats{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--s4);
     padding: 0 var(--s6);
   }
-  /* 68 = 16 + 36 content + 16. Both rows come to the same 36, so one rule holds
-     an icon-and-state tile and a measurement tile at the same height without
-     either being told a number. */
   #scrRnm .bi__stat{
     height: 68px;
     box-sizing: border-box;
@@ -3430,10 +3466,10 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    gap: var(--s1);
     min-width: 0;
   }
   #scrRnm .bi__stati{ display: block; width: 20px; height: 20px; }
-  /* No gap: the frame stacks the 20px row and the 16px row edge to edge. */
   #scrRnm .bi__statl{
     font-weight: 500;
     font-size: 12px;
@@ -3444,21 +3480,14 @@ body{
     text-overflow: ellipsis;
     max-width: 100%;
   }
-  /* The unit rides the number's baseline at 12/500 while the number is 16/700.
-     Inline, so the baseline does the alignment rather than a magic offset. */
+  /* One string at one weight now — "7,245 kms", not a bold number with a small
+     unit riding its baseline. Label/Small on primary. */
   #scrRnm .bi__statv{
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 20px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
     color: var(--content-primary);
     white-space: nowrap;
-  }
-  #scrRnm .bi__statv i{
-    font-style: normal;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 16px;
-    color: var(--content-secondary);
   }
 
   /* ---- Last seen -------------------------------------------------------- */
@@ -3484,14 +3513,13 @@ body{
     background: var(--surface-secondary);
     overflow: hidden;
   }
-  /* cover, not contain: the snapshot is imagery and should bleed to all four
-     edges. The drawn map is already 342x160, so nothing is cropped today — this
-     is what keeps that true if a real snapshot of another ratio replaces it. */
-  #scrRnm .bi__mapimg{
+  /* slice is the SVG spelling of object-fit:cover — the drawing is already
+     342x160 so nothing is cropped today, and this keeps that true if the band
+     ever changes ratio. */
+  #scrRnm .bi__mapsvg{
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
   }
   /* Centred on the point, not on the pin's box: a teardrop marks the place with
      its tip, so the translate takes the full height rather than half of it. */
@@ -3598,6 +3626,111 @@ body{
     width: 20px;
     height: 20px;
     margin-top: 20px;
+  }
+
+  /* ---- Component detail -------------------------------------------------- */
+  /* A spec sheet for one component, reached from a chevron on the parts list.
+     No frame for this one — it follows the screen it opens from: same app bar,
+     same 24 inset, same 342 divider between groups. */
+  /* The bar carries two lines. A serial is what tells two identical units apart,
+     and a mechanic reading these numbers usually has both in front of them, so
+     dropping it from the heading would make the page ambiguous exactly when it
+     matters. */
+  #scrRnm .cmpttl{
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2px;
+    max-width: none;
+  }
+  #scrRnm .cmpttl__sn{
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    color: var(--content-tertiary);
+    white-space: nowrap;
+  }
+
+  #scrRnm .cmp{ padding: var(--s2) 0 var(--s6); }
+  /* Label left, reading right — the reading is what is being looked up, so it
+     takes the edge the eye returns to. Baseline-aligned rather than centred,
+     because a label that wraps to two lines should keep its first line level
+     with the number rather than drifting half a line below it. */
+  #scrRnm .cmprow{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s4);
+    padding: var(--s2) var(--s6);
+  }
+  #scrRnm .cmprow dt{
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--content-secondary);
+    min-width: 0;
+  }
+  /* tabular-nums here, unlike the tab counts: these ARE a column of figures read
+     down the page, which is the one case the feature exists for. */
+  #scrRnm .cmprow dd{
+    margin: 0;
+    flex: 0 0 auto;
+    max-width: 55%;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--content-primary);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  /* Groups, not a 21-row wall. The blank lines in the source data are real —
+     they separate what the pack is doing now from what it holds from how it was
+     built — so they are drawn rather than collapsed. */
+  #scrRnm .cmp__rule{
+    height: 1px;
+    margin: var(--s4) var(--s6);
+    border: 0;
+    background: var(--border-primary);
+  }
+  #scrRnm .cmp dl{ margin: 0; }
+
+  /* ---- Refresh ----------------------------------------------------------- */
+  /* Icon and age together, because neither is much use alone: the arrow says the
+     reading can be renewed, the label says whether it needs to be. Sits in the
+     app bar's trailing slot on Bike info and on both component pages. */
+  #scrRnm .refresh{
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: var(--s2);
+    padding: 6px var(--s4) 6px 12px;
+    /* Outlined: it is the only thing in the bar that DOES something rather than
+       reporting something, and a bare icon-and-label read as a caption. The pill
+       is the flow's own — same 100px radius and border/primary hairline as the
+       chips. */
+    border: 1px solid var(--border-primary);
+    border-radius: 100px;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    color: var(--content-secondary);
+  }
+  #scrRnm .refresh:active{ background: var(--surface-secondary); }
+  #scrRnm .refresh__ico{ display: block; width: 20px; height: 20px; }
+  #scrRnm .refresh__ago{
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    color: var(--content-tertiary);
+    white-space: nowrap;
+  }
+  /* One turn, on the tap. The readings come back instantly in a prototype, so a
+     spinner that outlived the answer would be theatre — this is just long enough
+     to register that the press did something. */
+  @keyframes rn-spin{ to{ transform: rotate(360deg); } }
+  #scrRnm .refresh.is-spinning .refresh__ico{
+    animation: rn-spin 600ms var(--ease-out);
   }
 /* ══════════════════════════════════════════════════════════════════════════
    SERVICING CHECKS — ported from mechanic-checks/
@@ -6429,6 +6562,15 @@ body{
             </div>
             <div class="appbar__title"><p class="t-label-md">Bike Info</p></div>
           </div>
+          <!-- Refresh. No asset for it: the frames have no such button, so there
+               is no node to pull, and a circular arrow is unambiguous enough that
+               drawing it cannot be wrong — the same call the ⋮ glyph took. The
+               label is the point of the control: a reading is only worth
+               anything alongside how old it is. -->
+          <button class="refresh" type="button" data-refresh="" aria-label="Refresh readings">
+            <svg class="refresh__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35Z" fill="currentColor"></path></svg>
+            <span class="refresh__ago"></span>
+          </button>
         </div>
       </header>
       <div class="screen-body bi">
@@ -6449,29 +6591,39 @@ body{
              row is a measurement with its unit set smaller on the same
              baseline. Both come to 36px of content inside a 68px tile, so one
              rule sizes them. -->
-        <div class="bi__stats">
-          <div class="bi__stat">
+        <!-- Readings, 2729:22356. The three states share ONE card divided by
+             hairlines; the three measurements stay separate tiles. That split is
+             the point: battery, voltage and bluetooth are one reading of one
+             radio link, taken together, while odometer, speed and range are three
+             independent numbers. -->
+        <div class="bi__band">
+          <div class="bi__cell">
             <img class="bi__stati" src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJiYXR0ZXJ5X2FuZHJvaWRfZnJhbWVfNSI+CjxtYXNrIGlkPSJtYXNrMF8wXzEyIiBzdHlsZT0ibWFzay10eXBlOmFscGhhIiBtYXNrVW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4PSIwIiB5PSIwIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiPgo8cmVjdCBpZD0iQm91bmRpbmcgYm94IiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9IiNEOUQ5RDkiLz4KPC9tYXNrPgo8ZyBtYXNrPSJ1cmwoI21hc2swXzBfMTIpIj4KPHBhdGggaWQ9ImJhdHRlcnlfYW5kcm9pZF9mcmFtZV81XzIiIGQ9Ik00LjE5MjI1IDE3LjVDMy40NDQ0MiAxNy41IDIuODA4NzUgMTcuMjM4MyAyLjI4NTI1IDE2LjcxNDhDMS43NjE3NSAxNi4xOTEzIDEuNSAxNS41NTU2IDEuNSAxNC44MDc3VjkuMTkyMjVDMS41IDguNDQ0NDIgMS43NjE3NSA3LjgwODc1IDIuMjg1MjUgNy4yODUyNUMyLjgwODc1IDYuNzYxNzUgMy40NDQ0MiA2LjUgNC4xOTIyNSA2LjVIMTcuNUMxOC4yNDc4IDYuNSAxOC44ODM1IDYuNzYxNzUgMTkuNDA3IDcuMjg1MjVDMTkuOTMwNSA3LjgwODc1IDIwLjE5MjMgOC40NDQ0MiAyMC4xOTIzIDkuMTkyMjVWMTQuODA3N0MyMC4xOTIzIDE1LjU1NTYgMTkuOTMwNSAxNi4xOTEzIDE5LjQwNyAxNi43MTQ4QzE4Ljg4MzUgMTcuMjM4MyAxOC4yNDc4IDE3LjUgMTcuNSAxNy41SDQuMTkyMjVaTTQuMTkyMjUgMTZIMTcuNUMxNy44Mzc4IDE2IDE4LjEyMSAxNS44ODU4IDE4LjM0OTUgMTUuNjU3M0MxOC41NzggMTUuNDI4OCAxOC42OTIzIDE1LjE0NTYgMTguNjkyMyAxNC44MDc3VjkuMTkyMjVDMTguNjkyMyA4Ljg1NDQyIDE4LjU3OCA4LjU3MTI1IDE4LjM0OTUgOC4zNDI3NUMxOC4xMjEgOC4xMTQyNSAxNy44Mzc4IDggMTcuNSA4SDQuMTkyMjVDMy44NTQ0MiA4IDMuNTcxMjUgOC4xMTQyNSAzLjM0Mjc1IDguMzQyNzVDMy4xMTQyNSA4LjU3MTI1IDMgOC44NTQ0MiAzIDkuMTkyMjVWMTQuODA3N0MzIDE1LjE0NTYgMy4xMTQyNSAxNS40Mjg4IDMuMzQyNzUgMTUuNjU3M0MzLjU3MTI1IDE1Ljg4NTggMy44NTQ0MiAxNiA0LjE5MjI1IDE2Wk0yMS4xOTIzIDE0LjMwNzhWOS43MDJIMjEuNTk2QzIxLjg1MjIgOS43MDIgMjIuMDY2OCA5Ljc4ODU4IDIyLjI0IDkuOTYxNzVDMjIuNDEzMyAxMC4xMzUxIDIyLjUgMTAuMzQ5NyAyMi41IDEwLjYwNTdWMTMuNDAzN0MyMi41IDEzLjY1OTkgMjIuNDEzMyAxMy44NzQ2IDIyLjI0IDE0LjA0NzdDMjIuMDY2OCAxNC4yMjExIDIxLjg1MjIgMTQuMzA3OCAyMS41OTYgMTQuMzA3OEgyMS4xOTIzWk00LjE5MjI1IDEzLjkwMzdWMTAuMDk2MkM0LjE5MjI1IDkuODQwMDggNC4yNzg5MiA5LjYyNTQyIDQuNDUyMjUgOS40NTIyNUM0LjYyNTQyIDkuMjc4OTIgNC44NDAwOCA5LjE5MjI1IDUuMDk2MjUgOS4xOTIyNUgxMi43ODg1QzEzLjA0NDUgOS4xOTIyNSAxMy4yNTkyIDkuMjc4OTIgMTMuNDMyNSA5LjQ1MjI1QzEzLjYwNTcgOS42MjU0MiAxMy42OTIzIDkuODQwMDggMTMuNjkyMyAxMC4wOTYyVjEzLjkwMzdDMTMuNjkyMyAxNC4xNTk5IDEzLjYwNTcgMTQuMzc0NiAxMy40MzI1IDE0LjU0NzhDMTMuMjU5MiAxNC43MjExIDEzLjA0NDUgMTQuODA3NyAxMi43ODg1IDE0LjgwNzdINS4wOTYyNUM0Ljg0MDA4IDE0LjgwNzcgNC42MjU0MiAxNC43MjExIDQuNDUyMjUgMTQuNTQ3OEM0LjI3ODkyIDE0LjM3NDYgNC4xOTIyNSAxNC4xNTk5IDQuMTkyMjUgMTMuOTAzN1oiIGZpbGw9IiMyMjIyMjIiLz4KPC9nPgo8L2c+Cjwvc3ZnPgo=" alt="">
             <span class="bi__statl">75%</span>
           </div>
-          <div class="bi__stat">
+          <div class="bi__cell">
             <img class="bi__stati" src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJhbmRyb2lkX3dpZmlfM19iYXIiPgo8bWFzayBpZD0ibWFzazBfMF8xNSIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4KPHJlY3QgaWQ9IkJvdW5kaW5nIGJveCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRDlEOUQ5Ii8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMF8wXzE1KSI+CjxwYXRoIGlkPSJhbmRyb2lkX3dpZmlfM19iYXJfMiIgZD0iTTEyIDdDMTAuNTMzMyA3IDkuMTA3MzMgNy4yMzQgNy43MjIgNy43MDJDNi4zMzY4MyA4LjE2OTgzIDUuMDY3MzMgOC44NTcgMy45MTM1IDkuNzYzNUMzLjYzNzgzIDkuOTg1MzMgMy4zMjI3NSAxMC4wOTM3IDIuOTY4MjUgMTAuMDg4NUMyLjYxMzc1IDEwLjA4MzMgMi4zMTIxNyA5Ljk1NjQyIDIuMDYzNSA5LjcwNzc1QzEuODI1IDkuNDY5MjUgMS43MDczMyA5LjE3NjkyIDEuNzEwNSA4LjgzMDc1QzEuNzEzODMgOC40ODQ1OCAxLjg1MzMzIDguMjA1NzUgMi4xMjkgNy45OTQyNUMzLjUzMTUgNi44NTk1OCA1LjA3ODI1IDUuOTkzNTggNi43NjkyNSA1LjM5NjI1QzguNDYwMjUgNC43OTg3NSAxMC4yMDM4IDQuNSAxMiA0LjVDMTMuODEyOCA0LjUgMTUuNTYwNiA0Ljc5ODc1IDE3LjI0MzMgNS4zOTYyNUMxOC45MjU5IDUuOTkzNTggMjAuNDY4NSA2Ljg1OTU4IDIxLjg3MSA3Ljk5NDI1QzIyLjE0NjcgOC4yMDU3NSAyMi4yODYyIDguNDg0NTggMjIuMjg5NSA4LjgzMDc1QzIyLjI5MjcgOS4xNzY5MiAyMi4xNzUgOS40NjkyNSAyMS45MzY1IDkuNzA3NzVDMjEuNjg3OCA5Ljk1NjQyIDIxLjM4NjMgMTAuMDgzMyAyMS4wMzE4IDEwLjA4ODVDMjAuNjc3MyAxMC4wOTM3IDIwLjM2MjIgOS45ODUzMyAyMC4wODY1IDkuNzYzNUMxOC45MjYzIDguODU3IDE3LjY1NzggOC4xNjk4MyAxNi4yODA4IDcuNzAyQzE0LjkwMzkgNy4yMzQgMTMuNDc3IDcgMTIgN1pNMTIgMTIuNzU5NUMxMS4yOTEgMTIuNzU5NSAxMC42MDYxIDEyLjg1ODMgOS45NDUyNSAxMy4wNTU4QzkuMjg0MjUgMTMuMjUzMyA4LjY2MjA4IDEzLjU0MyA4LjA3ODc1IDEzLjkyNUM3Ljc4MjU4IDE0LjEyNjMgNy40NTczMyAxNC4yMjE4IDcuMTAzIDE0LjIxMTVDNi43NDg1IDE0LjIwMTMgNi40NDY4MyAxNC4wNzE4IDYuMTk4IDEzLjgyM0M1Ljk1OTY3IDEzLjU4NDcgNS44NDMgMTMuMjk0OSA1Ljg0OCAxMi45NTM3QzUuODUzMTcgMTIuNjEyNyA1Ljk5MzU4IDEyLjM0MTcgNi4yNjkyNSAxMi4xNDA1QzcuMTAxMjUgMTEuNTMwMiA4LjAwNDc1IDExLjA2NDEgOC45Nzk3NSAxMC43NDIyQzkuOTU0NzUgMTAuNDIwNiAxMC45NjE1IDEwLjI1OTggMTIgMTAuMjU5OEMxMy4wNDQ4IDEwLjI1OTggMTQuMDU2MyAxMC40MjIzIDE1LjAzNDUgMTAuNzQ3M0MxNi4wMTI4IDExLjA3MjMgMTYuOTE4IDExLjU0MzEgMTcuNzUgMTIuMTU5OEMxOC4wMjU3IDEyLjM2MDkgMTguMTY3NyAxMi42MzA0IDE4LjE3NiAxMi45NjgzQzE4LjE4NDMgMTMuMzA2MSAxOC4wNjYxIDEzLjU5NDMgMTcuODIxMyAxMy44MzI4QzE3LjU2NjEgMTQuMDgxNCAxNy4yNjEzIDE0LjIxMDkgMTYuOTA2OCAxNC4yMjEzQzE2LjU1MjMgMTQuMjMxNCAxNi4yMjY5IDE0LjEzNTggMTUuOTMwOCAxMy45MzQ1QzE1LjM0NzQgMTMuNTQ2MiAxNC43MjM3IDEzLjI1MzMgMTQuMDU5NSAxMy4wNTU4QzEzLjM5NTUgMTIuODU4MyAxMi43MDkgMTIuNzU5NSAxMiAxMi43NTk1Wk0xMC43NjA1IDE4Ljk4OTVDMTAuNDIwMiAxOC42NDkgMTAuMjUgMTguMjM1OCAxMC4yNSAxNy43NUMxMC4yNSAxNy4yNjQyIDEwLjQyMDIgMTYuODUxIDEwLjc2MDUgMTYuNTEwNUMxMS4xMDEgMTYuMTcwMiAxMS41MTQyIDE2IDEyIDE2QzEyLjQ4NTggMTYgMTIuODk5IDE2LjE3MDIgMTMuMjM5NSAxNi41MTA1QzEzLjU3OTggMTYuODUxIDEzLjc1IDE3LjI2NDIgMTMuNzUgMTcuNzVDMTMuNzUgMTguMjM1OCAxMy41Nzk4IDE4LjY0OSAxMy4yMzk1IDE4Ljk4OTVDMTIuODk5IDE5LjMyOTggMTIuNDg1OCAxOS41IDEyIDE5LjVDMTEuNTE0MiAxOS41IDExLjEwMSAxOS4zMjk4IDEwLjc2MDUgMTguOTg5NVoiIGZpbGw9IiMyMjIyMjIiLz4KPC9nPgo8L2c+Cjwvc3ZnPgo=" alt="">
             <span class="bi__statl">4.3 V</span>
           </div>
-          <div class="bi__stat">
+          <div class="bi__cell">
             <img class="bi__stati" src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJibHVldG9vdGhfc2VhcmNoaW5nIj4KPG1hc2sgaWQ9Im1hc2swXzBfOCIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4KPHJlY3QgaWQ9IkJvdW5kaW5nIGJveCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRDlEOUQ5Ii8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMF8wXzgpIj4KPHBhdGggaWQ9ImJsdWV0b290aF9zZWFyY2hpbmdfMiIgZD0iTTkuNDA0IDEzLjgwMzdMNS4wODA3NSAxOC4xMjdDNC45NDIyNSAxOC4yNjUzIDQuNzY4MjUgMTguMzM2MiA0LjU1ODc1IDE4LjMzOTVDNC4zNDkwOCAxOC4zNDI3IDQuMTcxODMgMTguMjcxOCA0LjAyNyAxOC4xMjdDMy44ODIxNyAxNy45ODIgMy44MDk3NSAxNy44MDYzIDMuODA5NzUgMTcuNkMzLjgwOTc1IDE3LjM5MzcgMy44ODIxNyAxNy4yMTggNC4wMjcgMTcuMDczTDkuMSAxMkw0LjAyNyA2LjkyN0MzLjg4ODUgNi43ODg1IDMuODE3NjcgNi42MTQ0MiAzLjgxNDUgNi40MDQ3NUMzLjgxMTMzIDYuMTk1MjUgMy44ODIxNyA2LjAxOCA0LjAyNyA1Ljg3M0M0LjE3MTgzIDUuNzI4MTcgNC4zNDc0MiA1LjY1NTc1IDQuNTUzNzUgNS42NTU3NUM0Ljc2MDI1IDUuNjU1NzUgNC45MzU5MiA1LjcyODE3IDUuMDgwNzUgNS44NzNMOS40MDQgMTAuMTk2MlYzLjc4MDc1QzkuNDA0IDMuNTA2NDIgOS40OTU5MiAzLjI4NDY3IDkuNjc5NzUgMy4xMTU1QzkuODYzNzUgMi45NDYxNyAxMC4wNzMxIDIuODYxNSAxMC4zMDc3IDIuODYxNUMxMC40MjE3IDIuODYxNSAxMC41MzIzIDIuODgzMzMgMTAuNjM5NSAyLjkyN0MxMC43NDY1IDIuOTcwNSAxMC44NDY4IDMuMDM5MDggMTAuOTQwNSAzLjEzMjc1TDE0Ljg3NSA3LjA2NzI1QzE0Ljk2ODUgNy4xNjA5MiAxNS4wMzQ1IDcuMjU5NjcgMTUuMDczIDcuMzYzNUMxNS4xMTE1IDcuNDY3MzMgMTUuMTMwNyA3LjU3OTUgMTUuMTMwNyA3LjdDMTUuMTMwNyA3LjgyMDUgMTUuMTExNSA3LjkzMjY3IDE1LjA3MyA4LjAzNjVDMTUuMDM0NSA4LjE0MDMzIDE0Ljk2ODUgOC4yMzkwOCAxNC44NzUgOC4zMzI3NUwxMS4yMDc3IDEyTDE0Ljg3NSAxNS42NjczQzE0Ljk2ODUgMTUuNzYwOSAxNS4wMzQ1IDE1Ljg1OTcgMTUuMDczIDE1Ljk2MzVDMTUuMTExNSAxNi4wNjczIDE1LjEzMDcgMTYuMTc5NSAxNS4xMzA3IDE2LjNDMTUuMTMwNyAxNi40MjA1IDE1LjExMTUgMTYuNTMyNyAxNS4wNzMgMTYuNjM2NUMxNS4wMzQ1IDE2Ljc0MDMgMTQuOTY4NSAxNi44MzkxIDE0Ljg3NSAxNi45MzI4TDEwLjk0MDUgMjAuODY3M0MxMC44NDY4IDIwLjk2MDkgMTAuNzQ2NSAyMS4wMjk1IDEwLjYzOTUgMjEuMDczQzEwLjUzMjMgMjEuMTE2NyAxMC40MjE3IDIxLjEzODUgMTAuMzA3NyAyMS4xMzg1QzEwLjA3MzEgMjEuMTM4NSA5Ljg2Mzc1IDIxLjA1MzggOS42Nzk3NSAyMC44ODQ1QzkuNDk1OTIgMjAuNzE1MyA5LjQwNCAyMC40OTM2IDkuNDA0IDIwLjIxOTNWMTMuODAzN1pNMTAuOTAzOCAxMC4xOTYyTDEzLjQgNy43TDEwLjkwMzggNS4yMzQ1VjEwLjE5NjJaTTEwLjkwMzggMTguNzY1NUwxMy40IDE2LjNMMTAuOTAzOCAxMy44MDM3VjE4Ljc2NTVaTTE2LjAwMzggMTMuMzQ2M0wxNC45OTQzIDEyLjMyMTNDMTQuOTAwOCAxMi4yMjc2IDE0Ljg1NCAxMi4xMjA1IDE0Ljg1NCAxMkMxNC44NTQgMTEuODc5NSAxNC45MDA4IDExLjc3MjQgMTQuOTk0MyAxMS42Nzg3TDE2LjAwMzggMTAuNjY5M0MxNi4xNzgzIDEwLjQ5NDkgMTYuMzU2OCAxMC40Mjk1IDE2LjUzOTUgMTAuNDczQzE2LjcyMjIgMTAuNTE2NyAxNi44NDA0IDEwLjY1NTggMTYuODk0MyAxMC44OTA1QzE2Ljk0ODEgMTEuMDg1MyAxNi45ODQzIDExLjI3MDMgMTcuMDAzIDExLjQ0NTNDMTcuMDIxNSAxMS42MjAzIDE3LjAzMDcgMTEuODA1MiAxNy4wMzA3IDEyQzE3LjAzMDcgMTIuMTk0OCAxNy4wMjE1IDEyLjM4NDkgMTcuMDAzIDEyLjU3MDNDMTYuOTg0MyAxMi43NTU0IDE2Ljk0ODEgMTIuOTQ1NCAxNi44OTQzIDEzLjE0MDJDMTYuODQwNCAxMy4zNzQ5IDE2LjcyMjIgMTMuNTExNSAxNi41Mzk1IDEzLjU1QzE2LjM1NjggMTMuNTg4NSAxNi4xNzgzIDEzLjUyMDYgMTYuMDAzOCAxMy4zNDYzWk0xOC41Nzg3IDE1LjkwNThDMTguNDg3NyAxNS44MTQ4IDE4LjQyODggMTUuNyAxOC40MDIgMTUuNTYxNUMxOC4zNzUgMTUuNDIzIDE4LjM5MzYgMTUuMjk0OCAxOC40NTc3IDE1LjE3N0MxOC42ODg0IDE0LjY4MiAxOC44NjczIDE0LjE2NzYgMTguOTk0MyAxMy42MzM4QzE5LjEyMTEgMTMuMDk5OCAxOS4xODQ1IDEyLjU1NTIgMTkuMTg0NSAxMkMxOS4xODQ1IDExLjQ0NDggMTkuMTIxMSAxMC45MDI4IDE4Ljk5NDMgMTAuMzc0QzE4Ljg2NzMgOS44NDUxNyAxOC42ODg0IDkuMzMzMzMgMTguNDU3NyA4LjgzODVDMTguMzkzNiA4LjcxMDMzIDE4LjM3NSA4LjU3NyAxOC40MDIgOC40Mzg1QzE4LjQyODggOC4zIDE4LjQ5MjkgOC4xODAxNyAxOC41OTQyIDguMDc5QzE4Ljc2OTkgNy45MDMzMyAxOC45NjU4IDcuODM3NTggMTkuMTgxOCA3Ljg4MTc1QzE5LjM5NzggNy45MjU5MiAxOS41NTk2IDguMDY3OTIgMTkuNjY3MiA4LjMwNzc1QzE5Ljk0MTYgOC44ODcyNSAyMC4xNDkgOS40ODU5MiAyMC4yODk1IDEwLjEwMzhDMjAuNDI5OCAxMC43MjE4IDIwLjUgMTEuMzUzOCAyMC41IDEyQzIwLjUgMTIuNjQ2MiAyMC40MjcyIDEzLjI3NTcgMjAuMjgxNyAxMy44ODg1QzIwLjEzNjIgMTQuNTAxMyAxOS45MzE0IDE1LjA5MjMgMTkuNjY3MiAxNS42NjE1QzE5LjU1OTYgMTUuOTAxMiAxOS4zOTUyIDE2LjA0NTcgMTkuMTc0IDE2LjA5NTJDMTguOTUyOCAxNi4xNDQ2IDE4Ljc1NDQgMTYuMDgxNCAxOC41Nzg3IDE1LjkwNThaIiBmaWxsPSIjMUMxQjFGIi8+CjwvZz4KPC9nPgo8L3N2Zz4K" alt="">
             <span class="bi__statl">Connected</span>
           </div>
+          <span class="bi__bandrule bi__bandrule--a" aria-hidden="true"></span>
+          <span class="bi__bandrule bi__bandrule--b" aria-hidden="true"></span>
+        </div>
+
+        <div class="bi__stats">
           <div class="bi__stat">
-            <span class="bi__statv">7,245<i>kms</i></span>
+            <span class="bi__statv">7,245 kms</span>
             <span class="bi__statl">Odometer</span>
           </div>
           <div class="bi__stat">
-            <span class="bi__statv">0<i>km/hr</i></span>
+            <span class="bi__statv">0 km/hr</span>
             <span class="bi__statl">Speed</span>
           </div>
           <div class="bi__stat">
-            <span class="bi__statv">32<i>kms</i></span>
+            <span class="bi__statv">32 kms</span>
             <span class="bi__statl">Range left</span>
           </div>
         </div>
@@ -6485,7 +6637,54 @@ body{
              it stays centred whatever the snapshot is swapped for. -->
         <div class="bi__loc">
           <div class="bi__map">
-            <img class="bi__mapimg" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzQyIiBoZWlnaHQ9IjE2MCIgdmlld0JveD0iMCAwIDM0MiAxNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPCEtLSBBIGRyYXduIG1hcCwgbm90IGEgdGlsZS4gR29vZ2xlIGFuZCBNYXBib3ggYm90aCBuZWVkIGEga2V5IGFuZCBhIGxpdmUKICAgICAgIHJlcXVlc3QsIGFuZCB0aGlzIGJ1aWxkIGlubGluZXMgZXZlcnkgYXNzZXQgYW5kIHNoaXBzIG9uZSBvZmZsaW5lIGZpbGUg4oCUCiAgICAgICBhIG5ldHdvcmsgcmVmZXJlbmNlIHdvdWxkIGJyZWFrIHRoYXQgYW5kIHRyaXAgdGhlIGJ1aWxkJ3Mgb3duIGV4dGVybmFsLQogICAgICAgcmVmZXJlbmNlIGNoZWNrLiBPcGVuU3RyZWV0TWFwIHRpbGVzIHdvdWxkIG5lZWQgdmlzaWJsZSBhdHRyaWJ1dGlvbi4KICAgICAgIFNvOiBhIHNlY3RvciBncmlkIGluIHRoZSBhcHAncyBvd24gZ3JleXMsIHdoaWNoIGlzIHdoYXQgSFNSIExheW91dAogICAgICAgYWN0dWFsbHkgbG9va3MgbGlrZSBmcm9tIGFib3ZlLiBBYnN0cmFjdCBvbiBwdXJwb3NlIOKAlCBubyBzdHJlZXQgbmFtZXMsCiAgICAgICBiZWNhdXNlIGludmVudGVkIHN0cmVldCBuYW1lcyByZWFkIGFzIHJlYWwgZGF0YS4gLS0+CiAgPHJlY3Qgd2lkdGg9IjM0MiIgaGVpZ2h0PSIxNjAiIGZpbGw9IiNFQ0VCRTciLz4KCiAgPCEtLSBCbG9ja3MuIFNsaWdodGx5IGRhcmtlciB0aGFuIHRoZSBncm91bmQgc28gdGhlIHJvYWRzIHJlYWQgYXMgZ2Fwcy4gLS0+CiAgPGcgZmlsbD0iI0UzRTJEQyI+CiAgICA8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iNDYiIGhlaWdodD0iMzAiIHJ4PSIyIi8+CiAgICA8cmVjdCB4PSI3MiIgeT0iOCIgd2lkdGg9IjYyIiBoZWlnaHQ9IjMwIiByeD0iMiIvPgogICAgPHJlY3QgeD0iMTUyIiB5PSI4IiB3aWR0aD0iODAiIGhlaWdodD0iMzAiIHJ4PSIyIi8+CiAgICA8cmVjdCB4PSI4IiB5PSI1NiIgd2lkdGg9IjQ2IiBoZWlnaHQ9IjM0IiByeD0iMiIvPgogICAgPHJlY3QgeD0iNzIiIHk9IjU2IiB3aWR0aD0iNjIiIGhlaWdodD0iMzQiIHJ4PSIyIi8+CiAgICA8cmVjdCB4PSIxNTIiIHk9IjU2IiB3aWR0aD0iMzYiIGhlaWdodD0iMzQiIHJ4PSIyIi8+CiAgICA8cmVjdCB4PSI4IiB5PSIxMTIiIHdpZHRoPSI0NiIgaGVpZ2h0PSI0MCIgcng9IjIiLz4KICAgIDxyZWN0IHg9IjE1MiIgeT0iMTEyIiB3aWR0aD0iODAiIGhlaWdodD0iNDAiIHJ4PSIyIi8+CiAgICA8cmVjdCB4PSIyNTAiIHk9IjExMiIgd2lkdGg9Ijg0IiBoZWlnaHQ9IjQwIiByeD0iMiIvPgogIDwvZz4KCiAgPCEtLSBQYXJrcy4gSFNSIGhhcyBvbmUgaW4gbW9zdCBzZWN0b3JzLiAtLT4KICA8ZyBmaWxsPSIjRDdFM0QwIj4KICAgIDxyZWN0IHg9IjIwNiIgeT0iNTYiIHdpZHRoPSIyNiIgaGVpZ2h0PSIzNCIgcng9IjIiLz4KICAgIDxyZWN0IHg9IjI1MCIgeT0iOCIgd2lkdGg9Ijg0IiBoZWlnaHQ9IjMwIiByeD0iMyIvPgogIDwvZz4KCiAgPCEtLSBSb2Fkcywgd2hpdGUsIGRyYXduIG92ZXIgdGhlIGJsb2Nrcy4gVGhlIHR3byAxMHB4IG9uZXMgYXJlIHRoZSBzZWN0b3IKICAgICAgIGFydGVyaWFsczsgdGhlIHJlc3QgYXJlIGludGVybmFsLiAtLT4KICA8ZyBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiPgogICAgPHBhdGggZD0iTTAgNDZIMzQyIiBzdHJva2Utd2lkdGg9IjEwIi8+CiAgICA8cGF0aCBkPSJNMTQzIDBWMTYwIiBzdHJva2Utd2lkdGg9IjEwIi8+CiAgICA8cGF0aCBkPSJNMCAxMDBIMzQyIiBzdHJva2Utd2lkdGg9IjgiLz4KICAgIDxwYXRoIGQ9Ik02MyAwVjE2MCIgc3Ryb2tlLXdpZHRoPSI3Ii8+CiAgICA8cGF0aCBkPSJNMjQxIDBWMTYwIiBzdHJva2Utd2lkdGg9IjciLz4KICAgIDxwYXRoIGQ9Ik0xOTcgNDZWMTYwIiBzdHJva2Utd2lkdGg9IjYiLz4KICAgIDxwYXRoIGQ9Ik0wIDIwSDYzIiBzdHJva2Utd2lkdGg9IjUiLz4KICAgIDxwYXRoIGQ9Ik0yNDEgNzRIMzQyIiBzdHJva2Utd2lkdGg9IjUiLz4KICA8L2c+CgogIDwhLS0gT25lIGRpYWdvbmFsLiBBIHBlcmZlY3QgZ3JpZCByZWFkcyBhcyBncmFwaCBwYXBlciByYXRoZXIgdGhhbiBhIGNpdHkuIC0tPgogIDxwYXRoIGQ9Ik0yNTggMTYwTDM0MiA5NiIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjgiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiLz4KPC9zdmc+Cg==" alt="Map of HSR Layout">
+            <!-- Drawn inline rather than shipped as an asset, for one reason: an
+                 SVG loaded through <img> is an isolated document and cannot see
+                 the page's font, so its place names would have rendered in the
+                 system sans — a second typeface in an app that is Satoshi only.
+                 Inline, the <text> inherits like anything else.
+                 Still drawn rather than fetched: a real tile needs a key and a
+                 network request, and this build ships one offline file. -->
+            <svg class="bi__mapsvg" viewBox="0 0 342 160" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Map showing HSR Layout, Bengaluru">
+              <rect width="342" height="160" fill="#F2F1EC"></rect>
+              <path d="M0 118 L44 112 L74 128 L86 160 L0 160 Z" fill="#A8CFE8"></path>
+              <g fill="#D7E8CE">
+                <rect x="188" y="64" width="48" height="30" rx="3"></rect>
+                <rect x="258" y="8" width="70" height="30" rx="3"></rect>
+              </g>
+              <g fill="#E7E5DE">
+                <rect x="8" y="8" width="48" height="34" rx="2"></rect>
+                <rect x="86" y="8" width="66" height="34" rx="2"></rect>
+                <rect x="86" y="64" width="66" height="30" rx="2"></rect>
+                <rect x="188" y="112" width="48" height="40" rx="2"></rect>
+                <rect x="258" y="112" width="70" height="40" rx="2"></rect>
+              </g>
+              <!-- Casing under fill, which is what gives a road its edge. -->
+              <g fill="none" stroke-linecap="round">
+                <g stroke="#E0DED6">
+                  <path d="M0 52H342" stroke-width="13"></path><path d="M170 0V160" stroke-width="13"></path>
+                  <path d="M0 104H342" stroke-width="9"></path><path d="M70 42V160" stroke-width="8"></path>
+                  <path d="M248 38V160" stroke-width="8"></path><path d="M240 160L342 104" stroke-width="8"></path>
+                </g>
+                <g stroke="#FFFFFF">
+                  <path d="M0 104H342" stroke-width="7"></path><path d="M70 42V160" stroke-width="6"></path>
+                  <path d="M248 38V160" stroke-width="6"></path><path d="M240 160L342 104" stroke-width="6"></path>
+                </g>
+                <g stroke="#FBF1D2">
+                  <path d="M0 52H342" stroke-width="11"></path><path d="M170 0V160" stroke-width="11"></path>
+                </g>
+              </g>
+              <g fill="#8C8981" font-size="7" font-weight="500" letter-spacing="0.3">
+                <text x="10" y="24">HSR LAYOUT</text>
+                <text x="192" y="82" fill="#6E9A63">Sector 2 Park</text>
+                <text x="262" y="128">BDA Complex</text>
+                <text x="176" y="150" transform="rotate(-90 176 150)">27th Main Rd</text>
+              </g>
+              <text x="12" y="146" fill="#5B87A8" font-size="7" font-weight="500" letter-spacing="0.3" font-style="italic">Agara Lake</text>
+              <g fill="#B9B5AC">
+                <circle cx="120" cy="118" r="2.5"></circle><circle cx="300" cy="66" r="2.5"></circle>
+                <circle cx="46" cy="76" r="2.5"></circle>
+              </g>
+            </svg>
             <img class="bi__mappin" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iNDQiIHZpZXdCb3g9IjAgMCAzMiA0NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8IS0tIFRoZSBiaWtlJ3MgcG9zaXRpb24uIGNvbnRlbnQvcG9zaXRpdmUgcmF0aGVyIHRoYW4gdGhlIGFwcCdzIG5lYXItYmxhY2ssCiAgICAgICBiZWNhdXNlIG9uIGEgZ3JleSBtYXAgdGhlIHBpbiBpcyB0aGUgb25lIHRoaW5nIHRoYXQgaXMgYSBsaXZlIHJlYWRpbmcgYW5kCiAgICAgICBldmVyeSBvdGhlciBkYXJrIG1hcmsgb24gdGhpcyBzY3JlZW4gaXMgdGV4dC4gVGhlIHNoYWRvdyBpcyBhbiBlbGxpcHNlIG9uCiAgICAgICB0aGUgZ3JvdW5kIHJhdGhlciB0aGFuIGEgZmlsdGVyIOKAlCBmaWx0ZXJzIGFyZSB0aGUgb25lIFNWRyBmZWF0dXJlIHRoYXQKICAgICAgIHJlbmRlcnMgZGlmZmVyZW50bHkgb25jZSB0aGUgZmlsZSBpcyBhIGJhc2U2NCBkYXRhIFVSSSBpbiBhbiA8aW1nPi4gLS0+CiAgPGVsbGlwc2UgY3g9IjE2IiBjeT0iNDAuNSIgcng9IjUuNSIgcnk9IjIiIGZpbGw9IiMyMjIyMjIiIGZpbGwtb3BhY2l0eT0iMC4xOCIvPgogIDxwYXRoIGQ9Ik0xNiAyQzkuMzczIDIgNCA3LjM3MyA0IDE0YzAgOC41IDEyIDI0IDEyIDI0czEyLTE1LjUgMTItMjRjMC02LjYyNy01LjM3My0xMi0xMi0xMloiCiAgICAgICAgZmlsbD0iIzAwNjU0RiIvPgogIDxjaXJjbGUgY3g9IjE2IiBjeT0iMTQiIHI9IjQuNSIgZmlsbD0iI0ZGRkZGRiIvPgo8L3N2Zz4K" alt="" aria-hidden="true">
           </div>
           <div class="bi__locfoot">
@@ -6499,7 +6698,7 @@ body{
         <!-- The serialised components. The first two carry a chevron because
              they lead somewhere; the rest are a record. -->
         <div class="bi__parts">
-          <button class="bi__part bi__part--go" type="button">
+          <button class="bi__part bi__part--go" type="button" data-comp="iot">
             <span class="bi__partart"></span>
             <span class="bi__parttext">
               <span class="bi__partname">IoT</span>
@@ -6507,7 +6706,7 @@ body{
             </span>
             <img class="bi__partgo" src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJjaGV2cm9uX2ZvcndhcmQiPgo8bWFzayBpZD0ibWFzazBfMF8xMiIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4KPHJlY3QgaWQ9IkJvdW5kaW5nIGJveCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRDlEOUQ5Ii8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMF8wXzEyKSI+CjxwYXRoIGlkPSJjaGV2cm9uX2ZvcndhcmRfMiIgZD0iTTEyLjk0NjIgMTJMOC44NzMgNy45MjdDOC43MzQ2NyA3Ljc4ODUgOC42NjM4MyA3LjYxNDQyIDguNjYwNSA3LjQwNDc1QzguNjU3MzMgNy4xOTUyNSA4LjcyODE3IDcuMDE4IDguODczIDYuODczQzkuMDE4IDYuNzI4MTcgOS4xOTM2NyA2LjY1NTc1IDkuNCA2LjY1NTc1QzkuNjA2MzMgNi42NTU3NSA5Ljc4MiA2LjcyODE3IDkuOTI3IDYuODczTDE0LjQyMTIgMTEuMzY3M0MxNC41MTQ3IDExLjQ2MDkgMTQuNTgwOCAxMS41NTk3IDE0LjYxOTMgMTEuNjYzNUMxNC42NTc4IDExLjc2NzMgMTQuNjc3IDExLjg3OTUgMTQuNjc3IDEyQzE0LjY3NyAxMi4xMjA1IDE0LjY1NzggMTIuMjMyNyAxNC42MTkzIDEyLjMzNjVDMTQuNTgwOCAxMi40NDAzIDE0LjUxNDcgMTIuNTM5MSAxNC40MjEyIDEyLjYzMjhMOS45MjcgMTcuMTI3QzkuNzg4NSAxNy4yNjUzIDkuNjE0NDIgMTcuMzM2MiA5LjQwNDc1IDE3LjMzOTVDOS4xOTUyNSAxNy4zNDI3IDkuMDE4IDE3LjI3MTggOC44NzMgMTcuMTI3QzguNzI4MTcgMTYuOTgyIDguNjU1NzUgMTYuODA2MyA4LjY1NTc1IDE2LjZDOC42NTU3NSAxNi4zOTM3IDguNzI4MTcgMTYuMjE4IDguODczIDE2LjA3M0wxMi45NDYyIDEyWiIgZmlsbD0iIzFDMUIxRiIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" alt="">
           </button>
-          <button class="bi__part bi__part--go" type="button">
+          <button class="bi__part bi__part--go" type="button" data-comp="battery">
             <span class="bi__partart"></span>
             <span class="bi__parttext">
               <span class="bi__partname">Battery</span>
@@ -6545,6 +6744,42 @@ body{
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- ── Component detail ──────────────────────────────────────────────────
+         One overlay for both IoT and Battery, and for whatever gets a chevron
+         next: the two differ only in their readings, so the screen is a table
+         renderer and the readings are data. See COMPONENT_SPECS in script.js.
+
+         The heading keeps the component's name AND its serial, because a spec
+         sheet is meaningless without knowing which unit it describes — the
+         mechanic is often holding two of them. -->
+    <section class="rnscreen" id="screenComp" aria-hidden="true">
+      <header class="appbar pxappbar">
+        <div class="appbar__row">
+          <div class="appbar__lead">
+            <div class="leading-action">
+              <button class="icon-btn" id="btnCompBack" type="button" aria-label="Back">
+                <img src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJjaGV2cm9uX2xlZnQiPgo8bWFzayBpZD0ibWFzazBfMF8xMjEiIHN0eWxlPSJtYXNrLXR5cGU6YWxwaGEiIG1hc2tVbml0cz0idXNlclNwYWNlT25Vc2UiIHg9IjAiIHk9IjAiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+CjxyZWN0IGlkPSJCb3VuZGluZyBib3giIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0iI0Q5RDlEOSIvPgo8L21hc2s+CjxnIG1hc2s9InVybCgjbWFzazBfMF8xMjEpIj4KPHBhdGggaWQ9ImNoZXZyb25fbGVmdF8yIiBkPSJNMTAuNDUzOCAxMkwxNC41MjY5IDE2LjA3MzFDMTQuNjY1NCAxNi4yMTE2IDE0LjczNjIgMTYuMzg1NiAxNC43Mzk0IDE2LjU5NTJDMTQuNzQyNiAxNi44MDQ4IDE0LjY3MTggMTYuOTgyIDE0LjUyNjkgMTcuMTI2OUMxNC4zODIgMTcuMjcxOCAxNC4yMDY0IDE3LjM0NDIgMTQgMTcuMzQ0MkMxMy43OTM2IDE3LjM0NDIgMTMuNjE4IDE3LjI3MTggMTMuNDczMSAxNy4xMjY5TDguOTc4ODggMTIuNjMyN0M4Ljg4NTI4IDEyLjUzOTEgOC44MTkyNSAxMi40NDA0IDguNzgwOCAxMi4zMzY1QzguNzQyMzMgMTIuMjMyNyA4LjcyMzEgMTIuMTIwNSA4LjcyMzEgMTJDOC43MjMxIDExLjg3OTUgOC43NDIzMyAxMS43NjczIDguNzgwOCAxMS42NjM1QzguODE5MjUgMTEuNTU5NiA4Ljg4NTI4IDExLjQ2MDkgOC45Nzg4OCAxMS4zNjczTDEzLjQ3MzEgNi44NzMxQzEzLjYxMTYgNi43MzQ2MyAxMy43ODU2IDYuNjYzOCAxMy45OTUyIDYuNjYwNkMxNC4yMDQ4IDYuNjU3MzggMTQuMzgyIDYuNzI4MjIgMTQuNTI2OSA2Ljg3MzFDMTQuNjcxOCA3LjAxNzk3IDE0Ljc0NDIgNy4xOTM2IDE0Ljc0NDIgNy40QzE0Ljc0NDIgNy42MDY0IDE0LjY3MTggNy43ODIwMyAxNC41MjY5IDcuOTI2OUwxMC40NTM4IDEyWiIgZmlsbD0iIzIyMjIyMiIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" alt="">
+              </button>
+            </div>
+            <div class="appbar__title cmpttl">
+              <p class="t-label-md" id="cmpName"></p>
+              <p class="cmpttl__sn" id="cmpSn"></p>
+            </div>
+          </div>
+          <!-- Refresh. No asset for it: the frames have no such button, so there
+               is no node to pull, and a circular arrow is unambiguous enough that
+               drawing it cannot be wrong — the same call the ⋮ glyph took. The
+               label is the point of the control: a reading is only worth
+               anything alongside how old it is. -->
+          <button class="refresh" type="button" data-refresh="" aria-label="Refresh readings">
+            <svg class="refresh__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35Z" fill="currentColor"></path></svg>
+            <span class="refresh__ago"></span>
+          </button>
+        </div>
+      </header>
+      <div class="screen-body cmp" id="cmpBody"></div>
     </section>
 
     <!-- Parts exchange. Two view-only lists: what stores issued against the
@@ -7821,6 +8056,10 @@ const ICON = {
      job: a started task cannot be closed, only parked, and a downward arrow says
      "put this away" where a cross says "throw it out". */
   chevronDown:`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 14.4538 7.9269 10.3808c-.1385-.1385-.3125-.2093-.5221-.2126-.2096-.0032-.3868.0677-.5317.2126-.1449.1449-.2173.3205-.2173.5269 0 .2064.0724.382.2173.5269l4.4942 4.4942c.0936.0936.1923.1596.2962.1981.1038.0384.216.0577.3365.0577.1205 0 .2327-.0193.3365-.0577.1039-.0385.2026-.1045.2962-.1981l4.4942-4.4942c.1385-.1385.2093-.3125.2126-.5221.0032-.2096-.0677-.3868-.2126-.5317-.1449-.1449-.3205-.2173-.5269-.2173-.2064 0-.382.0724-.5269.2173L12 14.4538Z" fill="currentColor"/></svg>`,
+  /* info — Bike info. The outline rather than the filled disc: a filled circle at
+     24px in a list of line icons reads as a badge, and this row is a destination
+     like the others, not a status. */
+  info:`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11.25 16.5h1.5v-6h-1.5v6ZM12 8.77q.33 0 .55-.22t.22-.55-.22-.55T12 7.23t-.55.22-.22.55.22.55.55.22ZM12 22a9.7 9.7 0 0 1-3.9-.79 10.1 10.1 0 0 1-5.31-5.31A9.7 9.7 0 0 1 2 12a9.7 9.7 0 0 1 .79-3.9 10.1 10.1 0 0 1 5.31-5.31A9.7 9.7 0 0 1 12 2a9.7 9.7 0 0 1 3.9.79 10.1 10.1 0 0 1 5.31 5.31A9.7 9.7 0 0 1 22 12a9.7 9.7 0 0 1-.79 3.9 10.1 10.1 0 0 1-5.31 5.31A9.7 9.7 0 0 1 12 22Zm0-1.5q3.55 0 6.02-2.48T20.5 12t-2.48-6.02T12 3.5 5.98 5.98 3.5 12t2.48 6.02T12 20.5Z" fill="currentColor"/></svg>`,
   /* compare_arrows — Part exchange. Two arrows passing each other in opposite
      directions, which is the whole of what that screen records: one part going
      out, one coming back. The mask and the 24x24 rect the export carries are
@@ -9693,6 +9932,7 @@ let enterRnm = () => {};
 /* Part exchange, which the ⋮ offers directly. It was the third tab; it is its
    own overlay now. */
 let rnmShowParts = () => {};
+let rnmShowVitals = () => {};
 
 /* Selects the Bike essentials tab, where the commands now live. The ⋮ row calls
    this — see SHEET_ACTIONS in shared/sheet-config.js. */
@@ -10044,6 +10284,165 @@ let rnmShowCommands = () => {};
         : '<p class="pxempty">' + empty + '</p>';
     });
   }
+
+  /* ---- Component detail -------------------------------------------------- */
+  /* Sagar's readings, verbatim. Grouped exactly as he wrote them — the blank
+     lines between his blocks are the grouping, and they are meaningful: what the
+     pack is doing right now, then what it holds, then how it was built. A flat
+     list of twenty-one rows would have thrown that away.
+
+     Data, not markup, because the two components differ only in their readings
+     and anything else that earns a chevron will differ only in its readings too. */
+  const COMPONENT_SPECS = {
+    battery: {
+      name: 'Battery',
+      sn: 'BA-876-543-2109',
+      groups: [
+        [['Pack Voltage', '53.53V'],
+         ['Pack Current', '-10.0300A'],
+         ['Battery Temperature', '24.8\u00b0C \u00b7 24.75\u00b0C'],
+         ['PCB Temperature', '28.00\u00b0C'],
+         ['SOH (state of health)', '95.0%'],
+         ['Battery location status', 'IN CHARGING UNIT']],
+        [['Available/Full charge Energy', '0.920/0.930 kWh'],
+         ['Available/Full charge Capacity', '18.20/18.30 Ah'],
+         ['Battery Cycle Count', '338']],
+        [['Battery hardware/software version', '5.4.1'],
+         ['Battery Manufacturing Date', '30-1-23']],
+      ],
+    },
+    iot: {
+      name: 'IoT',
+      sn: '9876-543-210',
+      groups: [
+        [['Location type', 'At Warehouse'],
+         ['Bike Current Location', 'Yulu Centre PTP EV TEMP'],
+         ['City', 'BLR']],
+        [['Last Gprs Ping Time', {ago: 2}],
+         ['Last Battery Ping Time', {ago: 26 * 60}],
+         ['GPRS Signal', '0']],
+        [['IOT device serial', '869009064016836 \u00b7 862174067195339'],
+         ['IOT Version', '0.1.3'],
+         ['SIM', '*****NA*****']],
+      ],
+    },
+  };
+
+  /* Relative, not stamped. A ping time is read to answer one question — is this
+     thing still talking to us — and "07-Jul-2025 11:11:30" makes the mechanic do
+     the subtraction themselves.
+
+     Stored as minutes-before-now rather than as a date, because a fixed date in a
+     prototype reads "over a year ago" by the time anyone demos it. The page is
+     rendered on the tap, not at load, so this is computed fresh every time it is
+     opened — and the build's pre-render never sees it, because cmpBody is empty
+     until a chevron is pressed. */
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun',
+                  'Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  function agoLabel(mins){
+    const t = new Date(Date.now() - mins * 60000);
+    const hhmm = String(t.getHours()).padStart(2, '0') + ':' +
+                 String(t.getMinutes()).padStart(2, '0');
+    if (mins < 1)  return 'Just now';
+    /* Minutes win over the calendar: 30 minutes ago at 00:10 is "30 mins ago",
+       not "Yesterday at 23:40". */
+    if (mins < 60) return Math.round(mins) + (Math.round(mins) === 1 ? ' min ago' : ' mins ago');
+
+    const now = new Date();
+    if (t.toDateString() === now.toDateString()){
+      /* Floor, not round: 90 minutes is an hour ago, not two. */
+      const h = Math.floor(mins / 60);
+      return h + (h === 1 ? ' hr ago' : ' hrs ago');
+    }
+    const y = new Date(now);
+    y.setDate(now.getDate() - 1);
+    if (t.toDateString() === y.toDateString()) return 'Yesterday at ' + hhmm;
+    return t.getDate() + ' ' + MONTHS[t.getMonth()] + ' at ' + hhmm;
+  }
+
+  /* ---- Refresh ----------------------------------------------------------- */
+  /* Each button carries its own "fetched at" on the element, so one handler
+     serves every screen that has one and nothing has to track which is open.
+     Unset means two minutes old — the resting state Sagar asked for — and it
+     ages from there rather than being pinned, which is what a real reading does. */
+  const FRESH_MS = 2 * 60000;
+
+  function paintRefresh(btn){
+    btn.querySelector('.refresh__ago').textContent =
+      agoLabel((Date.now() - +btn.dataset.at) / 60000);
+  }
+  /* Opening a screen re-arms it at two minutes old. Deliberately a reset rather
+     than a lazy default: the alternative kept whatever the last visit left on the
+     element, so a screen opened after a refresh still read "Just now" and the
+     resting state depended on what you had done before. */
+  function armRefresh(scope){
+    scope.querySelectorAll('[data-refresh]').forEach(b => {
+      b.dataset.at = String(Date.now() - FRESH_MS);
+      b.classList.remove('is-spinning');
+      paintRefresh(b);
+    });
+  }
+
+  document.getElementById('scrRnm').addEventListener('click', e => {
+    const b = e.target.closest('[data-refresh]');
+    if (!b) return;
+    tap();
+    b.dataset.at = String(Date.now());          /* -> "Just now" */
+    b.classList.remove('is-spinning');
+    void b.offsetWidth;                          /* restart the turn on a re-tap */
+    b.classList.add('is-spinning');
+    setTimeout(() => b.classList.remove('is-spinning'), 600);
+    paintRefresh(b);
+    /* The component readings are rendered from data at paint time, so re-drawing
+       them is what makes the ping ages move. */
+    if (b.closest('#screenComp') && compKey) paintCompBody(COMPONENT_SPECS[compKey]);
+  });
+
+  const screenComp = document.getElementById('screenComp');
+
+  function setCompScreen(open){
+    screenComp.classList.toggle('is-up', open);
+    screenComp.setAttribute('aria-hidden', String(!open));
+  }
+
+  let compKey = null;
+
+  /* innerHTML assigned, never appended — the build pre-renders the DOM it ships,
+     so anything that adds on load would arrive doubled. See src/MAP.md. */
+  function paintCompBody(c){
+    document.getElementById('cmpBody').innerHTML = c.groups.map(g =>
+      '<dl>' + g.map(([k, v]) =>
+        '<div class="cmprow"><dt>' + pxEsc(k) + '</dt>' +
+        /* A reading is either a literal or a moment; only the second needs
+           working out at render time. */
+        '<dd>' + pxEsc(v && typeof v === 'object' ? agoLabel(v.ago) : v) +
+        '</dd></div>').join('') + '</dl>'
+    ).join('<hr class="cmp__rule">');
+  }
+
+  function showComponent(key){
+    const c = COMPONENT_SPECS[key];
+    if (!c) return;
+    compKey = key;
+    document.getElementById('cmpName').textContent = c.name;
+    document.getElementById('cmpSn').textContent   = c.sn;
+    paintCompBody(c);
+    armRefresh(screenComp);
+    setCompScreen(true);
+  }
+
+  document.getElementById('btnCompBack')
+    .addEventListener('click', () => { tap(); setCompScreen(false); });
+
+  /* Delegated: the parts list is static markup, but a row that gains a chevron
+     later needs only a data-comp to work. */
+  document.getElementById('screenVitals').addEventListener('click', e => {
+    const b = e.target.closest('[data-comp]');
+    if (!b) return;
+    tap();
+    showComponent(b.dataset.comp);
+  });
 
   const screenParts = document.getElementById('screenParts');
 
@@ -10486,7 +10885,10 @@ let rnmShowCommands = () => {};
   function setVitalsScreen(open) {
     screenVitals.classList.toggle('is-up', open);
     screenVitals.setAttribute('aria-hidden', String(!open));
+    if (open) armRefresh(screenVitals);
   }
+  /* What the ⋮ routes here — see shared/sheet-config.js. */
+  rnmShowVitals = () => setVitalsScreen(true);
   /* Two ways in now: the arrow in the vitals strip and this rncard. Both open the
      same rnscreen — flagged in the README, since two affordances for one thing on
      one rnscreen is a decision to make rather than a thing to leave. */
@@ -10567,6 +10969,7 @@ let rnmShowCommands = () => {};
        who opened the list, closed a task and came back should land on the list
        with its count moved, not have to raise it again. */
     setPartsScreen(false);
+    setCompScreen(false);
   };
 })();
 /* ========================================================================
@@ -13894,14 +14297,29 @@ function paintHomePeek(){
   gap.style.height = Math.max(HM_GAP_BASE, HM_GAP_BASE + (want - top)) + "px";
 }
 
-document.getElementById("hmShift").addEventListener("click", () => goTo("shift"));
+/* ── Keep the peek honest ────────────────────────────────────────────────────
+   paintHomePeek answers "how tall must the spacer be for the icon row to rest
+   half-visible at the bottom edge", and the answer depends on the height of the
+   scroller. It was computed once, at boot, and never again — so any viewport
+   change after that left it stale, and the spacer kept an answer for a screen
+   size that no longer existed.
 
-/* Called by the router. The blocks follow whatever profile is on record, so
-   arriving here after an Update — or on first load — shows the right set. */
-function enterHome(){
-  paintHomeBlocks();
-  paintShiftTag();
-}
+   That is what made the home screen look wrong on first launch and right after a
+   refresh: the app opened at one height, the peek was measured against it, and
+   the window then settled at another. A reload recomputed against the settled
+   size and looked correct. Nothing about the FIRST load was special — only that
+   nothing re-measured.
+
+   Three moments can move the answer after boot, so all three re-ask:
+     resize  — the toolbar retracting, an app pane settling, rotation
+     load    — images decoded, so the blocks above the icons have final heights
+     fonts   — Satoshi is font-display:block, and swapping it relayouts the text
+
+   paintHomePeek resets to the base before measuring, so re-running is idempotent
+   — it cannot walk the row down the screen on each call. */
+addEventListener("resize", paintHomePeek);
+addEventListener("load",   paintHomePeek);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(paintHomePeek);
 /* ══════════════════════════════════════════════════════════════════════════
    SHIFT STATUS — duty and role
 
@@ -14603,6 +15021,7 @@ const SHEET_ITEMS = {
      confirm dialog and it renders as a black disc in a menu row. */
   feedbacks: {label:"Feedbacks",            icon:ICON.sheetCall,     chevron:true},
   parts:     {label:"Part exchange",        icon:ICON.swap,          chevron:true},
+  bikeinfo:  {label:"Bike info",            icon:ICON.info,          chevron:true},
   finish:    {label:"Finish repair",        icon:ICON.good,          chevron:false},
 };
 
@@ -14636,7 +15055,7 @@ const SHEET_FOR = {
 
      What is left is only what you do TO this repair, then the generic pair, with
      the dismissive Minimize last as everywhere else. */
-  rnm:      ["parts", "finish", "learn", "minimise"],
+  rnm:      ["parts", "bikeinfo", "finish", "learn", "minimise"],
   /* The two issue screens. Neither offers `Report issues on bike` — raising an
      issue is what you are already doing on them, so it would point at the screen
      you are on. Issues drops `Bike commands` too: you arrive here from the RnM
@@ -14669,6 +15088,10 @@ const SHEET_ACTIONS = {
        footer's + Add Issues, which returns to the dashboard rather than to the issue
        list; see screens/rnm/script.js. */
     parts:     () => rnmShowParts(),
+    /* The same screen the vitals strip's arrow opens. Two ways in is deliberate:
+       the strip is where you notice a reading looks wrong, the ⋮ is where you go
+       looking for one you cannot see. */
+    bikeinfo:  () => rnmShowVitals(),
     /* Finish is the old Done, and it has to be the old Done's behaviour too:
        YuzenRnM.onDone(), not a bare goTo("job"). That hook forces jobKind back to
        'repair' — #scrJob is one screen serving two task types — and advances the
