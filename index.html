@@ -2,7 +2,7 @@
 <html><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
 <title>Yuzen · Bike Assessment</title>
-<meta name="build-id" content="1acaac2fb638">
+<meta name="build-id" content="a6ad4a51be7f">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#ffffff">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -2747,17 +2747,24 @@ body{
      still to be looked at, and what it will cost. Same rows, reordered and
      relabelled by paintRepair; the penalty row exists only on one side.
      ─────────────────────────────────────────────────────────────────────────── */
-  #scrRnm:not(.is-assessment) #rowPenalty{ display: none; }
-  /* Findings first, then what is still owed, then the price. */
-  #scrRnm.is-assessment #rowMech{ order: 1 }
-  #scrRnm.is-assessment #rowElec{ order: 2 }
-  #scrRnm.is-assessment #rowChecks{ order: 3 }
-  #scrRnm.is-assessment #rowPenalty{ order: 4 }
+  #scrRnm:not(.is-assessment) #rowPenalty,
+  #scrRnm:not(.is-assessment) #rowAssess{ display: none; }
+  /* The order a QCA works in, which is not the order the findings read in. It
+     used to be findings-first — what the assessment turned UP — with the
+     checklist that produces them sitting below as a button. That is the report,
+     and this panel is the work: the checklist, then the penalty it feeds, then
+     the two fault lists, then which checklists are running. The CTA below walks
+     exactly this list — see ASSESS_FLOW in script.js. */
+  #scrRnm.is-assessment #rowAssess{ order: 1 }
+  #scrRnm.is-assessment #rowPenalty{ order: 2 }
+  #scrRnm.is-assessment #rowMech{ order: 3 }
+  #scrRnm.is-assessment #rowElec{ order: 4 }
+  #scrRnm.is-assessment #rowChecks{ order: 5 }
   /* margin-top on the adjacent sibling is a DOM relationship, so reordering
      leaves the first row on screen carrying a 16px lead-in and the true first
      row without one. Reset both from the visual order instead. */
   #scrRnm.is-assessment .trow{ margin-top: var(--s4); }
-  #scrRnm.is-assessment #rowMech{ margin-top: 0; }
+  #scrRnm.is-assessment #rowAssess{ margin-top: 0; }
   #scrRnm .trow__art{
     flex: 0 0 auto;
     width: 60px;
@@ -2791,6 +2798,22 @@ body{
     width: 24px;
     height: 24px;
   }
+  /* Two trailing marks, one shown per flow. A repair's rows are ways IN, so they
+     carry a chevron. An assessment's rows are STEPS, so they carry the state of
+     the step — the same dashed ring and filled disc the checklist uses on a
+     part, which is the one place in this app that already means "not yet" and
+     "done". A chevron cannot say that, and a row cannot wear both. */
+  #scrRnm .trow__tick{
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #scrRnm .trow__tick svg{ display: block; }
+  #scrRnm.is-assessment .trow__go{ display: none; }
+  #scrRnm:not(.is-assessment) .trow__tick{ display: none; }
 /* ═══ RnM — the hero carousel, the part-exchange card, and the bottom tabs ═══
    Figma 2620:29006 (Open tasks) and 2621:29241 (Bike essentials).
    See src/MAP.md. */
@@ -2946,6 +2969,20 @@ body{
   /* 24 above the bar, not 36. Sagar's number, and only on the assessment: the
      mechanic's panels are measured at 36 and that layout is signed off. */
   #scrRnm.is-assessment .rntabpanel{ padding-bottom: calc(88px + var(--s6)); }
+  /* Tasks added carries the Bike Info readings at its top now, so the panel has
+     to start below the app bar rather than at the frame's edge — and its content
+     splits: readings up there, the rows and the CTA still on the floor.
+     Assessment only. A repair's Tasks panel has no readings block and its hero
+     is a bike render, which this offset would push the rows away from. */
+  #scrRnm.is-assessment #rnPanelTasks{
+    padding-top: calc(var(--header-h) + var(--s6));
+  }
+  /* The panel is already justify-content:flex-end, so one auto margin does it:
+     the readings take all the slack below them and everything else stays on the
+     floor. space-between would have spread the rows away from the CTA too —
+     they are one group and only the readings belong at the top. */
+  #scrRnm.is-assessment #biStatsTasks{ margin-bottom: auto; }
+  #scrRnm:not(.is-assessment) #biStatsTasks{ display: none; }
   #scrRnm .rntabpanel .vcard,
   #scrRnm .rntabpanel .commands,
   #scrRnm .rntabpanel .rnfoot,
@@ -3930,6 +3967,233 @@ body{
   #scrRnm .refresh.is-spinning .refresh__ico{
     animation: rn-spin 600ms var(--ease-out);
   }
+
+  /* ══ THE BIKE INFO TAB ═══════════════════════════════════════════════════
+     Not the overlay above — that is #screenVitals, reached from the ⋮ on a
+     repair. This is the assessment's second tab, and it shares the overlay's
+     .bi__stats block deliberately: three readings in three tiles is already a
+     component here, and the tab asks the same shape of question with different
+     numbers. Everything else is its own.
+
+     The other two panels are bottom-anchored (justify-content:flex-end in
+     tabbar.css) because their content is a short stack that should sit above
+     the bar. This one is a record that runs past the bottom of the frame, so it
+     is top-anchored and scrolls, and it paints its own ground: the panels are
+     transparent over the hero's gradient, which is right behind four rows and
+     wrong behind a page of text.
+     ═══════════════════════════════════════════════════════════════════════ */
+  #scrRnm .rntabpanel--info{
+    justify-content: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    pointer-events: auto;
+    background: var(--canvas-primary);
+    /* Clear of the app bar above; the panel is inset:0 on the whole screen. */
+    padding-top: calc(var(--header-h) + var(--s6));
+  }
+  #scrRnm .rntabpanel--info::-webkit-scrollbar{ display: none; }
+
+  /* 24 above it, and the panel head's own 24 below — see .rnpanel__head. The
+     26px left inset is the frame's, shared with the Tasks panel's heading, so
+     the two tabs' headings sit on one line. */
+  /* Readings at the top, history on the FLOOR, and the slack between the two —
+     not all of it under the last row. The list is the longer-lived half of this
+     tab, and every other panel on this dashboard stacks up from the bottom.
+
+     margin-top:auto on the heading rather than space-between on the panel: with
+     three children, space-between would also have opened a gap between this
+     heading and the list it names. The auto margin collapses to nothing the
+     moment the content is taller than the panel, so padding carries the minimum
+     24 for the scrolling case.
+
+     The 8 below: the head's own 24 would land on top of the first row's 16 and
+     put 40px between a heading and its list. 8 + 16 = the 24 the rest of the app
+     puts under a heading — the same arithmetic .listhead does by carrying no
+     bottom padding at all. */
+  #scrRnm .bi__rhhead{
+    margin-top: auto;
+    padding-top: var(--s6);
+    margin-bottom: var(--s2);
+  }
+
+  /* ---- Repair history ----------------------------------------------------
+     A 76px pitch, the same as the dashboard's rows, so the two tabs read as one
+     app: 16 + 44 of text + 16, with the divider drawn on the bottom edge where
+     it costs no height. Text-only rows — no tile. The frames draw no art for a
+     repair and inventing one would be inventing a design decision, and a date
+     is not a thing that has a picture. */
+  #scrRnm .rhlist{ display: flex; flex-direction: column; }
+  #scrRnm .rh__row{
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--s4) var(--s6);
+    display: flex;
+    align-items: center;
+    gap: var(--s4);
+    border: 0;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #scrRnm .rh__row:active{ background: var(--surface-secondary); }
+  #scrRnm .rh__row::after{
+    content: "";
+    position: absolute;
+    left: var(--s6); right: var(--s6); bottom: 0;
+    height: 1px;
+    background: var(--border-primary);
+  }
+  /* The last row's divider would be a line with nothing under it. */
+  #scrRnm .rh__row:last-child::after{ display: none; }
+  #scrRnm .rh__text{
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  #scrRnm .rh__when{
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--content-primary);
+  }
+  #scrRnm .rh__kms{
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--content-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  #scrRnm .rh__go{
+    flex: 0 0 auto;
+    display: block;
+    width: 24px;
+    height: 24px;
+  }
+/* ═══════════════════════════════════════════════════════════════════════════
+   ACTIVE CHECKLISTS
+   Flex column rather than the absolute skeleton screens/assess uses, because
+   the Update footer has to push the list rather than float over it — the same
+   arrangement as screens/faults, and for the same reason.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.screen--checklists{display:flex;flex-direction:column;padding-top:var(--status-h)}
+.screen--checklists .appbar{flex:0 0 auto}
+
+.clscroll{
+  flex:1 1 auto;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.clscroll::-webkit-scrollbar{display:none}
+/* The shared .listhead has no bottom padding — it leans on the first item's own
+   24px. The rows below carry that, so nothing is added here. */
+
+/* A row is text and a checkbox, and the whole thing is the button — see
+   paintChecklists. No chevron: the tap toggles, it does not travel. Which
+   checklist is running is decided on this page; what is IN one is the carousel,
+   opened from the dashboard's own button.
+   24 + 48 + 24 = 96, the same rhythm as the parts list. */
+.cl-item{
+  position:relative;background:var(--surface-inverse);
+  /* border-box with the 96 stated outright, not content-box around a 48px row.
+     A content-box element told width:100% is 100% PLUS its padding — 438 inside
+     a 390 scroller, which pushed the checkbox 48px past the right edge of the
+     phone where it simply could not be seen. It only survived one screenshot
+     because the row was a plain <div> then and took its width from the flow. */
+  padding:var(--s6);min-height:96px;box-sizing:border-box;
+  display:flex;align-items:center;justify-content:space-between;gap:var(--s4);
+  width:100%;border:0;text-align:left;font-family:inherit;cursor:pointer;
+}
+/* The press state the parts list uses, for the same reason: at this size the
+   only feedback that a 390px-wide target was hit is the target itself. */
+.cl-item:active{background:var(--surface-secondary)}
+/* Drawn on the bottom edge so it costs no height, inset 24 to match the parts
+   list — see the note on Divider in README: a 1px flow element accumulates. */
+.cl-item::after{
+  content:"";position:absolute;left:var(--s6);right:var(--s6);bottom:0;
+  height:1px;background:var(--border-primary);
+}
+.cl-item__text{display:flex;flex-direction:column;gap:var(--s2);min-width:0}
+.cl-item__name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cl-item__sub{color:var(--content-secondary)}
+
+/* The mark, not a control — the row around it takes the tap. Kept at 48px so
+   the icon sits on the same vertical rhythm as the trailing slot on every other
+   list in the app, and pulled half its own overhang back so the 24px glyph lands
+   24px from the screen edge. Written off the scale: there is no 12px token, and
+   inventing one here would be the first. */
+.cl-check{
+  flex:0 0 auto;width:48px;height:48px;margin-right:calc(var(--s6) * -0.5);
+  display:flex;align-items:center;justify-content:center;
+}
+.cl-check svg{display:block}
+
+/* Sits in flow and claims its 124px, so the list shrinks instead of hiding a
+   row behind it. Always there now: it carries this flow's step CTA, which is
+   not conditional on anything — it used to hold Update alone and slid up only
+   when there was something to save. */
+.clfoot{
+  flex:0 0 auto;background:var(--surface-inverse);
+  box-shadow:inset 0 1px 0 var(--border-primary);
+  padding:var(--s6) var(--s6) var(--s9);
+  display:flex;flex-direction:column;
+  z-index:16;
+}
+/* STACKED, both full width, primary on top — the same arrangement as the fault
+   record's footer, so the way forward is in the same place on every screen in
+   this flow. Side by side the two had to share 342px, which left the primary
+   115px of text box for a label that wants 140, and "Assessment done" wrapped
+   onto two lines while Update sat in white space. */
+.clfoot .btn-primary,
+.clfoot .btn-secondary{width:100%}
+.clfoot .btn-primary span{white-space:nowrap}
+
+/* Update GROWS into the footer rather than appearing in it, and the primary is
+   footer grows downward by exactly its height — .clfoot is flex:0 0 auto in a
+   column, so the list above gives up the space in the same movement rather than
+   the footer overlapping it.
+
+   minmax(0,·) rather than a bare 0fr: an fr track keeps a min-content floor,
+   which would leave the button's own height visible when collapsed. Same
+   mechanism as .fdetails on Mark penalties, and the reason Update is wrapped in
+   a row of its own instead of being toggled with `hidden`, which cannot animate. */
+.clfoot__slot{
+  display:grid;
+  grid-template-rows:minmax(0,0fr);
+  transition:grid-template-rows .28s var(--ease-out);
+}
+.clfoot.is-editing .clfoot__slot{grid-template-rows:minmax(0,1fr)}
+.clfoot__slot > div{overflow:hidden}
+/* The 16 between the two — the fault record's footer gap — carried by the
+   collapsing row so it goes away with the button rather than leaving a gap
+   under the primary. */
+.clfoot__slot .btn-secondary{margin-top:var(--s4)}
+
+/* Same block as the primary, without the fill. Update is not the way OFF this
+   page — it is a thing you do while you are on it — so it should not carry the
+   primary's weight even while the primary is the disabled one. */
+.btn-secondary{
+  display:flex;align-items:center;justify-content:center;
+  padding:22px 36px;border-radius:100px;border:0;cursor:pointer;
+  background:var(--surface-secondary);
+  color:var(--content-primary);
+  font-family:inherit;
+}
+/* ═══════════════════════════════════════════════════════════════════════════
+   ONE REPAIR VISIT
+   The same flex column as screens/faults and screens/checklists: app bar, then
+   a scroller that takes the rest. No footer, because there is nothing to
+   confirm — this screen is a record, not a form.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.screen--visit{display:flex;flex-direction:column;padding-top:var(--status-h)}
+.screen--visit .appbar{flex:0 0 auto}
+.visitscroll{
+  flex:1 1 auto;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.visitscroll::-webkit-scrollbar{display:none}
 /* ══════════════════════════════════════════════════════════════════════════
    SERVICING CHECKS — ported from mechanic-checks/
    Barun's screen. The device frame, reset, type styles and status bar are gone:
@@ -6734,8 +6998,38 @@ body{
          The heading carries the total across all three, so the tab that is open
          states where the whole repair stands without a bar to read. -->
     <div class="rntabpanel" id="rnPanelTasks" role="tabpanel" aria-labelledby="rnTabTasks">
+      <!-- The same three readings the Bike Info tab opens with, written by the
+           same paintBikeInfo() — see script.js. They sit at the top of this
+           panel, where the hero has nothing to show on an assessment, so the
+           facts a QCA needs while working the list are on the list's own tab.
+           Assessment only: the repair keeps its bike render up there. -->
+      <div class="bi__stats" id="biStatsTasks"><div class="bi__stat">
+        <span class="bi__statv">7,245 kms</span>
+        <span class="bi__statl">Odometer</span>
+      </div><div class="bi__stat">
+        <span class="bi__statv">Today</span>
+        <span class="bi__statl">Pack ended</span>
+      </div><div class="bi__stat">
+        <span class="bi__statv">1,234 kms</span>
+        <span class="bi__statl">After repair</span>
+      </div></div>
       <h2 class="rnpanel__head" id="rnTasksHead">Tasks done · 0/15</h2>
       <div class="tasksheet__rows">
+        <!-- Step 1 of the assessment, and hidden in the repair flow. The
+             checklist used to be a button under these rows; it is a row like the
+             rest now, because it is one of the five things an assessment is made
+             of and a CTA that names one of them makes it look like the others are
+             optional. Empty tile: the frame draws no art for it, and inventing
+             one would be inventing a design decision. -->
+        <button class="trow" id="rowAssess" type="button">
+          <span class="trow__art" aria-hidden="true"></span>
+          <span class="trow__text">
+            <span class="trow__name">Assessment checklist</span>
+            <span class="trow__count" id="countAssess">Pending</span>
+          </span>
+          <img class="trow__go" src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJjaGV2cm9uX2ZvcndhcmQiPgo8bWFzayBpZD0ibWFzazBfMF8xMiIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4KPHJlY3QgaWQ9IkJvdW5kaW5nIGJveCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRDlEOUQ5Ii8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMF8wXzEyKSI+CjxwYXRoIGlkPSJjaGV2cm9uX2ZvcndhcmRfMiIgZD0iTTEyLjk0NjIgMTJMOC44NzMgNy45MjdDOC43MzQ2NyA3Ljc4ODUgOC42NjM4MyA3LjYxNDQyIDguNjYwNSA3LjQwNDc1QzguNjU3MzMgNy4xOTUyNSA4LjcyODE3IDcuMDE4IDguODczIDYuODczQzkuMDE4IDYuNzI4MTcgOS4xOTM2NyA2LjY1NTc1IDkuNCA2LjY1NTc1QzkuNjA2MzMgNi42NTU3NSA5Ljc4MiA2LjcyODE3IDkuOTI3IDYuODczTDE0LjQyMTIgMTEuMzY3M0MxNC41MTQ3IDExLjQ2MDkgMTQuNTgwOCAxMS41NTk3IDE0LjYxOTMgMTEuNjYzNUMxNC42NTc4IDExLjc2NzMgMTQuNjc3IDExLjg3OTUgMTQuNjc3IDEyQzE0LjY3NyAxMi4xMjA1IDE0LjY1NzggMTIuMjMyNyAxNC42MTkzIDEyLjMzNjVDMTQuNTgwOCAxMi40NDAzIDE0LjUxNDcgMTIuNTM5MSAxNC40MjEyIDEyLjYzMjhMOS45MjcgMTcuMTI3QzkuNzg4NSAxNy4yNjUzIDkuNjE0NDIgMTcuMzM2MiA5LjQwNDc1IDE3LjMzOTVDOS4xOTUyNSAxNy4zNDI3IDkuMDE4IDE3LjI3MTggOC44NzMgMTcuMTI3QzguNzI4MTcgMTYuOTgyIDguNjU1NzUgMTYuODA2MyA4LjY1NTc1IDE2LjZDOC42NTU3NSAxNi4zOTM3IDguNzI4MTcgMTYuMjE4IDguODczIDE2LjA3M0wxMi45NDYyIDEyWiIgZmlsbD0iIzFDMUIxRiIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" alt="">
+          <span class="trow__tick" aria-hidden="true"></span>
+        </button>
         <button class="trow" id="rowChecks" type="button">
           <img class="trow__art" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAACXBIWXMAACE4AAAhOAFFljFgAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAAWeNJREFUeAHtvWmMZVeeJ/Q/9754S+xLZuSeaTu9lbNsVxXuatpVPdVVgIR6BgZaSEjDDCCQgOELYpEQfJqvgEAzfBgN3wAhNAhpWqDuEVNTA3RPDzOq6ppuu8pbZ9qZaWdmRGbGvr313sN/PefcF+lyle2yb0S9Y0fGi/fu/n7nf37/3XW7XQ+TMRmnZGQwGZNxisYE0JNxqsYE0JNxqsYE0JNxqsYE0JNxqsYE0JNxqsYE0JNxqsYE0JNxqsYE0JNxqsYE0JNxqsYE0JNxqsYE0JNxqsYE0JNxqsYE0JNxqsYE0JNxqkYDJuNzGcPhELpHXSh9CeVoBI7ezHOYmpqCTqeDL3OYjF/+cJMA/882BoMBPHr0CAoEMeCTJCCX+JNnDjLnwLsM3/bQbDbh7NmzkGWTRfGXOSaA/gxja2sL1tfWYKrRgCxH8BYeirIUaUxgxtcNfN1otYDQnmc5nF1dZak9Gb+cMQH0pxwE5jt37kALwTmF0pck8xCl9OHREfR7PRgVBUy327C4tMQAJ2DTdr1+Hy5fvswSezI+/zHh0J9i9BCwt27dggbShxylM4GZAHz//j24fec27OzsQr/bhbm5OXj+xa/A1UuXoI3gdrg9TYB7H30ETz/zDApxB5Px+Y4JofsU487t2zBCJbCBUpaWN/rZ3dlGiX0X1h6sQzEcoXIIsLe/D//0xz+Cux9+CEOkH8S3aRAt2Xj8GCbj8x8TCf0LjsPDQ3j46CF02mS5UJ6MUndjYxMl8jz8B3/1L8Iq8uQCJfabb74JP/jB9+ERgvfS5SsATc+K4sz0NE6APTiDSuJESn++YwLoX2CUCN61tfvQarYQ0G0UzQ4Yj2jJaOLff+F734PZ2VnetoFU5Bvf+AZz57fefgv6/R5TlCFaP5qkJOLa+BitI6vnzsFkfH5jAmgcJE1HZHYbGyY9SaqSMvfo4UPY2dphPoz2N6QVnreZmmrAMip/BuZ0XLl6Fe588AG0Wk3IcDuiJz3k1y08BimQ6+vrsLi4yBOgem6cL2oGpH1IsZxI808ev/KAvotge7y5CQsLcyhoc0EPiHLhCGS+gLLw/PYAeTNJV5LU5DzJnICauDGZ4voI+hab6OLY3HwMc/OzcPbMWdjd38OJUyJQPWmW0KR90BlzH2kMna/UfXxZBJt2htvQZ2RBuYjK5TTSlcn4+PErDWgC4J8gz11ZWUEJmCElyNm7R0Biv15DAE6SkRwnw9EQwUg0QwCO0ASH2t/RwQHMo3R+cP8+XL56Be3SYmfe2dmBBw8ewMULl3gVoIGsGydICUOHxyuGLHlpBSjwuCSW6Vxkr6YVIKe/8Td9PhwM0YpyH5577jmYjI8fv9KAJolLnjsC0ag/gBECKcsUWLyBrPv0OQlVgrHzTJ1ZOvus5PdpHKCUnUZQ33n/NprycnaF08+Vy1dRwmZs8TD6gCIYrSQl0woCt9ALPacTDyMDWf8ma4rDCbezu8vSfUI9Pn6cKEB3hwA3H5Vwc8PBTg/gqI+YK1krg0x+8Ui/biciFomyLOkESpJ8ZDprDvtwHqU0gYRc1IROohciKSOHJtCWAUh4FDxn4UrIaFM6safjFbCHEjlHIJIDhawfJUrlLgKdz4vA5XMweGli0DkdcxvclK/fk7vcq/RHakL/ZUx78LpwJTg8HMDf+H9wApCnkS8KeP8MAlOS64X4HOg1n0bvpZmPYBpZ0XlkLs+ccXBtBfh5nJZxIgC9h87Mv/OGh39yN0egNMmowLESbOwNYg/4mzVc8w9LVi+Aou8fwYqCkXnsCF93Bl04uzBiPlyS+1q3B96epLXng/qSFEaiAV55LiOcAYhbCQXxjrkv2ZvJyeJUyvfLkl9LDEcpE4YkvVMglgLwksGcSewHgRqPxSD0oIAueJLc327i3BT3QTY+gcdxqc+Gfzl7REKp3vTkDCphvlPCbz5fwnefjaA/yaP2gH53rYS/+Uc57Pcy/gJzAtnIw0ilKCgVEKkmX7IL3yx/SMKZgVMgCAfo9Oj2h6iT9eFM1oVsMWMuTBK05J1FUmdAyiD9ba6TgvfP6NiZgpiO6YsgzZ3LAfRaCHxZI+droVWCACpzxcvvLFOslkwveI7Q8V0p89M5uSeK3itlGjm8tsOhx3N65PupV4zlMNjM5pUkwaZLHgfHlODfU/jPdAu5+SiHv/fTBvz0YQn/1mslLLZPdiRErQH99oMC/tt/0IBRmQnf1C9dRhmkIH97/H3il632LgGPY8lklGGIkrk/GEG/N8Dluwct11O+LGDwBj4ABg3jgqhDgg8GIB0wyxQoXqV6ptza7G0ZzySfy5/yU8rnSjtK0OOWXhRMokIyOwJ/JtpSEPjJ04iT8bDnWVctdO6B3SdfE0TbuDItntNOAG/3wEqvo+M4aE95mENgb+1m8L/8EOCv/FoBCx04saO2ru/NI4D//h+g/XfgxUzGP55BLZKNLAMkdUWK8TKNX1XcxoXtCMwFRcKRFCa6gcraCM1mvQM0o5HkBAGULO0lg4c5roKO6UXp9RwC9oI5sgCTJ0yp1+B9kIQMpLKUmejlN19ruAlg1BVMJzxfJ3+Gf49wP7OM8PXjSlCEYxuFinoBv1fKx/wM9DmUYNfneYWRayfq5aGPz+IQ9ZC9oxKJiIeHOxn87htwokdtAf1//tMhbB/pEqpfvgGmNAlcOiWSmf44XpYzJ6auoNTpD/AXnjFoyAJhgAGToGFjnRQM0lL3N27tjckQCQkTza6Nge71PX1dhGNA4OgMbFCA29+lvFfoNYDxfxAlke4pY3ui03t1Smkyvm/+rRIbzDLjnV25/B2M3fKaVq0DpDF7PVmRfrregJ88KOGkjlpSjp3DEv7f9yzDIy7NTAh8eFsoARnFMqMEPvJU3YlXYZLSzKRREqLtt49gJodJsyEg8CxFi8BtCc1CpUXZU5Tw+5nSDDAapOdlkkAmOL1W2pD/s111f6YbmdAL48YGcrpje4+2o/ma06TLna4ItMrg/Ta8MawKfU6tGzKXZRVzBGrnmffb5NW7kGvD6+qiiXKq4fmkP7zr4OWLcCJHLQF98xGa6PqiVJl6zlhwwk29V+UMv7UmWrBevejh9esOzVDAJilSzqr6OgFzCn8aCIgmOimm4OCgDR992IVbN0tZhr0XhdPrIs5mNkGK48lBShxKZHWAgBdPYRgGdAIqAbmg4xF41fvIkrjUiaaTVaWwsfciU4WUjhEmwognGb03N53B3/pLJZoFRSLbKFWi2wpDR9tF9eD2hoc/fBfgvYeaPaMXytfhzaRJegKdG02gI5HS7645VMKRW7dPntWjloC+vVGyFO1kosp7g6fSDhJ79NH5BYD/5J8r4NycSjW1I7vs+BfhdF9HVgnEU7tJ3+VQgvGHA846oYyTEsogMSGoiTTM0+eCDlo6H4KTMq8SXsUjJ16RFDdvulc+rTzfqYiVVUEOmKl0Lm1RyIRG4QxkmkT7TDdL/tDx9bh4cy4R1viiPQNwcT6Hbz+bwU/uAfyP/xjg8UHQEsGUYBYOTq5jhCeewuvdRovS44MhAvrk5UHWEtCPd0tWXISvit3BvHWgbueF6RH8x79VwJkO2ZUBLJKH9yldWFftSzbwMEdFejFAh8rB3j4cott6r9Nhm6wLu5XCtwlEeRbAZGlVLpgRMj2voakUsGRZsBFHPS4Spzg8RBtLNK/ZfCI85zgjMnSP0woyh55IC6IKHkOTzAA60ZxKaTJtZuy1fPliA/6LfzGDv/Z7ZNPXE9lJ7OQUr9JQRRv/2TgAXvFO2qgloPeOGKHj370qT+jtygr4939jACsdoh9ZlIxlQrCTfyPmfFQwS3FWEPIePnqkjo9IRL2+dgpiCI4cB+YaD0qkTrgqMoW20BJjUt8FyQ9sezaeG5FcVpBtn5Mnb6rVghs3brAZz+zWZn93lWeU3K+62D3us4Jc7N/9loP/7ge6WtF+ZqEBNXfSKMWK0y3gRI5aArrkh5mFZZSGWQLoC33uzACeWZZtAj3wunEWpVZQnJxK22CYFVrSnp6GTmcaDo8OOV6ZqQAdK4ndNMXLs907C2+UKnqZyWpoZwA52GnK4KYT02JiPfCJ8pZFTm23AKrwkoT1jSlYQul88cKFoKCykuchle9KIuJEMGSTQulGQ3jlQg7nZjJ4tO+EbtgDcpHSxbl18vgzjdqa7eRxmjdNtH8K5BkMCnjhbFc3GhPhKpVsnfcJHRAYKtA5hnkKVpaWYWlpCR0MDY5HprjmnF3gCU1RO3WqwBl8eJNM3evMf0uW9BTPkVH0Hh0rE2WSts/VpBgcOWbqK0ZSBsEkPd+IuMtbzSZf47PXn4Wl5SWhYHqPYR1yAs6wb/I89BWbKGm/7z5fGIVW8EfnFGPYzKAeTuSopYR2+jyZdQZtH3Uj/FKOul04P93Hz9tBOrtEwsRftqNYK8wIYYCmuOYVBMhXXngBrl66jArRqGJPNpuySerk6o5fMG3nhBpY+GnAg7rHKyPlCebI0X3FzCzApMlFyQRzc7OwMDfHoaZCmyJNOYa7DNSSYhI6KrZ0P6uzpouEWQsQJphOlnG6d4JGPV3fRmUJTw1QCYjOkP4IukgPOvmgutQGBcc4isYsp3pPQJlyYOLiqAyunDkD84uLEqAEEIlxGcKQKiMFa2kTin4ycepUVg3xuau1wkeOzNfjAqeW4KmI8pyFZMYSnSgH5SxSMgCHunq9F/BBsjqV1l7vSzi+GQPjddNoT5UVzh0pSjY2b08mousJaKcmJVAMsOZdsoTud3tJakdU9qqEWy0aLpHeYWikm5O0JkqFaiCYo4JHQy0SOkEqC0DiwXMMVgWNxi8r5Y4Lf+D4/jjYQ3iqeBXD7WfR08meT4rE4+I1mdrGoaI88qUqxbIVyEfBGx4NAb+it4KP9+SUN2c2l9O7ODmjnkpholmlwUUj5ppDtu+mZrlkT1BtSoAYKXSwHwv3lNe0vDta5nV5Lm07qCpdFpwUJCFUv25TJJ3OCpOdiUFNjDBQhYhPAAYJGAEit3U6+7J4ZUEyQ3J/MLZiOecqk8aukfcfw2r807PjKAtL5Mkb9QR0GcHK8T0gUqMYRcXMzGfVoV9esgRXBU0CMPWcsVTVenPOJF3laFFzDodKjsnH8D7w9HGgp7ioauBKifwTkOMgxGnInzT7MqEo3qnOqOcLNmUfJqzEcfhwj/H2/TGc2jM2lNsluROK6Nqa7fxIXdBeYiv4v0K4LSezjj/wsI5GqW5SB9LlN4GZC1YPIQvOPtZhW1oop09JOSi2vIKPTpO5CFqTnj6GpUJi3RCer8dNTuuV/wJT7zEjlEtXH58IZQW63p9xcwG13WnEuya6gOVHVhTMcMMnc9SUcrDVV1KTMuWsIwE1Ra5F0NiX4RLRCRC+aQO5T2OdqzLTqafFp2qmHtfZu86+fEiOL+czLgrOJXPBBcuXC1cT5bZRiXC1Pp1cLtKj5L4qi0yQypDcWyAc4bhyLy6ZpPQ64epuXGLbvXqYKIW/jKEc1ggIO0dUCgWHCUD0wCW+4yidExriwsqqeBgDke4LbCvWDY13avB8yiOC3E1RMYYf2ydd9k0q22unFAPGj+PjpPTj7zsT1eOWjHiBWZDokX+nz9YkvkutNfxD938yXYW1XFxKKMPXItI6hll6sBBNQaXRARjX/lORFty6JtVS2gGBfsqhqgm3cRnXtyqhwmqLqVgvIEhPl1KdZNIFWGUmraFKpXXVMT0gSHqn9+0SCCdg9OGkEJVFn9xGeq/hc59cetz3pI5aAlokX9VeKtLWG74CeQjSW81pYbuwnifgzVKUVuVadNIkUA8SzidkxifXGW0PqQktBVIU51WlkX4CN0+vJUGTSy0UYAH7ep8+HsnphE63tqtLr4H+LdLdAULAln1evfaTN+pJ/1n5gyfwO/nS8iz58sYklA+bVr/kQEJcAudk2Q7H8BFw8dRxwfbpPHCJlNftAjhd2CiR9onJrTI1vNqcq9Ms2JzVJp2l15G88pbWBVAJgPLOJ0cLp4oOJD/+hguqB5xQKV1PQDtbpenpJsjONdXIuVhOwCQXQKQFyfAK+hgjEc+RbmufB4XMJZzSeInuGP70ybsVHBvwEjEIPkwG56L1ITliRTqbbhBlbML3I/8IxzDw+soDhDHF04WzBUmsF2UOLOPcJ9XQUUulcFgJSovmMl6mx/gqO0AAEioSBGcwgBg6RZfS/X20eFRgFA4mB5CwT1nAwfk4eVxSwwPiPhKYbxeTymCICqkBOYr2dJ7F1caJQ9pD9bKCdlsmf4dPPRyjPXpOO1JgcBAplrjfCdUZ1x85qSK6loDuD43vGjqSL4vLCIzvkXwBCmCKftva2IKDwwN+m6LWKG7D2kfIVi5INhVMkCpRIiGjKA+xEa4ah5yCMaYgRulaBhNgerU8GwOoUtoCem4Dn0lzl+gQ9gwsfsOlFzBu9UmeSzyR0ZXxh+kSQnTyQF1LQPMjlljGKOTM+6fPOV0SfSL+6PVg0Ie33n4bBv0Bf6cS3NOAzY1NuHztKiwuLPB+LvEkpisBQJSI5hwZ9xYG50VlXTe7dnpdcWJ4F1cADxHYqQQOlhGXZupU5DMEKRweiEnk6uTkI+i+4viR42dqgrQSDJG5ZOM868SN+tqhGUGSZc1xcPTFSJQmZE8M15XSthRX/MYbb8D+/j4XGKeQzBZV2ad4Z+TgH965C52vvMi9TrxPAeYZEJSKJYFCY0CrWByq0tyl6Ifkt9mZfYXFJNRBAZgoe3H1iHzYGcpxOyqg7kPIiklsF2zT5plMDh/2pV9kXZ7K5LmS53WYOGb0trlY2EntPldTCc1hQ/ra+OsoSJRjI9HSDo8O4KO7d2FmZgZGCOIGlQHQb2qEdIOSBB4+WIOrKKkr0hK3uYP77e7sHHc5K4WwGhka+XE8VsIcFVCdcHJ5Y5FwEMHsUzPcWIKvq/x2XFSdrj2zFC4fj23mShdmUAQ2ZYOtbxWwd1jAv/7qkJNkuIIqbrOFrOzhvoN721Oov+ThPk/iqCmgdUF2iYrkJIRSqn3adgl4vKRFPUZaMUAQT+EP1bQocB+qQkQ/jeGIgbuxvQVXrl4JahL97O7uwk/feosD6Umyl1AF5njpFQNaJS8609hL7VPIotQl1mCu/0GfN/TgPpkhZm0ohOKksdUcgFFy8fOjo0OYmaMC6mdAtQAYJ0p+TKXojQD+9HYPdo4GMBxRFgx142pA1nRcVmwVGdjqfAmvXCpht5fD99914jI/gaOWgE6raliAGQSOm3BX3SCYwBAMVJbg6PAQmlSwgwqPU+oR/lAAP0ls8hYO2n0GPxcJcJIES8XJ1x88gJJ6nrCYo+PmfJZQYSkdihrJWMpCgRg+pkToJ0AWalNY0UWINfAMexWpGMg3yKSgNNYCJLEWfy5cuKChp0ovAs0ojfQHTkQxXn/8fh92D4YwGBX4SBwfcoTbUNmNmXaOFMThdh56gxLmp0v4Czc8zFI9A5iUMfhcxihRBE1x84k7Wcosp8FA+v3htm0qSYDgPdjbY9qRozSkjGZHGSkIdgLES5deimDT41KJgIXFRbh37yMGp9GJQA+8DylaNDKtHloqnXFgpbkALHMlM+XO+0rADxd8lP7JYWWxMmC5JsxaybN4PFEuL16+DMsrK0HAx6mt/1qJYX1+tx8W8Hi3h8+k4GvmMFz8nHoMULHGPIs6ABe0HEidvfubBcy1W/DUmZNFpmsbbWe16lISSfxXJOtYZFsiuZfm5+HixYvw/gcfcP7hzPQMK4S0CbWUWF5egnOrZwNgTURSGtbr3/oWPFpf52KORBsow7xKawot2giVnijJYSKndrGiUWJGGOPE8bVPjhMMHfQUaFZQZwF8Tf1Vrl69Ch387SvHkSNYJroJgC6C870HR9Dr9pEbU6mvnCcHt3HWYpe8t5htOKJxWEi9vRFK65sPHJydm4KZ1smR1PW0cpQ+kTvyW/NQYcyvAmbfFd7poINS+fqzz0J/MIA1VP6oRyBZBpqtJi7VF+Gb3/x1loJiIvPhoLTN+bPnuMG8iis5SeWEPlnSIUHn2DYB3VXVyiZQaukQrGfhWBxRaBtlWWUCEJVJfXhRwSyTkiRSSZWe15/d78PO3qGY7rIGpAKiKBxXXi2RU5cNURpH7Fgpuc42rUb7hz24t+HghUsTQH+OIzJMlttJTIPZGErdjL44cpxcu3IFrQEz8PjxBhwcHDBwqWk8cU/uImVLv9aSsyD9xhRlXeeivLGhxYXJEq+F9wSTivyvM/UMQqx9cILAGHjhCdIcIKLcQXX1cfDkp2ITC+QCxOYs0pUqHxEVur/ZhR56qTLUJVpML1y4ANJbcy7rDmzLGw4L/CmZmtD+xKkHSMAf7w/hBWjBSRm1BHSRlIANtl5d5h25ZTOJ1s0SG5mlEZFCSU0wV1fPwfLiEls3uFYGNY9H6pGrYsXDqoFCddk3s134G1wMSiKghnjpLHxuHBfUK0gevOCMCfZuV8Fo5ivWtRCjUQF6OsZmBgcvWTaP8nSuA12MuPrUUb8Mtuz0xLkGO7mMibzUix6VXCKNXpMtfjAsWKEcDkv4eQedn/SXEVqTrC4JPfcvctQ3pzCExSUqj7P6zy44xIMLOGj7sZpR3mrBlFIR/j5pac+yMSrgIBV2dq4KoJgw+4opLCQeGLXwkQIlq3/gz5ZgkILSZy5u5JPgpUSBtDN5/TyDLBRn11mk4aBSR4Sy4ymZeGtviFaLYUJRzAmjCivvbelt0m+Fat2wdB5JfWtSext5lTY9aRwdHXHLaKq57ekgNOHx3qhbwsWL54/1bvxljppK6FjzAiomPLVQF1WpYcIvvAYntZZJMts2BqxkPwG/uYePS8VEKCcA84HqOF8h0ortMoA4rB7OyEn1wAG4FdqdAjxGxsUJW1VFefPSh8pSJJ2JNjzcK1jqMmwzLYZuqwZrmy5cpnQ3kGsflZLmRsfOG2g1ajyZ89B1bm9tw/7BPnpgc65ERUonqtN4/iG5d6HXO4I9tDaJXvLFjNpyaMtIqQIaRFLmKiUDEa1ua3WPswQsKswqojh4+vSbDWUF9HhPAriBK+xjbmdIYvcCxahmXqf0AvQ8yuYD3bBjGX+vTApfdaOECa7AZkBTJ67+AA6ofAmC2+VTsjLlLpycHEcNrZBK7xQM5EK6ZxSiYGbqsn+ShN7e3obb778Ps+iEWl5Z5nN30aLkR1JmrNROYGTbf+aZZ+CLHDUFtOMly4cFswRbZWNcr26pmn4ATPIHf2bc1kdFKoBQX5s91+RhNUfRV6L7QkyHr5YqC+uJzS2fhLXCcRojdMknn7lk5iV7VuhRFVz8V5DO0h6jQFAddofIn3OdFDFxIFNpnSO4G9S9QBgH7iN0g4thqtCgutZUnXV5NrZipgl0+/ZtuI+2+ssXL8EigrnX7XFraKmdF++ZAsSov/kXSTdo1LRyklguXGZfbhbLX42JTYOED0oXvSgDRZAoN4gBQiGAKAlLjSgEc4QEHSrl6BAzTkqdKJWY6rGLq0hmqMIxRN/5eA92Uhc4iLFy+xfCES3+w/rNsKkO7eTEn3d7jpU6fgzs8RPdIdMfViWoaLy2oRtxa/FSmxKVOqfwGGiLXpiWNs90nnfeegsePlyDy5evwBI6d8gjS2AufbpqlEwZj466cP36dfiiRz3dQN4Hr4UI18gbszQtJaUQXr505zy4MbLgAlDiD6T6f6ArRjXkv0oAP8S+Jpzv6NNjVa89TqX0GsbxnoLZtknpEECkUJBMLF+R/syqtZchLfNkYdg5yoKbnf0y2lCIKzA5UEuPrIKkjgyZqoA4jfS4pBTOdzJYmBUJ+95778EdlM7Ly2eQE6+y06qnYE5LmbEDS99fXl6GL3rUMzgpcFJ1/ablXfWJS7EUhVokwoFTG9gCRMKaH7kyyJ+BcsjfZlVI3rNfFVRqQZuUM+v+xnltX5PeiRwLq4IGboJORzBLTeUAytXT6w7Lu4+Ug8A8xJ+9/pTEnziRzvQrs3ABMqeZLd9LcXNrZcdt4PQiaXIsL0/xZdy/fx/eRem8uLgAZ1DBI9PcoNfTa42rlP0iq8c5tPt/Uk9ysow8XH+Ins8OdNDUuri0BJ911DPr24nJyFhEgorxLUG1P5XABmqbEJWDQkxCAohxFWNH9b5ibuOjqjcx5uTFyRMKICa82ThruD5nn9kKAgk4feW+wr7ep7cSs1J8lKJemjTKBKfIwoK65A7gaCAhAgRkArBLnlYezqF1rUdCOaTbrg/npfLCZxenWNn78Y9+yEhZWjkDM51p6B5143V7F1Y0+p/s2NSll8IPftYgh9ff/bu/D7fv3EYFNUcn2GPY292DzzpqmiQrPI9fjn3hoqTFsE9wMQXJJGiyUEeA6CEsljm4sT/+IsCNQa7CZQMXt7XALB8RcCbBqvqd+1hOna4S8figK0GkP3ZMjcMTZZCqs6LkpBbSw6FlomQhstzUEYrjsDcJ9P1CzH1gPBxkslEri+W5FvzoRz+Cza0taLc6KKEX0bbcl77jEGaecnmR8r1+DyXt4icqg++++zb0cbKQ1M+R57emmrCxtQnHU8J+sVFLQItdOIvSUkeo3plFvhyXb4DAdlVhk+Ei6CqkVgAUJapLaIGrSPlqmlSyCrgYUW00JQI5ObWezySzfhQnHoPWQ5WWyFGj9SP9wDJThLuW7OErmArs9HLt6YJ7NqJ9U9qYC9XIlcIRjoshgTHj7mHSSkYUwznkzy03gA8++IDPNT0zw8XXyXrhA9GuXjNNkB5SkWvXrsHPGkSHbt28BZ2ZWVhaWoYROoBoQgzQYrKFk+ezjNrmFAZNPwEqlGUItRQuLJDgtmRmklOAU8+UxxsbcIh8jjR74mjLyNFm8CGS+zzUsTDxHWgBQCVnCqoSGipUKFKCmNJtW3oYz8ZOOXQlZTbVASBOIweRAlTdmeZQ0e6zRDfUZNcdNqWxkDpRWCFUKZCFCSjPj72KXlpVlMnV0eRYncnhLeTNlMo2j/bmNkpcNlUW2ivGxWcWaAoqg+Tunp+fh5811tbWoIvAP3/uPMxMT6NU7/PZSVLT+VbQgvJpRy0B3XCJhIMEWyxpsiAFQ3CSB7DkVJImZE6iL4M4pfVTOcIljZJkrz51DZZx6QRVxkpLIk0pRPDSaXIpVI1mVpfFih2mnsDQOcBH2Aa8g0zU0qd5grqB93GhAXcsuMklMRvynrZUJiCX0r+8T83th5RYPNJkgJxjKjhUINOAJK1rQoO8glTplVs3602xlQLpRqczBe/88C22WFgXAQJ6mViESl8G6kM7kiK5+nN4Be+g1Ke4Goo/J4uL5wlI19bA7+6IXej0nX2aUc8eK/yvj3/4hIdC1KtNoRMQCTKIR775xhssmRsNcS6QNM4yCU66e/cuzM1IjHTlfAogynjh9hQuiuC0YtGxZFn9+Vju5lxlWz0k2BQok2O5ipTWe/OUeNMAx6YK+YytErSNrlgUh1GSQ2WQsZWDLBfsQEl4OCuE9DuX87BDpZBG9oJLc16VLD1/enMTNtbXYLrdwWc1xc9uJP5xXQ3j9iy51WxHsdo/a9DKefvuHZifneNmSAMEL6c2eBUweByyfiyy0PnFR20dKxbgzzdqUWqmhECq6EUTGz3Sne0dWF9fhzaagnwpMXnlcMQPiqLw6DUteZcvX46nApHsZGuliRCi8ZTFpulSYSfnqm0klIePKzVCT2JWtoDJV5wRANXaNPaJALCBVoAGXLp0EaZnZ8Lk47hlfcn8GUG9129Yaxj2BkadQaRynmdSRo28sByMJPzbJ+Ac4sTY3O7C+7c+gKeyPjTzhq4eGa944brLMsw6ejI0iUhI7O/tw5kzH9+x8969+8jbR6w4zszOsrUjLdNAQujUAdpsoeRx4uChUAxGviEzPQGYciSDALaOUoVMTRQX7Z30FhyRAwGlDn1ZJMlI8biEgA79r/EYZDa69f77MI0TgRIAIhbUBk5fuiQMgmhUPkbh8Xaq5tEXrq8D3QCoUBZzRJhkjwm5mnblIbShCIonvnz2uWfFogCK6UK64oqVAyV0vwlS5JI1wHAP0k/GBepBz5SiQosyUobShAK+eLSHyiVy2WJmxB13qTSE92PFBp1LVkqhbERLev0uew+b+PyfNN57711odZoI2CUpXu/DUYT347MfouL5aUc9lcJS4nSdcdvCjW0RnRBBeQL5goh/9fCBdPBLoCU341YOmWR+0xdjHWQJUNqCjc62j5Ji7cEDdhxEq96YZH7CCGAti2jT5kacEPW9sX047gLM/Bipx5OOzXNnhJyy2Qot6kQZBHZ1E9jYqUINlYoc0lqATsM4KY0rb2T8k+mqZ8FIBWgmul68x2N+tNEF39uD4dSA65cYTw+U364DIKw8DS93QsLg9gfvw/Vnn6vQOhq7uzvw+NEjuHDxEtONYb8fn6GzSYi29N4pAzQ/qmQ5j7Zcr1LVJ5y1Crg51MiHgxHX15jHJS2ndFCn5i1tTn/58lWwyDb7YpaWF9lTtYZ0hY/KnV/j78p4Uj5YBb1VCHNAfS4NBIvS7iVGzpFS5JXrS3s4mUiWJEu1ONgUFkK5KSZa65QQHpE6HI4y6I/MyhMqh7DSxY1AnYDZSqyxT0YQLY+aHD6Ea/zgw/t7cL7sijudzGnsGeyHW7TybNHo4jjpgZ5VpqsT6Srnzp3ja7fx4YcfocBYhcvodKFIvf29PXty2iZdaBSZ8ULjo19w1Nb1bcrWcfHomOMqJkBXYzH74M/CwgKag1bh7kd3OS63RUoNVRvyojBevXKVt7GsbTvM3MwcfPtb38aJsM3SvBwrXWBS9Li09oIIox/jteWOZWz4mAETADIux42fioWGsm+oXojzWTCx8TMqVErje3u9JiuEXqUyhYeKHqm2Z3N/ZxSv7GVy+2hfp3Awuu/t3SO493iAXkI18CFFI57b6x7JymmrVsXO7wPP5mNpEgWteFRLZUZt2DRxX3zxRY7xIKeK0S6xdqryDpoY/ClHbeOhrYIFAzu5P6+laM0CYIP/xodHNtOXbtzgB3/v/n04QAWDZjrlEj7zzHX4+tdeRYBH05/tnKHyc3b1LKycWakoe0/kDJCi0WJOEgtFMPsZ/3Vxdo5LHR/vSyanq9iE2Xac5wzM0qRWKXb0AsSMRia73W4LeXHJSp8U5NH+hpkAxKl05gIyXuKmI52K8dR31w9QacPPGzPyPaAQODzYhz0ENekgeZ7F2/faAVe5SPokTMLS6kTgJSq4hEAmpY8mB00+CSnwvErYI6KSE1mj8amkM43aAtoH8RxNT9xcnjhwEA6R45oaRh1XL126xAb7p59+ivkYLbkr+DCpnoUkySaho3waq6EhNltIuPX4GCMZxy/apaw+3TGR3E+6X5sgXmPxE+pgcR98TSWoglayFUeyVArYOVJq5IQzW/NOyRxHie1i6RuyP48SHU90Xs/UYm1zwGeanV1gcFIH8oODQ8486aIFiKo28RGtQAokq5HUbYje0FxWFE8Fe/DYdPbBsaI9Ts2u+uzIWvIZCuvVMwWL/gnI8baihTerK5I6QPRjkmYtVEzOIHjnkFqQtOUll5vTTzG4oyYHqd1OjhU4sJckVvcEAQ2QTKLkveS4yWH0b8/VP2MDn3RCqIKY0PLoqHFxYqm5zsxknNCKkm9/MMVZ2841+ACUmJppwBZNzUZDJqkwAcsK95LqZokBSF0GyF3vPuqz0Lj+zNMw9eBPebKQc4VKpe3t76GpbUYsMB4qbYUs04aNP3YTXNSGhNAIKg1Fsyw4oLhVn3OBRpFdutXqwKcd9QxOAohLtfwROfMYjCrla5UvspkKzUYddNd2Oh1uf0xgzpzJ8bHhkxfp4VMw8/sxKCpW0k+3TSLzTGk0fiREESKNquTdxH+T/cfTt5gWeNDM7iJYSw4GDea/TDcysTmz/Zxz1dQKkRxnpID2mm7FVIEqkSINuM+hFAWcWZqDa1evBcm5gxaK7c1trncS8h4dKFBVuXZj7nqIZr0yNTcCiGfSZrBOAgcStjo7NwOfdtS0aRDITYKWFLAvX50DLjEZ2bOTRxyXP96XMr9RWrPECiDR7aMoTKQyBExXua4Lyp5lnEcO7ZILOM6PxT3kEuak9MGW5fQcCn43dgzhW16rNmm53xK0fHDB7u4s2L4T+zPxZ3amQHiobLH0JVhflrKM0Xr3HvdxYlCgEkpp/PnaP/N1tYo4Du3c3N5EPn0g8dc+DX8FMSV6YdDS9UBBbzzdg4YRqA0+2J/5YejiU7KFg5TITztqC+g8qTJK75T6hbiEb/iKFDQpp1HLzsWSs/yBixMDDPwqXUAVTZOK9oWEFULlclgpMrA44PTY6fUbfbG2bMFGDXYMd/ymw+cpVFJequ94saVTEmyBS/RBTz2qeaaubQgrDYf460ShQ4yYc6ukt2ODeBsf7oyi/Rx/Xv7qy2id6GhoKPJ0pB1k8SgMvB6eaKVhOs1vq8vIJmoWJTJbUCy4SjcbULZ4Jgr8px21BHTmYqGXQHVVAroKZTDxHJc5n1ADUE07FFEEgISk2pEhke3hLT5dxTQFQUpbqQJv37z++HS50N9+TBJXzhOOnkw0H7cKTUYhetO8ZZeQZB0K3eiP9Pa9Bh9x9Q75O60jTZy7KC1DxaAo6CIJvbYptAWyJnLfKXY/v/ryq7wK0KBSvnt7u+o5tBhoC5v1yf1lgd6AAt+BVamyCRr5NK8uFENy1ONzfpbiNDWV0J4lsnfVWS9fUjRqMRBS0Rew6qvLtvIK43NRonpd7nzMAjeS5xJGYe+BfXkxZsONXSNvZZwJICDNJmcAtq+Gk4Y5A5UHkZwTlB4o1aDSA8h1d0ghRICxw8lFF3ZqUDFbhFVFMspQKBjp7wGa6h7sIhDJZMbxG7Lv699+nakbiX5yg/e7PZkQyontmaUxLD5ZScLKplkYssJmYRXxOsEoXKHb68JltFB9llHPAH9lgrESfQrQxIOY8DOw3z5aPGykUjotSOPGjlqm+6V4TIeLPDg9tZVTSOlEkM3JRfqPOWhKhlzF8uLDhBI5HT2YJCkPB07Md+Q46kvsRQ9pSIGWBQ4rJbd4qVYRrVkXppi3xAQP60g3CpTMzak2f5rBgC+Bqp2SGdQpGF1w6/tgbw+zEcIXw+fIVHDEkFelRs4H+zVtSdYVojPnVs+zAv9ZRn2bBo19yfx+uoRC8gwVwUH7to1dDBASnqwlxBLpKNLZjeMuXIcLPLt6zlSaBt4dTpYcxGaXfm4Oh2A9D+CPsdVlKtmCaaCM7IZc5aUs93tof6bqRYN+EeJDG40mtLkmxhRad9DS027C7HQb/25oDTulCiAxHOQ6f7RbcuWjoiEx1OmUo/zAzY0NaDdbnFrFwVuq49B18H2VVaDyZ5mrrGCho4GL3wElBWzv7PB9PXP9afiso5aAzhSctMTmWahiV8Eq/3ZVE1xFMjs3BkI3NgFAMWMKk3/CPumxBa1Oz2u0xqdE4li3KoDxqhqpxDJJZ0uHc5EuReHsQ7ipWCfIQyh17HqoQz3eEocHAZVXtnwKRo0R/j2Awx7Z3nswddiA3YMWTHeaCNopthSF4o5cNWkEG/tiQZpq4jFwEvgsSsq5mVkuGjM7O8epWBzJSB+UljkktMGR5zBrhIL04WvTmzeXeKkzt4+rCUU+9pBufPs3f/NzKexYU8eKD1wwBYgttb4Y8d+uwkohANLeESEiE6JSDWlciur7Ltk5HtVXKYS3oCYInjlv2/jk+MnUCFLZVg3nwrIcajy7VAm1M5tI1vhpjRQkqUiK2kGPLBZDlo4N5L1TJJXb0wjiBgcfUTncYuQ4ErAYdZn/kuu5TZK72Qa1iHJxmvs7GXcJc0g5Gk1KU4sZIwR0AjIpbPPoWKEwUU6CyDJlQ2WgWxSt50qxMLFrfBRd7+xtxxOSM4jqepCzhkJNv/3tb3Osx+cxalzbTv6tfMXjmIRq3IDh0ZY5iX2IwAHdtnoil4AdYNy0F6I0FIwphYg2LqhMBJ+sAOm5XcqVnMZVJBvaYUxLCMogvV9qUFIBajYrYMr1+NoXF+cEyJ1pDvekuBRqCtRsZdBpNjig/v7jHdjZOeQEhn6PGgf1oNluMc1Y20IvoW9Dh3sZjRDQjUqAEOX8UYbJwtIi/iyHL4Jr5mmFlNz5UAqh1IRdKW6jN4LXTG5vVv7wGg7299mT+73vfReazc+vXFg9KYczKI9zYs3uc2JDzRLObK+sIAstgZtbm7C/f8CQpALoSyhhiFPy3glwrWC5HSceL3Jw557gsjaJ7PSPIIXBKHAYEehu7G9fkeqVhcma0nslIiypxWRGZrZi2IXljof24gWkCW3uktXIhVLQT6fdgNk2cuocwYoc+vHcIaw92mRb8qg7RMvGAL2pTdg6JKqRMygpJzwEIIEIgN29Pc72mSPKgZ5XKWIjHb/sGZU4MXJcDYpMyiJ4VkZHIRu9q82cdtFBk6Pf/BuvfROef/55+LxHfbO+zfPlIWZoQ7RRm9Y/vh8txyQF3n7nHQ4g5xgO5GYH+3vw8OFDePqpa+hana8koR4LJkoogRy4yq/DNuMnP0aBAKJ93FW29fpZYNhGPXSDGGGolAMsXFTiL8hUt1suwvKFBTQbz0sEK9EOLsSoEha3Peh6zXJ3rBSeP7sMO0g5Hj58xPl9wyG+3lvRuGk5X8plHzx4wJFys0g5KLaZqA1ZV/ipZdKC2lYwbpmh3brouRMt8WgOpOCmra0NoLzIV7/2Kty4cQM+bTTdJ416cmi2tUaVKxV3Qi8aYE6WyvBSQf6NP/lT5GhHWpgw4z7fbfySqATWrfc/gJdffpkdEGkxRAA5BQGlKMrKuYOkTpS3jxvpscZfH5Pw4Q8fX5ai+JniZZSDXki4qCiDN7eXYGNvyFfZavegTX0H2TzngNjo3EwLZpBDEO3q9tE0hpKykaNSiNR4Fj1xR3Mz8OD+GucP3j+4JPHTxBC8ZIt7Jxya6nIQzil6cX5hnvm2XE8R7qz0kcpl2i/G51LkhsoSkEfzt777PQ74/2WPmqZgRS3f+CaASNJM6xofU+pUcdp4vAGPHj9C/tgCSQzNpU0C/rSo5RsqIQ/X17nfCiRTgr6Qmwj2ffSE8bkyrW7vUnAqox5zo9NnaUCqT0AaTIeJI8brRl4LtTiQip0MZpD4C+KV5GTgCkRajBF0tbqzlcP24ZAdI9oFjvenI3NFUUcFGAv2IDaRCky3JBVt0KPjI8gLMedtbO7CR4PrEj2XS9ip99qfEI9D1IJ6N+Y4C2bn5zgDfMh1d1PK5lTeJMBWBVuoiYPvfPe7n5vS90mjphkrEkBDI/GtyN/COyrxCQY44m1rD9dRIgnVoOByCnq3DBeKSKPYByptdR4BHUxqeJCHjx7DrZs3odNpc4C5gMsHOuJCQegI6JC/58TlTCPNanEf8xrGE04hliawe6T7IifJC8gzQ4MgL3Xotg/lRJIzmYdwJJtYlBDLuxBFyeTai2HBDhfKVCEryPTMNLy7dx36rRVoZRad54zXccgnUbQ9KjQzP48/C3xhlVZ3ZZK97r36CeTZcNIu7vvcs89+YWCmUd8uWKnClYhJq8If9CkQckAPk5NkyVOGLlSSbKV5CKnhZFFokqwky1oLYxaMntorbMKjR49gAZdV/uIqK0CVG6cSm0YG4yW8IEplm3EuFNVg8HITTJ20pR8DPKKVYpCL0YVwPDEToiOl56A3YMMmc1IplyuHz7TEF2NSL5RTtqjuHYebep7UBMSl+Q78xtcvwx+914+XlxhhyE9y586HLBhmEfzEn7mouVMh480xA/xG+Ir0/HSPJNkvfELRxs971LQuh6beg0lnTbfnpzWWHgW2bAscyHXaRXtrnu1BG81YVCDFmZt2OOSHfd64XDC9AZuQKMPiwfpaCP4x23GV/6YyFyqlEDwktCJR8AJN0Yln4WVhUijwnfVPdNLr+zW0BHCAP4GQrBq438aucHy+9DxWkpJQW7msImkO6rnDlVJeGqUEIlFN6NeezuDNjxpw1FcTnBOnDbN1BP+9e/dYWezgc5xBukY2Y8awi1+UGGgcO1X05vk5kM1baN0XO2rcp9Bat0GUHKy06MPX95NiWyyJqfgf1Xyg+hxzc0OuycY5dl4C2C9cvADLyytQjcgDWEGT3q+/9hp63rZYOnp10/pKN9lIQZLLUttx/MwCZNhCy0XFvfB+5uSe4xlCfbhQ1wNCROHUVJPBQD9SMyPGLT/a63GS62BELiPqeDtk718DzW5N3K+FNmSSnJQ32SwzTo7lDldlLB0WA5MKeHYV4M176uxx2v8cfz66twbXLuyictlB/jwvAUphtXGcEJCq1NU1DDjQaHV1Fb7oUc8yBvxUBUJR2mlgvCqFYTkH2Zaj8fCDZTT+v/DCC+yN2tre4oB0+jKIgpCW/corryBHzgFcNWNkCiX7U9eehsvXrjKIzTacSlowjhne8uE6K7RD55hPKJHl30XqrdI8mAflHqRehyQniHS24FE0R/YLePD4CA7JOYES0LokAnehajJXJWWyhQ4TsuzMzaLteLoFUvVIYjiSWk8stqdggFK4wyUEIOguOCH66/w8qbglZZwX3BBISjHQahHWI3NMWekEWiFwW7LSfJa45k87aqsUmmgO4ZyqRUsPwxLSGnPBIIIPlSwZTyMoKfaA4gTIJs00A6XdxfPnuUl9ntjdDISc0YL22dxPybtjlUOPj3GVD+CYCpiILbk+fb+MUs2PXwhoapRTK4hyYALjzqG0bSsGPfCjPprixMHCjwuf18FugycC0awpnMDt6RnO/iC60OlIUFEZMl4kf2/zUMAJWnSGny+C+9rCIZd/IO5MNG6o1ZPSNh1mf47UCRjY/f7w5yra+MsYNS004wKIK1BSF3eI2TCFMewHbKabQYnydFOWbVIGSQEjidFmt7CVAIdAOSCZHPLSsk20RvUxhVDIRUhktcsDmVRpr0HQ49m18/65xZfoHZqmpZfDDTk1zFMw7VWZ9ByXQeUEhmorB6UyJTUJcgVno4xGaKpEL+IROpO2kY5Mk5RF2tDW/Err8EYOk/X9GbkbVbZJ8bs0cwQXFguU+DNMN+iZUiAR37MJAzXdja+SNLrdQ/QCPgtfxqgph/bRm6CSsrTuC6oUprxWp4C0I1aPVYYSqoHLMPFFsQJoocKkUXxKGaLiBuBTQqg2Vbsui84TXbQKaFBQBDe6Sw8TGXeQ7cHl/aSh3ETlOHHf6caIJWyfOrYWEtvBE7bowexUFzcbclN6issY5jMc+VaMBuwiP+ruoZSegyVUfjlxGL2Geyid+2VDe9NaW2UPzyzscI05qiRK1adIpxBvpdykNxNdePqSxU2vyIlCnsqZpGLSFzlqW31UpKc8qJFP+Km2TDb1a8whrZxbcutyBH+eHLPiWfQJhz3m+qtKXwFfLDWgaE62Tq5bA6IAqhzd+6hABVOkl62syEwq7UAj2MzDRGBr5AU8c64JjzZAM09GHAj0/AoCGsGe4wQmhxJdw8HhDtzbQEoxmoOsg1J2MISj0Q6M+kfo8VtGU9wsrO1YljYEhdHj5Lixss1ReWR/phgOSlwN8wuiMCnDrcRnc9Tr/czqo7/sUVsJbUCqZJHQy8yFLTLGtCpvSfxFkIFZ6Kii+0TeF87kUoNczC4PxOKYpqefm3T3VR7tEqrhKjaAeG++TI6n12N8OlV2jbNy6hRRDZTMF9Fyc24hg48eq2KG17Aw3eCgISogTmW2ltHS894770CnvQ3uow3Y6uNKhWDPcZYfUWH03gD6C4uwfnAeAq0vR5z5cqGzA8vT6FVtzXJAF1lLhnrfTnuTh9xXuwsvoKb3qSXF2eefgy9r1Ndsp5KQAVKmhRtNNvsKJlKQ0vuZT8IwTROHyFVT3mhZFi45tbcF1UU+HKLyPERefUy6Q0zXh5RmRGtGQEG4fLHj+nDyWHeOz0uKH8WYcKXRAdy4gN4+3O7WegnzrQylbZuBTDX7zqKpjJRAil0m58jCbh8ebkg1JJ+XDMrBYAQ9NPvdO3w6TCIuLYZgv7K8zfSMlUmU4lbkPFXQTXeRqkhauBE/H46GLF8oKu/LGjXNWKGHFuBYAQ0t59I1FYQvaxaEixsE6ZnWhgjy0t6yTdUs6FKBCQBj7DiuAE4lf+LytXOZtPdJ7Mm4IyZ9p3LDZabOCc27S84uVZKkdC6b3vwIVttHMLU8hObMHNrbZ7mb1PSMWDUIePP4N1kmeuU0X48EXAEH3x/1R7DRv4JWjYyfs9T3IAk9hBeWNsU7iKBsoQmQYqkjlXJaShcC/wj17fDzQX/A5da+zFHLJFnrTlpdqvXrTUCX0ozwXkVSJyh16Xspl9ZfHsaAFs9fsXmbxQLMKqKvXFIqAVKF1a7VXrnKapK+bReSFqdktZDAXBShWlLBlhukGnM5nJ9vcPwJWTLarTbbnwmcZI8m5Wxzv2SXuBOvOBz2HdzuXoeH5WUwDyVoF63V9ibMtUacjzhH1o1GJo4YjQCU6qOQlECIqxR3wOqTd/CLdXWPj5qGj7qIAhe1fadEQErEQrWxTjAbmaUi5v+5ZJt0REUzKmN+7LNwTF/1EqZSS0orROuFr4j8dAIk8tkcN6Yv+Ohqd4EGKd70c/HwCbi4KhQCuz3dRqk8zQmxZHvPOLpQGsnTSoJ+FTizmMGF1SW4tLoI/+TOLLz5FnJjesa50Y2Clcsr01tsCZomVzdaOMzFHmNSXLx0axOi9TZ4kuEHVJ/7yxz1dazQcL4iUfnLNwUqZSIG2sQZkpAU5b6x0k+ksHoQjQXxfpwSRzCmtupgbnMJnfGJ5yyIXbs8BS9PQhcDeVxFlYS0XZpLnoFarcPDCSXSqH4fWiHanRn8u8FmStqKTGcUJkvJp19/qs2cena+BWdW5+BPHlAseWxsyvmJNEmQ/76I/Jlaq5F0ZmfKcKjmDFWYjUvr81RxzddMcR5nvwRX9/ioKeVQvheknILUiabtnrCPURRf2SPgA1LlUYDroWoHdpFTx6Mee+WfMLkC1G3u6QUEGuPTvRK+b1pgoFguXKsVN4xXJ4Pr9GmrB+LL1CGLSgjT+/RbGseXrKCR+58kJlXLJzd0gwP3tUSaB201QX1nhuhM2UJrSYnOFImso6CkQiuTQhYr9pscSJ+zNdz8IgL4P2nUtJNsJMouSEj6O8l1M/oWoJLAOe4Olq7PdCOLQTjBRJdBRQIH64PNBFe1dLtw3iq4Q9MgM87qtVkOZMgndBEIldXAueSmlKCkxJ5CNiiORQtPNpDfUuBVToFJ+H4jk5LBJFXJZk20g8BODg7qnjWNbvAmUpI8z5I0tlK7YQ3h6syGuLo11YoUSnn2PLv0uck+9qRtFakL3aBR30Iz/rjiYQLbK2jTpS+tNkTv0JJ7f22Nl12SSMQJV1GCSENH9zEnhWCtqErfdLPoCYz0xkFaa8ODq4C6ej/xPMEzWTl6cpzUugPSK4USCbjFRim9A5sUHss5hDnfJy39BGqK+abcScoCJyA3m1NSHzsfhSWLeXkhEvrF5V2mLTMWu0GdqPheshC4FKgeKN9XxkVu8TNfUuzG+KipHTqRli6Ly7Qi2oAWal3YUBBSJaG333qLbaik6dNSTA/98eYmPP3UU2yvjfsYoKpc2aAaOHeyfbgGF+OljYCnr8FWhvQak+u0f4zT+7HVJVIlx4XLKV670cqhha5tOn7WkFoclCtJJbrEAiIJDMSLyW1NICZJTbU0uCuVs8AusV4g24aL0zuwOO1Y4hM1oYkz8KpzqOIRLT2xrIMps/1eH1af+/L5M43aNg0KQUhsa9Y6aT5hBpUdQKmoZ+n04x//mE1XdAxyKfQbDY1faMHtO3fgq1/9amgklCp79CcVbilKn6wGMlJrR3pa+smS30Yp0n3t+CGsXz+Q5lMiKTlXMrPOt2XIL2SXO6elSJpXniNtaHigLoDknm5qC2HOnSwkk4XoAmW6U0BWU4Hc1JS00BXXSoyNSnj+wg4CP+e0LLI/0zPk26QcQ6tLndy19zGwnzPAHVSFxJc46tl4s4AKnSwNOSlEgtlM/rQWZ5R2Ty3d6Ms0Hc2NRhokL9Lr0aOHcPH8hYhitaPeunUT9vb2JZTUnCcpkHWS6Ttij82Sv0GvUQOrSrVIpEpVkNoamyxWCeGlq+fOox33PFRq9BnfpXpyBEpadbQHDJf1oklACiF+1kfHBgfz42rUQS5MYCZakucNacSj+9HpKVSUvYDlAL5+YZ8nO3HgdrvFuYxGL6xMQVBana1Pck99pCZnz9SDbtCoL+UwhUhNalyVJ9lCpKFLQCc5hY83NpleWGsGNm9RBjQui4UWOdx8vAkXzp2vrAKUbnTr5i3oTHfABe9hBHDMQvGBBoA7rlVbidkK+TZ+7tRdHEo0eKnZkEkw/7vvvA2LSwvsoeNj2zKvE4PCPrmHN25PqwhNWvqbAE5Z3WbZ6JHHbnmFwUxUI9MuBtG2rSsAehwvzeyhrTrnICTizzSZi1Brwy4/BbOuoFojm1pUnMdJWJdR317fCVflt1I4e1POfIVHU4ANVQOi0lWk2HBYcWHerYKD42lLK1boEjjuoFTf2Njg3MJwGVA5ZfJHUpn+ScOPHYDd1WVodewDN3X8Phtg8LOhcmDjMiFQNgjrHK0ZKFmzIVs1SALTSkKUwvquEF3gPoXEmxsima35ZiiRprHVlJnzwlmUzuhpJHs25w1yuzXVW+hyQza6D2wrdNMaSaw5ReXVZdQ2SbZkA74LpdFAtetKjqEPcg7Mk0eVMknTp7JTHVw+peOSfJlFMWC76wpq5GkJXJLay0tLnHe3tvZAS8QGwqILRqFOEeGQfF1ZmhyaH7eIeC2ZJVpVmAepNc72ITfz88+9ANOU8m9UCCCsBpm1acvFHd3gtCuxP5O5TlzjI86bZMWO3teuX1IlP4PgywxFH4fw2qUD5NttTt8i2kGx1pwRBOLV9IlwCdRD3yK6sfIlx26Mj9oWmkkNY8ECAFH7t8/5IRstQCWJltpZtLlSM/qFxQWtZ5yxtKNosnPnzzN47eiSC5vxF/Ot33gdHm08gpICckBalIVzpNeXnFuUveiOL4IUC4I2Aj1RNEMzoUbO4CT+euXq1cDdo1Wlan3RZBZcgZqhGRKFeHKTecrwxhWKjpWzKU+ALL0K5codF0eXXMXLc4cw22myFCelmfMYKUFYcwd5jBfbSXSWET6nOjhT0lHfxpuVFwlvzauANulMg4JwlpYW4StfeQm/pPcY1Fvb20GSXbl8Gb7x9a/HmGpvX5TnjOmn0KR35crlcFyfWlUoc/tjWvaWGt7qslh7w2dZJDTeq83WEC3X61y1eHumNeWCDqy/jXrwakMKMyuGDebNrOwhFRmMpO4IUQ7Om6TPVbmVxSZTRdRrs84B3Dh7KOV1kbNTpB7xb2+5jDacrkJOkiksXJRaJrsaWTds1LqMgVel0IaPxFIaPMKY2Q21JioR+9QzT6GCM82cmCptUgTa2dVzcAGl8wwqfbmLIifsjd9Tw9HynY9dBSTnPy6t4/tVl0v8MK4s1SNU1piwnNuPueghKIaydY+zR6QgI91Hzk6WgsFItIOyvxuNKQkRyNh6DZarI6U5tMcKAvqbT/V4G3pmtJLRCibtxnxi33eVuzaHEOkqdYjdGB/1VQohKn5heKsy5DRm2o1BxPOXTF7B5sWLcBa5MneS1TiHhlavd5r8miqU5tqV7rEOIP1CE04rnnMHleroeqXWeSC93sD3K1NhHPZyPnMql9ZZyheQ2n/pGCPkrXwvZH/OhK6MNCpuiGCfxgnLBcZdYmV0GpJLKwkVW8RfVxeQmnRyNuVNo1JIE4PNdd72S1YxB+GbsMAr6otSJ3OdjXpmfVOEWZY2BzNUaP4drZ6qMBqHFlc1KUCUR4hfFEocMmuZ9AMtmxUCnsyr59yxgud2Lt7Xx3CiIKuymENnbZvlHBZOmhyvAl53TLoLX/bxdWlKlw8TOJxZi9ZQqCj3OQGhOUQ1SMkbDnowu7gU+nyHM6sOUqi1hUrrfmW1x9txnbvODEvnilS2m7LbST6jCk5s3Vioj3XDRj2VQspwDVLGSXmqYNkQi0UoEwaQtHJQeylPhjws15laTdIK+sEywhLZzjzu6k5yAl0Mnww9Q8LGLl6H8zFjRbkzjPVeCdPUxyCfCtCVdsTmlXoiDbYnhY8NHsyTQdKzkG6Qya3NxV1csOyE51JK11mK2yjLDH7t6j7NTKm2hBK63+tVZIetUla6IPHm87Zn1FJUt1HPaDv60hTEbKPNIDglOHa3ELUp4jBNblUFy37zzlkIhgsCWqmLtSUznln5ihLTWZDUHiqmqzjXkjhtfd8+H2fdATe64Xi8hzfFMVXOQArD0H01GNBiVeHIOop/RqBS9X72DLrqubiMmJfaeJS+dW2xB4vTYs4jukH7xIjB6oWWQSuVaym5kOQQztTMXGejdoBmoapuQYOnAS2qJwouZ5hIpCIkkjvpSGvHgTFpmBTdrFgX4gRRemKKpANIizHyPuM4UBrhXWJ+S/h+uAc9oU9oTXgGANL+2JRD/Jy8crkGG1Fch1QwlazwPvHnmWmxtAQdJByRLRtkZitQmXvl/CFTErL+dNDESccNyqPqF7xzFqeqRRRKV9mMM8zrOOopoTP5EqtwFID6rCp+vALMlkdDuWAgKnIiKOMkMObqx84dwG3WBfmj8plJ7GMSPX4sn3nLRAGwlLDKRpCsM1qyIJy3TL0w8lpyBZsavyES1nINiUdTbqHpAXGSaks4TbKl2I1Xzx/wZODOBtTLmxv8QFAiTTm1gjLmB6DLGCBPXzm7IitfDUc9r0qXWqsAG0Sri1JUSltECiDLtqtUK+K9dJuQz2f8F8aimt1xk1sqXSuJBPrtpxMildJVxqxASff3ALEzVqxB4r2vOgh1apDtV+paDyUwyfpj03Og7gQEaqQj5O2zCqbpybiBD9mp8fczZ4awPN9gZXAebchNVDB1AUj0CqeudLZa84F4pXCe40TO1iT2+UmjnoCu2J5duk5DpeeZVtnnXUw463JpcwCqR6ocP+W8ifpnLEO3lY3CecCP2S0ATLms3ELYUo/uUioEwaLgfboGycltongwyVigS7rPFpBcI+asZlSpXQkydYGH+nl6zWypI68ex3kM4Mx0wcm05EhZXlnmoC3RCbJ4PdptzPn0uqSqKE2mxZrSDRr149D0j6voIcELS28c9gouJRt4dICjff1VOVvNDHGRf6QuuuQzU9ZS5S6ABCBwaZPqkP4OJ1Vqk3ISs5C4KL+DOz813YEPFMV4Nn1CHascO1RycQxlWUhwHaDkpqLkKSUyZdCX0l+GAE3NLomDkyQnpY5SsbibAYC2aPNhAmvEVDgeDYqRoaqidaUbNGp3ZbzUjRJpCXE5J+/Xbq8B6xs9VnBMeNM/mVKOIFid5Q8CVH3YVeYcQZCe01fQWNnDqLVzx6iFT49lSAw2ad3ay+TxYwcOErsUa060csj7RBnEhd/g+Gdu8KPx3bQ9B2JBLHkgP6IIskucArbQa0pRdUtLS1xpiZpwVhvLQ+T6piMkz44oT91iN8ZHLSV0mcBEBRv/wzlz5RT8w7e2pV2YjyI8RM4F3PoqJ/WJ11FBPg7I+J4LSpJJ23h18bWdU6CvPNuN343+9v4Jx4CgfDFPpckMpbbEsFrNYl2gWGfiu0Q5GhoTbd6/4WDEYDcOHGriqWSmn4O9PVYayTpBxRSpISmBPRSSgaSgzJgCQH+S4kneybrFboyPWiuFKiIgo9gY7o7a4N8/+MkI7t5bh+7RoQIlYypQqkXAShH4xIUuv2VIS4j4NzPxQD0iDQgjoR/xxyt4QJ0gkSKkm4Zj+pRm6L76dzycSObSl7FhfSHSlVabVqsjXWK5maj4xDiGGoGbhawYLUhD+5Fkxs93d7bZs7qycpapxuHBIT+7shiFFhVlGe+nND3EVimdHCTV60w3aNQ361s7LMXeH44BTV/mrfUp+N//cA/+cuNDuHLpAqfdW60KGiFG2R8nBBVoJ/OGgQTRpGeKVbp3hKS6vmn7Mi2yqNsmjpJwBI7AE29jqXzDQCzZ16WY39QiQTXluFp/KR2xKA6FQ2FzCerPNEmBgNag8l8Us8LAlsZDRA+ODo5gZ3eHhcDK8gpL54PdXegiH5e57zUDx+tzs3/s8bnA1Oj43Jum5qN+gFZ+GiKK2Q4nIZAU70xN2hutNvztf9yD/YNH8Je+swerqyscAzzVnJK45CzRxiJ3AGtlERXH2GcwnDeRvjzG7N5yTL2upOhNDLn0kFosIBwuAsXCTUUS489IlnuiFVyCYCiFzQnYFllH3V/p/kiPGKG1YtRoaFcwx2a5zc3NinJK5Rt6qDxT+YIzC2e4xO4WSmoKQCot8dUZT3dBEZcnlWnNZ6suKoKF7dw1H/UDtOCOa8oEu7JG/JMNdnqmDYOlFfzie/B7bx7CD98/gNef24fvvDiFyk6LY6K9WrCF00ZFzJmy52NVIsmAieq8KJO6N9MYowIR95mm0ZjDwenZvPcVRiLcvtTOuKkrRwBVlGLjHSltME6cJZab5eVFuHjxPLQp7DVvcKkCUCcLXw9u/5N3bnLlz25/qA19Mly5VmCF8hMRhJShs7eHYO71JHSg9CG8xKtvO7b6oPsowCIZM92WroW72tZ81A7QjRxBNEIJREFJU9SfOxPIeAkyokxn6qEyKi/Afr4Fm6ip/x9vjuDv/AnaV/M+KkuecwszEz5QhsD7lN86od4AYKuBWhZ8IoitfYWBmt+MXNW6QRlNCdwjc/FEoLRCwUvUQmpMF/GmFci68PN2dJozC0346391mYHUbDSli6sqkEPlzf3eCP6z/9lxu+NyRFJ1BGcXG/Df/HttDg1dnF9ksB8d9ZJmol5jnsokXMRrfIvoILlK7dB+gkso5FD3UTtA09e5Mt2D2zv4YNtNdoNnGohDWSA5erhaKK0W8HUTqccAv6h+MQrsgWRvrp2hXHJMiwgpEzYsvUEM6JWGZ2B+YBe8hD6xIhjwU/KiMyiLsSdBHmvTHxqFZlzTpAPuk0KFEguNU+aumCwRGw0H/9Kfa8O5FSnIyJSgiLlp7AanWna4lOXzF6ChZ6Pw2d/+2i5O6CHX5iDJvr+7F1ove1UAR8WQo/OIqxONsdp4khTALhlZ04JFyMFJGLVUCr9yqQE317swQm9WlkubNSrM7dR0RzUosrbjxuz9TofNVmxCyzU/i1vtlXA8LjO600Uu5/GdTJwVYYMs2TDlxKPi2PUacNOvXHEg0PCltmhTmlIKby68AJnd0qOhZKUzoEt4eqWEf+XX25JO1cgZzNVzSLWk+bk2zC8v4OcSLtqYyuBrT+3gOQtWoLkWSTkKF0pgJgfJweEBZ/NQkUW2oKBiSUUd6XxknuOmoaa8lkKLaL+6045aAvpbN+bgf/u/H6H2TsUIF/gqM3WacG2KXCQrm/IayD9xu1IDeLI0LZxH4B6Vap42gvQ2mpAUW0x9IhVvXkWRjLtFg5b2Dw4WDVEAg3LIErpgUFPop2RrTzGohbg6+Df/3AHMthscWVdYzmLw74eKedBCAK8sTcPeQcEy9fmVLWg58qTOMPgkCyWuLqRQ7h3swz00e969ewfP2eckW2oidPHSJT72AlmNiK87H+uf4BGo5+ME0J9i/MYL07AyU8DOziY3kKT2YgxqCzRyIqkbTkxkQu0C8w323dgjy75QKfLitNGQjaAIJgL9GK1wYz1GLDDKzmjXZsaZMjRBs7ATfr+wTqw+h1FGTQWtxEDGNmba7MbqAVybRcdRKWC27JNK4JVFGOIJVxc87HWZk8Dl1jpLXXKAUGSetHn2quBKcNEPf/IY/vrvHsJ0cwlevbwJNy6i57XYgz6CnagHFXicnm6oLJDkYLo27vVd81FLK3mnlcN/+C9fhFHvALY31uHw8JCjyooyqmBOhSqXh6W+hHmmPy4UVuEvQlP5uS6ca7ClhF/rNnnuNAfPSQXPXGrM5fqaKtrT53QuLlmbS304SVB1rMTm2gORamtket5wPXQcSv+SPAOpL5e50IDIGA2fK5c6dBdmRIEz23oAsVejmvJ7kvLkITw/W6j5bwizbodLgnGBGTyhWEVk4pGde2vnEP7W9/sw8C3Y7rXhD/7sHPz07hTTnm73CNYfPuSMFO5JwPchdm2aaYfona37qK3b51/7rfPw9WfaMEJz087jNdhDh8AAHQJcTLEwN61xU93JR96qf4pmH4sRBccBMwJtRWbFCNnN4MWM5ZU7mgPCQiu89t42XhyDiDS5tYzUwq7TtuXYZQooKkRKF4XkApbsQBkGc9l8S3qoMPghXXsgmtfVo0gSeLGDx+4fwbB3BFP+kAvm5Bx4NIxS3Uvp3Lc/HMH+qE1aJ9v1ibb9+KP5ELi/t7cLPZTUIQlZV0TunoX0pe6jtmUMSOL9jf/oq/Bv/1fvwe17e7DTPYSD6Vm0cMwiDWlLpc6fcyR4V9utcFpWDClqzSwIPLKxPXxV6zNUpTbAzI2dSd3FXiaFKIhka1Yg+5F4BkkRHBWqLHKnbZbQy50+S/88T/osJhk5Fl9BtRyoRPD+AVEJVCbRNj/lSMGMXkdKGPYhUCuD21sNac6JkrdARZJ+D6amYb2HdAXNoPz+SCwfYov2YcKPigLqPmpclwPNd3NT8L/+ly/C3/zdu/A//b170N86gu72JniSLnkDYiqUSVinTi8XnR3BSVEw3qKSA8k2ZYhlqNjbEl7tXGpfNpGvGxrBhapJJawKpQ9xJrK7Dw3kKwGvePwh/sw3ukhlZsM9ErjsPiyUlWzrh/sHTMd+/E4XXH9KyivgIEl6hPSB6+m5RtA76PwjnARk0yYT6GgoFVkvrrTg2WvnwKPVg8qIUeEZtjnbrXFJKEjs2PUdtQY0jTlUTv7zf+M6UpBz8F//7VvwR29uwSE6E4blQJbqYlTdwcoVsM0ZAg2xkakfxRdCMSChJ86sECaAg+B1MZo0iWpKPOrxOEY44wXpZ1nwOFZiRAjUmR4sQxt7A3lwg3j2nFRSMnc8iGPJ+DOdiArp/MN3+nB3bRdkUucsqTt5wYoh1bmjGBChP2LWvLSE1oqDx2g16sKzV5fh3/mLr8Jf/u2X4Pv/1+/DzZsLHLw0v7iI+zVRCVSKoZfb5LIQ9R61B7SN65dm4X/4T7+GX9gIfnpnHz74cAfub3a5iaSkPyeFUDxUE1d9lMYGUqu6pFjRzUrbqsJXS3DBqWgGjpxMWriETzUSSQxJTTsDPfjQWs6sJGIr9wpMtS9zAXbce3QISwuPOEXK6bV5ixnJJKWXQE2xzN1eH1564Rn4axdQ6qJDpdnwcPCgB7sbDxDQfQY12ZctNpyU13/+tbPwV/7VfxYurs6isBATHF3XFlKXZQTyuXOrsLJyhnWVuOYI/6fEgLqPEwNoG+1WA157YYl/TuPYRa/eG28csXPDWkewI1qlslcJTU6Rc+dX4V945aXK/n/4h9vwB3/wAPbQItFD0JN9WcqbCReenirh7BwEMNO4desWx1jPIaAvXLyIDpYO7Gz2IVSWchK9NzM7A3Uf9Q5u/RUclPfHDiSr58yxLFBx8pA9mAB75crVY/u/9NINVur20Sq0iw4UctxYwgAN4sZ3P/wQNjc3+O+trS2kGjfh4pXL8NRT1+Dy5cvIzY/QUpIEao2knMLcXP0qJY2PEyehT/s4orQobTuRJQH2xoEIZNQ2g3oUUqXV8UHZKCv483BtjTn22bOroXq/9XAhC8udD+7A+tpDVB4P4cKFC7Awv4CSeRYOUNE8QqoibZBlQvVwgiwtLp2IaLuJhK7Z4Ar8HJMxpRqshzShlz7fRen79NNPf+wxXn/9debbOzu7sI0SmCS6lDu3wCopYElSe7YjfQnp053tHTQBHkg8SanZMyjhu70u0pt65xLamAC6ZkNq10lJAkgUSxoULERhoNTY52dVzv/GN77BUpfAe//+PXZKjahiv4/x32QToRK8VF6si6a/3b0d9hRaEBSryCiZSfmcmZ6pfXKsjQmgazb2kU50tcERZ3Rz2KcqZyh1e/0uPPXMdfhZhRLps9/5nd/hmnUHCNb1h+uwi9KaPYe0QcjI0YpKpbRAlqZK4ughu3wXqcfBwSHcuHEDTsqYcOiajZs3/ww2UGGj7gNcbgAlMZnLyIPocekvuR/MJxd6IQn923/+z8Pv/97vwdr6Q1bqLvnLyJXnxfymNs7UnMhqIwEb/6ZOYjvb2/DyK6/UouXxzztct9utv/vnV2i8f/N9+Ef/3z9iUJMQJkWsjbbkpaVljjr8yksvwbVr137u4/3xH/8x/P3vf5/pBU0OAjpVPrJJ4pI8SgIyWVkoTJSk8wvPvwAvfuVFOEljAugaDlr6P/roQ5TWt7h/4hZaK1rtDjz73LPwne98hxv8/CLj/oMH8IO//324c/sOA3lpeZlbsXXwmJREm2nuJJn4yL49j+a5X/vmr8FqDVtOfNKYALrmg+gAgYxMb9NczPzTH4ccKD/5yU/g4foaW0rIvU2N7cmbSLSCOtmSLfr69Z/N0es8JoD+FR2FplQR7QjU4xSMCaAn41SNidluMk7VmAB6Mk7VmAB6Mk7VmAB6Mk7VmAB6Mk7VmAB6Mk7VmAB6Mk7VmAB6Mk7VmAB6Mk7VmAB6Mk7VmAB6Mk7VmAB6Mk7VmAB6Mk7VmAB6Mk7VmAB6Mk7V+P8BeH+lI80NtgAAAAAASUVORK5CYII=" alt="">
           <span class="trow__text">
@@ -6743,6 +7037,7 @@ body{
             <span class="trow__count" id="countChecks">0/2</span>
           </span>
           <img class="trow__go" src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJjaGV2cm9uX2ZvcndhcmQiPgo8bWFzayBpZD0ibWFzazBfMF8xMiIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4KPHJlY3QgaWQ9IkJvdW5kaW5nIGJveCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRDlEOUQ5Ii8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMF8wXzEyKSI+CjxwYXRoIGlkPSJjaGV2cm9uX2ZvcndhcmRfMiIgZD0iTTEyLjk0NjIgMTJMOC44NzMgNy45MjdDOC43MzQ2NyA3Ljc4ODUgOC42NjM4MyA3LjYxNDQyIDguNjYwNSA3LjQwNDc1QzguNjU3MzMgNy4xOTUyNSA4LjcyODE3IDcuMDE4IDguODczIDYuODczQzkuMDE4IDYuNzI4MTcgOS4xOTM2NyA2LjY1NTc1IDkuNCA2LjY1NTc1QzkuNjA2MzMgNi42NTU3NSA5Ljc4MiA2LjcyODE3IDkuOTI3IDYuODczTDE0LjQyMTIgMTEuMzY3M0MxNC41MTQ3IDExLjQ2MDkgMTQuNTgwOCAxMS41NTk3IDE0LjYxOTMgMTEuNjYzNUMxNC42NTc4IDExLjc2NzMgMTQuNjc3IDExLjg3OTUgMTQuNjc3IDEyQzE0LjY3NyAxMi4xMjA1IDE0LjY1NzggMTIuMjMyNyAxNC42MTkzIDEyLjMzNjVDMTQuNTgwOCAxMi40NDAzIDE0LjUxNDcgMTIuNTM5MSAxNC40MjEyIDEyLjYzMjhMOS45MjcgMTcuMTI3QzkuNzg4NSAxNy4yNjUzIDkuNjE0NDIgMTcuMzM2MiA5LjQwNDc1IDE3LjMzOTVDOS4xOTUyNSAxNy4zNDI3IDkuMDE4IDE3LjI3MTggOC44NzMgMTcuMTI3QzguNzI4MTcgMTYuOTgyIDguNjU1NzUgMTYuODA2MyA4LjY1NTc1IDE2LjZDOC42NTU3NSAxNi4zOTM3IDguNzI4MTcgMTYuMjE4IDguODczIDE2LjA3M0wxMi45NDYyIDEyWiIgZmlsbD0iIzFDMUIxRiIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" alt="">
+        <span class="trow__tick" aria-hidden="true"></span>
         </button>
         <button class="trow" id="rowMech" type="button">
           <img class="trow__art" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAABtc0lEQVR4nO19CbxdVXX+2nuf4Y5vyBwS5jAYQLQgCA6AgFgrWLWJKCrVVqhWQakgWDR5Kor4V9Q6Ya0tnWxJrVPVaq0CoqIlijLIEIYAmd7LG+58z7D3/v/W2nufe+5LwphAEu/65eQO795zz7DOOmt9a61vAQxkIAMZyEAGMpCBDGQgAxnIQAYykIEMZCADGchABjKQgQxkIAMZyEAGMpCBDGQgAxnILhC2K1Y6kKdXtNZ0HhmjBw2/x+I90xswkCctbMWKFXz58uWaMabcmytWrBArVqyAO+64Q4+NjaFy61WrVvEjjjiCrQGA5StW6LHc5wcykN1OvvzlL1c///nPj27vbytWXCe2edNa9L1R9tod24uFztmqVatEc2bmrFirt2itD9FK+57nTZRKpZtHRkb+t1Kp3Pv2t7/9LsaYPv+6m5e3IXmHKgwXZ+bt94XvnDjyS9hLZaDQe5ig+zA2Nqbe8c53fIozfmEcJ6CUJM9ZCAGe70GpVITR0dEoCMIbG43Ghq72VhR8UU5BwO2LnlvfcMypz/nlc9gDq1ZpPja2d7kfAx/6GQzkVq5cyfPvoT+Myrqj76B/PDY2Ji+44IJT0zS9sBN1pQaN/2g9UimdJAm0Ox1otTvhfvvtd3p1aAjaGzfA1jhOCzKWC2Uw1Fy4/AUA8MCdR6zZ6wzaQKGfAQt75513MsaYRB3c3t/x8dEUO02TVzGGH9MATOfOoQYNDDjn0Om09aaNG9WChQvALxaZ7kaeF4ReNxyCmIsHYS+VgUI/TYLWNW+Br7766pFWq3VCN+4emiTS0yDXF4PiL8fGxh7KuxbbWxdjnDFgWuscQqcBNEN1NsIZZ/VGQ1SHh1WpVOTtrmxsGTlk+uHR5X97w8sX3oSB4RpzUe1VMlDop0GR16xZo9asWUPKc9VVVz270+2ct3Xr5B8qrQ6iD2kFKlVQ69QmL7roou8BBB8aGxu7x353G6UTwv+NVKkBnWepPLMajaqe4pXCuRBM3BSNHPBnX1n4mmn4s6EJ+8G9Eq/u8+EGstOEXXedgcusQuorrrjilLFVY1+eman9IknSv4yi7kGtZlM3Gw3ZarZku9NWSZLMBa3fkCTtGy644IKX43fdevLi+2KtTKXUWnOtFVlmMs26l1VRSio/CEWSpLeNjo6+7nPvO+8eVGbn0uytstcFBc+wMITTxsbGUvcGKnIURe9JU/lyYBrarTZIKVOjjIQHM6U0KFRMpbTSSjLGPU+I2PcL537mM1f/26pVq/BOqjZt2iQWL16s6/X6UKPV+rVgbD/GuGKcHGrQSmFgSE9lKpkf+K0l8/Z50Qc+/IFf4zrGVq+We6tldjJQ6J0keZ8XlfXDH/3w6+Ju8udRFJ2MKelOuw2K8DUgRTYK7BQZLaoCtLZKa1RKxQFYoVhMS8XiJVdfffWn8r+FVvvnP//5L4rF0jHdqCuVlMJ8X9N6kjTF3xGciX//4hc/f/aOXJe9UQYK/RRht+XLlzOryOrcc88tjIyMnBsEhbd4vjguTRLodDr4WakQWkNFVgqcRXZK6BZUZrCLUkoxxnilUoEwDD+437JlX0263eO6nc5ztFQvTtLkOWmSikQmoKVZl7JLkiSKC8GLhcLZn/7Up65bsXIl/31R6EFQ+PhdCYZwGyowKq+tn8iU5Iorrlj40EMPXZum6RmN5la0tioMC6ipQiktyBKTEhsrigAbWuhMofE5OcFOsYErrfVMrQaVcvkDWx5+5D3VoWoJfzyKI+hGkVkPKrFxV0DiOhR9myupa/Pnz78JXYw1AHtV8uTRZGChH01Wab7iiDVszcqV21i3K664Yn632312HMcnKaWOT5J4uVR6aRRFst1us3a7zcvlMnieT5m8vCUmpSPBNWmNKmifc62tT21PDqIWDEAVCwVeqZSVEOhdKI5wM7ksdCEoigaVuTBSP/A9BvyrX/jC517/aPDf3igDC/1oMsbUGutefPjyDx/UVu3nJVIep9L00ImJiWMAYBEqEboWaDXjOJYylejD6m63qzDBUSiQRUazC2SjleboShh9ZZQIYUyQdU4SiiWV1oxLJQmCEoLhB3mr3daJTHmxUOSCc2Phc7AG/gRjxn8PIIAg8P7b7gWuZqDQv++iV2n+uj+c+mDl/tv2ec+7LlwmuTgaAIbQlGJ6udvtQpwkGL9JJfF2L7nSeDwZJAlaZABPeNbyokqiUTUuRZymXQZQZ4zVgIuNAHCXz7z5PBSvRoVMULM1Q7iOEWiBqs8Yi6IEZJpCEASUDbT1z9aWGxOPF4uUMvF16Vb7x98bZUYZKPRsQSiNMf2lfdYW4mTpmzYeePS+7OffAlmfgkSqVEmJSozBnacZF4xxAZqBZj4qddPj4jYA2QrDwiFoYOMkmdbAH2ac3yMYu5t73n1hIDYKWZhatKha/8QnPtFyP/3GN775FXESfzQIgiO7GEzixmC5HHoULmGiJEjZBc/zQAiOGUGTTLHKzblA/W6VR8ub8TXWQc/OUu7NMlDo2WJx2vPOO6bzo+sfeWCDV14EYlgN1R8IICx7DJiHxlMaf3UT4/BbBvATxr3fVgqFu//pn758D37/3HPPHYnj2AMpp/9jzb89KsJgYLXl+p/+aey/zj333JviGN7pef5qpSVPU4nbg1eMschckE+OdwmlBHjCWGq3aMbIZ3HndmW//5+Z8r1VBgq9HVlxnRZYPPSG/11/falYfHG3PA8qqYJUqHtAy7sEE7cx7d1ULg3deu21nydLOEv4tddeOzO7IMm9Rmu5evVqtL74UjtIDRXbfu9Db3zjn97XjeNrtGZlpaQWHF1vdFowK4g+tAIp0ecWpMico6/NKOhMk7QURVEB13nppZcemrJ0vg/+9Ec/+tE793al3mtQDpvSRcXR9vaatR/l4bbHc9t1dcJv+d79h93L/e/zm3/4Dwf89KvfLp9w1t2fH3tHc3utUPhk1m09f2yfiAKxY445xlu7dm3y2te/8bVa6X9JZAro26ANJlCOaVAyJagOV42KzAUqM7ocHIaqVT08PPxdAFiotDoMQFd9z+9IrS69+hNXf2ZvRj7YXlAzwVesWIG48ONWGsy05XvuHu2zy6+7fc6dK4+ccq/RiubW84R+94nIeeed53/pS19K/mTl6y8XnvchmSaKM8ZpgxGiUykptZLSwHVaUbA4f95cCMMCFfsjUoKoC+F8gmx8p1QqHXPVVVfdhbj63qjUe6xCz07nXnHFFctjKZ+fRtEypeQyrWEeWmwhxFbO+T3c5/dUipVbLr744tvz63ENpNu/KNAXZRpWreKrTI3yY14AO080W7VqNXv44YfLjVbnZ5x7RyKgYlPnlFRBlwNRD5marpW58+ZTtwoKutLkeivFkiRB456WS2VPSvnJa6754l/trenwPU6hERN2vida2t/97ncvk1KeH8fxqZ7nlbA4B0+2Cfw53YI93wfEbhOZdgRjv/U87zue533/+OOP/9Upp5ySzi4uOuLOO/XKNWvM/dyiHs/EvjqlO/ucN52lpPy6xZo5takoqVHB0yQW7VaTYRJndHSU9h33OfB9WkexWISDly2DAw7YX82fv4Dde8899372s5997tq1a9t7oz+9pyl0dgI++OEP/3kSRRfESXIUvh1FXVT2lAIkLD8jRIA5xaYAjHPuhWEAfhAAZvSEEA8IIX7KGfs+5/wnl1566SP5H3OUANZ6wzNw8inljgHkipWvv8Hz/RPjNJFKswCvM3Q9GvUapGnU3Gfh/Aq6GVjphAqN1nufffaBN517LiyYP5+2nQvO2q12vG7dumNPP/302xDzzlMg7A3C9jDLrFddfPE+Mgw/AwCv6UZdhK/QbCnOOGXfOCbGTCICMIwik0bZOKOQBBQAoE/p+b4Pvu/ZajeJrsnPOOe/CoLgJr1A33zxmy7OMGIUvCOsWbNml/rOs+Wkk07ybrjhhvTss994LveDf4gSBZ2Ect+3pEnyv1556JcVr/teDvr5KRYlcUC9xTYtWDB/Abz9L/8SioUCSPJWtCpXKrw2M3P+YYcd9iWtDZoDe5GwPUWZV69ezYaGhsItWyb+2/fFi2u1ukQNFwIzC4jFkiobxbWYLCXoTKlw9pqeW6ttIQLCeT3P42EQUMICMV5sIuWc3yCE+IHneTf+wR/Ut5xySq/O2SYrHHKyK31r7LWCP7vkqsr0g7e9T6T6wefUNv3XX//F/25evQLYva94xUd0uXpxzIQSHME7DZxpgvHiKIKzzz4bnnfccRBHMb4nq9WqmK7Vrjt02bLX7o1oxx6h0O7AX/Ke93wShHh3s9GIGWcBZsXQGhkFFttVaEJnbRYtr9TutXFKbEKFAimKBMl6h76PJRh4+25xwe9iwH7sc/59v1C45d3vfvfMU0VbHqf0+bmH3aQPkw/f/apIqjPD1vRzFm26qyQ2rYfhifsgFBK3HDgoOi7dbgf+4LnPhXPe8EZI4ggjZFUIC7zb7a7vdjt/cOSRR065Ox/sJbLbK7Q74Jdddtn8Zqt1t5JyBLuPEMLiAhUaAz9XK8EfXalJgbfda6PY7oVJJSMyZusgECnhvucBLmmaAtPsPuDsFu6JnwnGvv/e9773bvf1nWr1bED66Zu3Dt3a7L5zUyrP3JKkx3eGRqlkNAAJBcZV3I24fPA+2PfGf4NqNAnghyDw+tSSoLy3ve1tsHDhIrrzcCG0JwQGlC856KCDbkA3alY2cY+W3V6hXaT/rne96yVxHP8wtTXAqJ4YBOFChTqUdrBpYFRtq8BGsXtK3Svo6d9744bkD0fvYsD4y1pJzYEJ9LuDMKR3kjTpMsZ+EgbBP7darW+MjY3VdwokZum6zls7PfRIrfWdzsj8F7S6bYiTLm6UxCqoggZWZJohO8cWUQR+z11wyPevgVCkVNPhcYBOuwmnv/Sl8Io/egU1G3DB5VC1KurN5jsOOfjgz+1tfvQe0zCptfYd/mq4VTT25gF2G6WUYFCUZEBlpwphm2wAugDca7tkK+0tlKywxfVm6XWT2EsDrxaBapakqWq122m708Ze1QLn/HSp9LVhWPjVlVdeecaOmlufiKxYQ7+nH6o1jp8uVl4wNTOZqqilAqW1p7RAMKOjGZvWHCLGoBI1oXPQIbD5yFMAOl3ASx73AV2n3/zmNzAzM0MXPx4Lip+Veh7shbLbKzQiCviotf5dKmWXWaU2nUqo1Gmm1A6Dxoo0anGyCpm1NVkldReEaQzJOai5F5l3nbfive9yrZSnlBJpkuhWqyUbjbpMZHpwqtTXPvKxj7wOb+P5rOITlfH519MvR0otxTIoHzRH4JES33bf3ZWYovIKASUZwcTRL4La/IMB4g5IzUH4PkxNTsJ9960jPF5ioiVO8G523C233FJC6+zoePcG2e0V2gYs7DOf+cxDnPPve56PUb+i9n1Sbk3p3TRBa52i9SQFp5Qwpn41Lk7RbYbNti3hklfu2WLSzDqz/nTh4PqTFJI4JZ80iVNUEBHHiWjU6qrVbJXjKP3HK6+88kS01E+eNuBk+l8yf5QJzxZT22Pito/uKmbRjIOPHxmqwuajTgKVursZo8df/epXkMQxumIcO88B4NBKpbJs1ir3eNntFRrF9iqxRaXSW2MZ34dRmtJYoWCLc7BHCRUVu0VQyVDhEkwJY+2wUUalrdV2fXjS9uHJnvJTk6m9SFKJdRB4cVjFpfWhIidY2A9JGtPzJInt32PEfnmr2VLtVttrtlr/9rGPfWwfu/1PWmGYhhIFqsYw999RZr1mnENRxlA7+CioLzwEWNyFVAMEQQj3rlsHDz74IAWJqZIqLBREq9N5Pn7v+uuv3yP04PHIHrEjiEHjeasptV/U7lZarbZmDHuTMFtmLG6+2dT41qhkibGoMqfYaLWVe0Q3xbxGlwWtu1FQUk5j7RPzfVJsmdC6yc1J8OJx37FWO6F18mazmaap3Ldeb7wfEY/VT8ECSqZ9DHAd5NIPn/Sov8AGtR5o8EohbHzOaSAB+xkV1VAjJn3b7bchyoHHSWNqPNbBK/BrJ5988l6DRe8JCk3n7GMf+1g1iqKvep6/cHp6Sm/cuIFFcYJYB33IuCC2m9q5IlIaKxqjNUVFNe6Is7zuOVlyem1anHqL+3tqFNm6NeTeoFLnFlLsNIXYfEbUajXV7nTOWbXqiiORMf/Juh5SawpEswOxHaG6WeszMc4hlDE0DzgUaosOBRZH1A3u+wHcftttsHnzZnzOH3zgfvj5LWuff/bf/nYBpr/3Fj96ty/wx1pjpJB917ve9UEu+KEKtJwzOio2bNwA995zF8ybv4iKckwxji1MynBl8z+eUPO+MvCeSSFmCpKH6+jdzEntPTiKAReQmfu/bVWl4LLXsIo/j41avh9WW+36uwDgz5/0AWCY98vWa7ZnB/4+CkLyeIl7YQATy18AI5vvIqTH4xwajQb867/+K1SHhthD99+nxJzF8w8447norP/7yjVr8LrY4+G73VqhHZ57ySWX/GGn07kgimIpMEDyAfbddz+o1+owPTMFU5NbYXh4FEbnzIViISDH09IFZLg0FXHg7dfxX1B3Ry8P57Bqxx1A/J4OsLNK1EdFYO8ETvqYQAnzBt7uIO2Xf+Z73/ve4bGxsdqTqW4zX6CN6nMx+n/NvGZ2z6jbXEZQP/gImLn7CJi74beQhgVq2t20aQNs2rgJEy8aTUAzla9Fhb4Os5yw58vu7HJglwl2nFSiKLoyVZpDmjCRRkxg/ZHwYHhkhBR7wYJ50Ok04KGHHoAH1z8EtVoTiAwL6QEwdW2DQAflkTvimIawY1sqcj+cP4ys+FEUQzeOkZoAu7QxgUIL+ePUqKr6FkMg07duFkWRkkovSDU/HXcIS1Of6EFQthrOOhT2yGSHqHewst4VRs+NlfZhYvmJBN+Z46CRuRSCYhG45/GoOQMdJl6yar0+iAq/9gIiR76buxqq1WhdzD3v2Wm7IeXIYt7a99kA3Icg7VLNAvc8GBoagSVLlsKCefMAdAIbH1kPDzxwP2yZ2Aod52cjEoK4tYO6rBviOOWcRXeLCSyNgqMfjs9NQIiL3kaJ81RcJjAlV4SQmG6n8zLcJ2wPe6LHwTB6zBJHjZB/K+cpMdxXzqCgYmgd+CyYWXIUeN2m+YBMgEUdYKli8fC+Kpq7aHjy4U0n4teuP/nk3VYf9miXw9ZDyEsvvXRZuxtdFLfrWlbms42n/Sl0RuZBOLEBqnevher9v4KgNWkcP0wsVCpQLJcoom+3WtCYnoSJ8c1QLFVgZM58qPgcPMzyYv8dkbtYvhfrB5ONs66DfUlUtX0czFToYUpTqb0vez+/B3YdGjhyaQjOXnDNNbf4559/bPJE3Q7OpSSvJ/d7rpbIeTmubJBlz3AXqfsbgoDDwy96FcB/TUKhNQUwPB+6c/eFeN/DgR98mJrrF1i5G/0xAPzzDXsB2uHtxlOevHqrdTVL40o3HFWbTzuXt0fngkgiiOcvhomFfwy1I18AxYfvgsq9v4LC+P0AOgbJBNJ2QhAWYGh4GDrdCFqNGZh65H7YuPQPgM8/EIYam6HcmYQAOiAwUKTENqdFI80GboJFfVF3nLKb9w1bKMOqDlPnYXxmfGKnRDjXHB8QAYkTvnR8/HuISa+nVHpfzchjHo7EOvC5+tccq7mrQ8n8aEbPiKUGI0Qlgc2bC+tf9Zfg1RogymXgpRIUQg9KTIp2u8kixs746I8fOOAyxh7c0wcJebsrqnHJZZe9min1ik4s5fgprxHNBUtBRG3QWIiUJiAghnRkBGpzXwS1w46F0kP3QvXetVDYsg6C5pTJDjIOVY9Bed4iGH/RybD5qFOgk3LYOFMHb3IcilOboNQYh3J7EgpxHcKoCaFsg8AEs+8RfkuW3KXQrR1ETg4m8UIwlXlkMbHumsKqnIXHmpIUQPmq3G6390OFtoOCHj+aoFnikkf5i2V7Zl7bDzlYxHQ8MPC0hMJIGWC4AkJL8LQGn6UY+LIEmXOGhisT7dqrAeCT1598PYexPZdtydsNC/kxOCk1Gs0PJK2m3nTcq1ntwGeB6LSMFXVtJ2iw0hR4mgDzOLQPORJaBx8JojENpQfuhOp9vwa/Pg7RyGKYOPolMLPvIVCMuhAqBenIfEj3mw8ddSS00xS2dmOATgf82gwU6uNQmXgIqlsfgGJ3EkLdAczhaOHbAjibQre3fsNcRAQDGSqSRwER4OVcMKXYiHlrBfL6P46jcT39L7hO+p3oR/dYdOZ65O4U1LWDVluTK4IIDl2ehguPNaXUZQ2v1qtWfYqdcsoeDd3tVgqN1gthuvde/oG38aR71Pjio+T44ccIRpbZRu+zTi65AZgMkxG9oytDUH/ui6B2xHEguhFEpRIiBRDGXZCcgWICArSc6BtzDdrjoLFFaaQIctE8aKtl0IiPgy21OgRbt0Bp030wZ+PtMNLZBEJoSBkW/dsAEhVEYHeIsEpi/BMLFJrEdaZTaGnhcSpzT5RmsXHic24KOdNYqkQQ8yzRuaOTWw9Nx+qvWSGFBs5a3Q5rMf7c9572F8+CsbE7VmnN99TxybuNQttMlbrqqquqmzdseFtTVPSm570MS8EoC4buA0qas1EupMuK+vFRpsAxRc04xMUCMJmQddJYO01F73b0mfWLyfppDR6hHxLtL6QeWvEKRNUKtPY5ELYedAxU198J+2xYCyPNh+jiQm5Qk0pX4NFRNG1gdmeMb43KTY2ruu157D78E0KRT+i4KBXb8ro8jrHN53p+DMswabOHvQQS3UOsq2/+ZtgdU6VkWh0qxa366wDg8jvX7LnFSnx3ss6IhU7NzJwHaXzwpgOP0e2ReZzHsTEltqyM0tr2ZKT2JOJj7BbGIGbc+Lk0AaJX1E8FmERwaII5dF0wCeEaBDBn42HexsfuFA6BB+AHGsTcIagdeTzcftwb4Z79ToeIlUGkXUOBm6aEWceUVk9NkZSt0KP5EzIGf9EhqvzGD9lb+erHdTwWnHyyAeeEF5H/vn0UpU+Y+yvdLSxVr0222FwmvSfdnc26R+iht5BEXes3fvQn60fXrNxzS0q93ajNSr73ymuGo42/fVsjGNEzhxwDPO4Ya5zdV90JsPG8PeT0V8cM7j5pC3ryKXDzY+akYkKZyi7td4lE2SIQ6Gtiu4fpGueQcAkeJOCNlmD8yBfDzPyDYd97fwyjE79FlwAS5iEzKV0Y2BKGPjc++kkb2PBCgKNOLbBus5zp89jjOCjWM9FKRc6N6dNfu62m0jDbtT7BbyjqebcIjVVro8x93jhvx5HqFsv7TavOKQDwnyvzRn8PEm93qqZLo82Hpu3OgRNHnsTiygiIqEWuRg/rzfuArobCAlV26GRegfNUGu59Z90z3uZsbe4L5mIh8A4VGnuduAcJB5BY+MNSSJYshfurr4a59+0Lc9bfDGFzk7GIyIeBSo3K4nmg5x2g2Ytey4rD8+49fuqWe/Enxp5o6puz2Prms1yOnK9s3+a2EZL2xzZGZq6HGdWZ0fL2rYKR5uo2F9CN1Hka4Ots9eo9snF2t1Box8zJJzYVksIQq+1/BICMCTdAcacyD1dZyDe7lRJenK2xl3HonTN0M+wF4VQjl0Qha557Te4IA/BNHRMItMLIvuQJ8P0UlF+BrZVTYGrps6G6/jdQ3XoPFNOOGSA/NBfkvkcAP+goPXfxQih3pv/llJed0kVW0yc6vZUlKtbBDuIzGxwa5v5ePJFX6rzeYnBscRrTopXzp5lmotlu6sgPzvjIzza+GE5cfOOK644Q2xvHsTvLbqHQLlAqTazfsuU5r27L4bllnsaacVNplnf08/F+n3LnTh66EtkN2na45goi+hQ5Z6Qy6cN8yZVBLABhaQ4eoI/OkKkGApEChPOhu/CloJJTIVExhIj7FgpQ8Jke5Vr49cmmKIpraT/veCJWz/gcGhj50LOL+rM7kbtA7aKI0S63q7PWmn9NLe3ufQYQaa3aYVFMtmt/CcBuWH7H9ur6dm95poNCbKei6VL4eMy6Wx/pHHzselapolnETqvtfsm5DbSCzIVwVXT9AZTBis2SL+Vx5Z8GQUBfFYuK7CJNUJemCqJYQmzYiiCKU1pUnGIKkK4c7FYtQgLlQEGh6EFYEFDQEcKEaqgQQtnj/z328kMfQZfhydAbKMZw3BWNpOht/aMLf4zP9Fyu3M3MXBt8ut3Wbe6d/pEbHzkUM4aYOYQ9SJ5uC01cyna2H40MtudJ2sf2n9/785si2V0+Pm+pVmEJWNols4OQ2Oz2o9kWyyUgZoVP9r38RaD7rDllFbPGUzM/W7pCpmwGoClCYtIs+AUcgIJ+K/rbeCCxWwSr8T0GEArGizJOhkPv07jOFWvW8DVPIMhavmIFbYwvWCeRKRZy88zH6Ntzt3f2mXU/nOuxIwuNAbBDe1xQjFdNV6ayUx4emWnXLwCAd8AeJuzpVOTZXBWfuO66Yv2OO4bTNA09z9NnnHHGxLf+/Z/Ommom/zZTXqBrh5/I6occDbJQJMSDXInMD+xZolztxHZPIr1vXQ8DD9sxaACQOAudq3dOqGzaWGsqd8MkilNkrOWQOAgQBwkqakzF4YFIYovBYMAACkzLBUNDfES1f/ypVy0/bfVq4mLe0fW4fUHLOMbU8T944FlaBGuVx4t21NUshZ5Vdaf7i5ZmP5pjZmo9TNYQ6AIkLhNTdqqKnmBLZTJ9AE+Peu8L99+4J7EreU9Xkb7rgI6VOjVut1+itX7WIz//+aEAeo7SOvCEUH//9383efe9D4gDD9wfStPrWeGmB2D47pth5lknQn3Zc0D7HrAkynzb/Ok0iPMOLHimzLkxaKa9KXOknTKnpMCox2Sms/ppQeWgpvKORlOhbqEFtbXHmZIA9vUBVHzBKuD/J27mqh+fLCA3//vxicGr065qiTJ0AA0+9Qeav1rGvuzTPdcL+t7L/63ns5jRFa7gqs+XBuBRmsqoXJkz3W2dBQBfXLlmz4Hw2NOhzKtWrSp0u92VSZK8Q0r5PGzUdA2slELWGoQnYHp6GrZObIV999vPJACwUiyJSLHaS4+EqWPOgMbi/YHpBATWJVuCRpQdOafGrbAhlA2uyArTJFf7Gdfpjf4z1Uobi+xIZ6gQifzqnjILrSEEXBiETENoEZGQaT0cBmxhoLcePBQe+a7TDt7ypCycpQE74fvrFiivcKv0g8VpHFvw2X1oG5R9u5IvaCIhdMNW5NnVeYS/Z+6YnFsoioXd5trXvHjp809BZd5DLDTfhbzG5GJcfPHFL5qZmflJt9u9tt3pPK/RaOjp6em02WzKTqejOlGkozjW7U5HC+GpNE31xo0baboTsR55IeiwAKWNt8GS73wWFt38PfASBcpHKi61nU7ofnEJL1v1bAhn8I2cMhtmJctvkZu7TS4OuhrooVDJqOHxwAsDFZpb+8b765DlcLkMZU98C5V5xXXXIdXWk1aGEi9Ippl0Mw7dgtuA24O/n7WEgdm32YvzdfIYPF7k9Nr2RxooL0ODRLPT0bEfPuemn204DpX5uuv0U2KC2pNdDiLpxoj+3e9+93s73c7qNJVooaUiU4lRs8YKxqyKHhUHKaumJicZsvtQY4WUVPSDdAP0Kb8I6LzOufW7UHrkLhh/wauhsfQg4HHb4WuPsVk5zDmz1HZx77k528bFptfcKrxTInyOyuzaA8giuHQb0xAwJjydgO/Df+JWLb9j/lO6C3KkRBLSHC8X+GbBr4Prencb5kpNs1fuaY+gz30XL3bjN+N+9vKJeMRjANkplL3pZorcHT+7wzI5/d5ZaKfM77rggiulVFc2m+1Cu93BYZVCa8WJ0IU4MhA5ML15eCA73Q5RVSEnxpYtW2B6aoq4mnsRjUGgZViEcPJ+WPK9z8O8X98IjHmg0ZrvADKdjd/2BY0O1XDWGV9Y5cUHDPycYXQfcjAf2lwazO0aU015pvY9j3lp3A5TwEmuevXqk5+c77naeAhxwIeAsQohPZnyKXJ9zAVIHpn19VVGpNOr37YLkuHR4rpyehYdaztSDIJzd7sUy0qxTkXL4/H12PXXq987C40+s6Uc+IhU6r31ei1VSCyoUZl7PHOuA8QgDRo85lFdcbPRICIUZPdpNpswf8ECk6bLKSueGB0UgakUFvz0q1DY+jBsfsErQRZCYElsCu23B2rlNHt2TYRTZrN9vayhs8g9TjujyHizNi6ArbCwDqpgTBcCn4VCPXTo3CJNznqyZm3FEWsYplZSSBcxj1cgSSkpqDxkufNMEIz1I2lKGo1NwzJA4NDWpNiqQ9rFPJXwdoA8wk8zR9taamzyxV5KDUd/65YNpbOOXdJ+JufNPO0K7foAL77oore0ouiyZrOVoiJj97PzUykYyWf0KDDTlIFDdkykqI26XSJ8mZ6eggXNBRAWChQ89gkqNR74sADVu2+CcHIDbDz1DdCZvwh4t9NrBMgVjOXLc3KZces35nwPl2l01tkpt630QytHVtKOnkdxKWds+8MpAIJ11608cb/OU1GA8fnWVUn1wbxahFQkWL7H/ekJKG16AEpbHgS/sRUEVSMqKo9NwzLEw4ugvXA/6MxfCvHQqKkwxCYIbJ2xdA7Gd+79VlZSQLUeFlPHODhJINaw6K5auhgA7lu1GtgTrUXZIxXakXxfdtFFh9e63c9ggCdlir3zNCjS8GNwUkxUWEQv8BDStKYgIH8ZD1Or1SKaLXQ9up0uTE5OEuKxjUKTWGvqhxBsfQCWfueLsOXFr4X6QcuBRzgne9v0ikuk0PP+DtNettEuxERkFdkpM7kZmQL0dNUYNlPWj/O3PRCbn0wyZXvlo7IQHAdeCCN3/J8auu9WXtlwD3idmr2obfbbpcYVIjCotBySylxoLToImvseDq2lh0E8Mhe0wgxnkm1vbvd7VYrWr0YXJEEkCVQhCfgTqxTc0xUa26bQQE1OTn5YSlVOkCtLa0EBFlHgc5icnCaSk3KpAkEYUBEPCvp8GBA2Ww0aQdZsNsi/xuPt6osJc57tI+eyggoHTbYnYfEP/g7EiX8C00c+HwDdjyyxZlFo61701tGj1HVPKMuW860dOynkXA0+i6jGFc1nM7efqhXTmlERk9aCf+224xf95l+gfM/NHC8gRa4FAoYOvemlTbS7u2DDQmcaRtfdDCPrfglxZS7Ulh0H04cdC+15+6DHDAxnhaP/TcfH1btYvxuDdHNAkMY3LbS77SdQyr1nKzRaZ+RGu+iidz4niuJXdqMukt3ScEgneIrHt2whhV28eDEpOAoqK1roTqcNpWIJGs0Gscx7GNjb8Q9otUvlMqRmkE9PMj21FTnCB+xIXXTjP4Nfn4SJ419GIxkAg070D9zX+l1yGxrNyqrpbZdeEGjdi7zOusogqmBC/ByG8O3ld5j09RMWW057zMd/dMCS+//7yHJtPaRh0YxFdneObcJd6+O716j4wvjUqNzzfv1fMHLnDVDf72iYeO5LAJuOkUebpXEWKzj3i9bEGIyMzBPezJYb963/+gGqRdkD2rK8nVX62elEI1JKT6aYfzPOK42FsIJPS8UyIO2R6cAwA9exEB4PJiozIh5hEJIiowXH70xOTUKpVOrrvbBrzLDfzIIzDhg0zfn1d4B3mrDlhX8MklAvR4eR86lzrkZPcXvwnP1ULpfcU2YUZVPdrhSVtoExwJEZCtiS3gxAO432CciKO++kgPCIe791qEjqYewXNAZp5Ga47cp2pO8Beldm7zJV3ANsv8G6mNG7b6Ry15mDj4GZQ4+DxqIDIPUEUuyaBJLWMAyMjaTdpDSz9bpQ6L9G8nZKDsHuL09Zoe3MPjy9tyZpd50Q4uA0TRV389Qs1xpKp9uGNMHDZQ64H4bkPzdbLSgUioRyOHaiIPAJh0ZfutNuE4EMUtZm68wXJeEbGqDkCRhCjuRCAOl9P4M5nRlYd9LZ0CqWQMQR4BC/fHatFxxtoyaZm+HMuStoom/b23SWfM+KfIAhdVjk6YM+df2DaKVnZpcTPR6x4+LAk51n88AHaCdKIQuphRTdtjrkOE8UidJ34ef3D1vTwjKwtA2jv/0fqNx5EzT2ORzq+x8F0ch8CD1PLVYJn9+t31uszHnDZ//0pF/atfz+1HI4TrSxsbHpN7/pTZdowf9TEj+F7Ximuxf26flQq9WhUq5A4GPftTYTXZOEBkMiykHuBg7CtH+j1DcDgvDQ7XAKnPtxgqhGfB+epRQc3u3CUt+D0GPQ9TyYeOQ2uOdbG+FHL3493LbPwQDdLt01sMF1m3SwVYrstp2LILNAMPfjxmc2vBy5NbAI6cM8sXAGBM4an1lt8OQnpAyOMkzqdBkS2hChM7Hxm7/32+keE2pe0IHI4l6XNEL3izKlGriHk7IUzNt0G+wzcQ8E5SoG42rucIUHXH9z9cc+8cvzrrnGv+a889I9RZl3WmIFEQ7EoP/+H//x60qp1b6HVQ0524AVaMUiUXQ1W01otVuUSKFioDSFeqNBLgbCdsjFjAkVVHoXkKEfjZYP3RPoK0zScGQYwFs6TXh9pw0nVctwqO/B/qmEw9IIni8AXt+ZgQ9957Pwupu/DaJUpKIjAq5y+DNJ9nz24JWsXTFbyCV3kZ9ttjVJCcYipVTqhaLdjo6kvyJxyxMThiUDeDy1hmchJzVdYzsw8xm2by2zoipBacd0JDRwExfk6CPaBU+QASmXilCuVCAYngu8UiFaBwVKdBWopDLyTaQyOG109GmbmLu7pr5ZtVq9uYNYskydZ0FnvlgskNKiC4FLGIZEA4BWGX3k2swMpMScL6FSLRo3hVADHDovyUq74ex4EhcJAacUQzh+ZhrmIDd0oQTR1kmI6w2LNGBghHeGAA6sVuCdv/w2LBnfCFe/8u2QtFtZ+RhtXx5zzhIxxsUw9DGIbJi/UA+NVeL+ymtkVEK4C1TCPZ5s3fgqAPjGnRMGfnsixxB/fXh40eIobjwLiRWoXMCaW2edzd3EKbIth9W9ctcsa2j3Cgfu0gg8iy7RKA5EkDBe4QLA82Tg+0Jwftt+Cxb84vw9IADclalvtCp4Y0RLejGtmFPimATfLyA/sedBnMSknOiCIN6MVrdWqxEFrRCeOcgWYqM5hJgYYIz8a9fpvCwM4a1DJXiZVjAn9EEVCtD57e8A7n8QRNQFpD7APASLEogaDWhNTkNZhHDO7TfBW759DchihdZPV7OztBZn7utNzOHOdranzaQZrNbMEO8vR5VaiUanC3LLuld+4k0rljxRSoAVK1bQZ9M0frYQfI5G73m2O9E3ns7i8coVWVnmVKuwdiydUXvLqtpbDAuUWZ9BnHzf+8/zzz8/eSoTvPZ4hcb6DTynF1988UFa6xdgEKeUwiifGi3Mrc4jZcTbHz6fM3cuWWd0JxDO8zxByo5KjMoex5FBn4RHlXeYcGk2WzAkPHhVuQSHVEoAjTZILiC9+27grTqIClp2w6/BPQbMQxSFgei2od00lvv1d/wETv7p10EWKqZX0Kau3S07XyHv0tpukGfmepjIMAMvXD0FNgSkzGOddlfC5EPDWxbs/zqL0z9xXmiQx+PFTmiaBV6yOpQsXu3NljG+tLI82HK75OykvLnum3zbGo5Nx2vH9/3/hT1YdopCO+iu2+0ehwNOsRIpSTCW6FkwxJbx4KGVHh0ZoddddDfKZWi320QyjuclDANzW0QITKb0iErtez4lXU6oVOBZxRDS8SlISwHIiRnQ4zMgiqVsfqElgKbiIiy4R9JFqDehnSqY02jD63/2Tdj/Vz8E6RV63d+zojvDrGSKgQwZo7HIpibC2rx8ySlaP883swF/8wNojz8M3US99tOf/nS4evVq13/weO50BPUxrU6wltPGqKZbppcZcsmfnuIq111DH3Vj69xAUcd9bdeTDxQYVwiXCk+smzNnzm/xLbMde57s1Go7laYvxAOKKS0ahIkpbXvQ0fKir1wqF8kiu8RJo1GndDEuWH1XKBTI0uDFgFYR6zrIygoBo56AF2DLUDsC3ekApArUhg3AseQUK8nQPTFn0FgtSgUragYg96DZgkQDHF9vwItu/Cos+sX3QHsFqoPIk0DnfWiHPfcQEWfFTWBJSIsfgAyKAPUpKNz4TxDc9WPRimJM/x+7efPmV2JgteK66/jjvNPp88579yIF6rl0QZtGYvfL9rGnxE4y66tzvrNV5IxxKj+TMcu00nHWeNwDP/yvCy+8kEY7P1FkZm8KCikqRz7nTZs2/QG6BjitFLNQaHkrlYqxeJzDyPAIoRxDw0M0wAYPfLlcIf+YBqtzpOLyTHDjICqsKUglBKEHp81fCPv4ISSbJ4CVCiAf3Ag8iYH5Zs4qURlQwGZ5na1yU8IA3R70K4WAsNaAk0eG4Y5ffxtYYwrWn/BqiIICsA7WVvfOtvEoeokVyu/jM0z6eDjLhQOLO+BvXAfF9b+G0sY7wE8aIAtlAJnqbtRlgvOLtNZrcqROj+NOVz+EMZhralxcqOoC11mUBtb/zWYsajsS2jX94ntIfY1xJbFFzco0Ej8O40rr1PfDrz0Z/r29ykI7KxHH8ahUal/kenO0GOhLYzGSSXUzguWKBfSXzXVENRzNppkbKBW5FVlzsz3gmJ/BQZfzfR9OqlTAj7qAJTOsEwGMj9PfjTK7c+56U6wFtZaak1JzYO0Y0iCEYzZshIO8AObcfSMc9J0vQGnTI5CGFbK2OMICrT1OsiC0xfMB/AJAWKJGA9FuQ3j/b6D8i6/D8A++AMM/+iIU770RIG6B9Ax6o5ViOE8xjqPnve997zsR/ZbHCrTGx8dJoRVjz/d9Dy0zYnZYvt9fy5K3zNbV0LNnmys7Gtp+Pu+aZDGCuQvqMCww3/PuPeig/dbi+7ahF34vLbSj8ep05AKt9FyqrMtBSjO1GiwIQ1I8VGCkrkWfGEdGoDnFcWwJkpx0IygUwm2KkMwtn8Np5QocWAghfmQDiFCQdWaJBBYYxn2T5HDsn27BEwyZlTa3X7wdCyh0Eziz3oC7yxUob/kdHPzt/wdbnvUSqB9wFMjiMIAIqHINa4pxPgkuweRGCDfdBcHWB8FvT5r1o7vih6D8oindVpKmAGB3DnKJJ0qJVruNyM9PH+tY3nDDDeSjcab+EDPdDl/O9ikn/fXlO1jACDXBus/PrhBk3LgbYXD9m9/85u51110n7rjjDrot4B3DWesn3LW+p9dySJ4Oa9AFGzkbxiPOaPRaLQxh7py5hHdiEFiv1wgiQr+5NlMjC0xEh+huWOZBc6M1mcBDhqpw2rz5AFunyVcWzQ6kM3VaPxZUmJoRowAUM7nwyzUKEgxhgkRM//IkAlWuwB88sgmOXH44rPULIJIYFq79Osy99btUnZb6JYM7p13w2jUQcYNqik1O2gONlhxvcFlxtymCwhjOUI7RItqtlgr94KxLL730pVdeeeUPVqxaFawZG0Oi1O2W4L7+zW8+CJR+HuLxWOTVX7+dn5OYWwiucwhGbgASfomgGRyvZEfcZQbaGAEuOPY8gifC/7BNzTsMCHEbjzjiCIYK/2RIc/aoxIqnNZrXXtFPzkps3ToBw0PDEBZCyhBiEbyppGubgnNUUg9Jw23hEonx8lBZXzo6CotDH7qb6uAXPdAbJoBHyNxvWrQM6uDoYV34ZvxItMyIqVGtPc0oRP0WoNMU/KAAZ9Vn4DfFItBMLSS2USmE9U0QSpNZowQKoiQ4nsIrZFUkpoDJEpM5GA+3hKh5UVGESWRwYSbaJvLTl1/+wbM+PPaBexGXduTu7vjZedvKg+CFvq/K3U4bt5r43XvwGkpej3LQW+54a6L0NZ8z0zKwvlsYFlfcPtJxOmoqDAs4Ov1XV1wx9iNao9bsrW9961IhxFwhRKFaLcSFQrU2Z86cDRdeeGGUV2583N0Ue6cpdJqmSFHhDn+GhqHlJStdm4GRkRFyN6IkpWCQCuljBu22waIho7Q1a0Jrc8TQEJy+cCHIqSngpRCg1gA5WTNwHP0z/rkpH8n1WzmFw2YCKtLvoXNGuRXISgGeNTEFxyw7AH6adk0HNV5IGPDRCArailx9h12nU2BK+hgKXafAiKdzws7da4+nUqpUqsPjpPO9Vas+eBFj7FsmD6MxoOYrVqxQK1euNHZTJ8+n4lR7Zc8e7tlvoXuwYYZgKONaub+T8rpkVVaVaKBHzxO6WCpiWvzmk0466bTK0NBrznrlK08IfH+J5/vDYRj6OGvRDzr1mVpt/JJL3rvW8/wfDhWCn1/6gQ/8DrcJrbotUNN7lUIzxtpZ3IySZajMQW21mlAZGqIRvaJUgnq9bmYASpN6RRfEhXT4Xcwc+pzBmfssglEtIUokKYvcPA4M++uCMMs09FHI+sJAeDisBylwMcGCXRip4y0wVEHEoZ6mUKhU4MzJcfhleRgi5N2wCYt8BsMlVDILzCxxOiosd5bYM7ChVfLMp8fbOvd4FMd40g8Wnv/Nv37/6m8VgvATjLEbHYHLihUr4O1vf3ul0WyfkiSY5etxyvXjGu5NZ5Vdts8NFqXv9tAOTHtjggZLsvBOY7ObuM2Yt9qwYQM0G/U3lcqlt+O+oAEiThSpIIoifOSp0iNa6xHQ+lCl1esmk6h1+eWX/8dQYehTl1x+ya14PBwHC+zpCu2CBu15LerpxKFLuUwF+bcY/AUF8BF7JncWUQ1J0N3I8DCUi6bDB3FXZ2VQg46eMxdesmA+yC3j4JWLoDZtAajVgGFJJRYjE4uRQUIAA0rBgHVaSP0DKonBQ0JFHEDvBcCCArZn2KwJQlhGX7Dj+bBOBKeNePDtBKdr2XgyNyqZfE3yN1GRjRtBxOZoma2PmnV94LWAwIhrZXGjMoDzOEmVbLagXCqd1Ugar7j8/auv94S4bmSEf+Nd7/rrLW94w58+W3jskDRJCIHMUxZsL+Bz6EYvaaJs7qXnS9tv0zQvJJY0Fx0n+BQztfidsFCocO5Rkh09Ec4ZM2UHWJOOcQGVNGgppebdrvY8r6yBnduNJlZefvnl/zAyMvKB97znPVt3B6XeaYkVydgUA1Ynq2QBWzfuAU86VtuRoHXgnFwOhPQQtsNCJTzxCOfh80q1CgvmzIWzD1kGBRz1QAxJkhQbTxhaQ3NGcYUKuC+AdxPQ45OgtA/pAQeCPOPlEJ/4QohH54HsJsAna0bxCUJUlBanPkeQEIZFOH3TFhgOAsuhjCcdLa8PPvYshgVq1g2DIr32EMZDn1pTdwqlvI1FNMptrLhDXRyRAF3m2MmDM8BlFCU8SeVLpFJfnNga/XrV2BUfLhTDC1wKmuo/dkDNQJLxiPRgOml9ZzPy2dRr0BwYW7NhlBNgZmYaGvU6nYdiqYyVjdr3Pe4HvvA8n3vCZx5qNRYvkGT5JZq4jE0czUZdttvtYpKkb5uanr7+Qx/60EtRmRElgWdQnnITgqO5wlFsDz/88C3dKHoWzbiWKcd0NrZX1Ws12He//aFaqVJNhgn2OGzevBkeeeRhOPDAg6gOmqyCrQY7plqFS5YuAT49A5or0Fu2QnzHveALrAlBGMq4BTz0KGOYdFugz3w5iBWvBX7QgcCKJdCIB7c7oG7+Jchr/g7grjshHB4BiZOvPLwNC6PgNGMwhX+bOwz/rnG4EJopAqGz5lfDiO8I0/OdOHjRGl+eZrVgkyzvVbZRsojcE2T2z7krhnmVmid93xPY4DAxsRka9VpWZGRQm16gl4fqzGjmXiGSlEitZuaQoyvlipPIx8dkUhhSMViMxVs43B6bHjwPfBe80uwZ3Aezza4Ox/VJmnEb5kKngLI3HkEWCgUvCEJZKpbfPjb2gS89k5b6KVtou2NILtMWQqwnhWSmdxhPtidQUT2q26ARD1kCWUOpXDKZQZokZRQaT5YHCl6+YC4IHMWG2bIoBvXIZlMP7bNe2Ik+dacNrdokxOe/FYJVYyCe9zxgc+cBYNtWtQp84QLwXvkK8K75NHT+6GWQtGrAdGxcCtp7rAI2en3qdB0OrZbBC9ES+6SQGY2voxCzJa3GN8aTi5/xiRcDJ15l7zlfO4MUc7CbsejYIygQyUiTVNdqtbTdbtnmGxf82YOcz1Vvz/2wfrO2ODsqO9ZD02LLD9B6Y6ILjzEpM9bH4LnBojHaT6PIRpl7F62LfylVRXcCghOd20NnodPtyGarwTvd1jXvf/+q9zhiTngGZGf8KGbAaD1CiLXod1FQRPUXJnDCqVL1Rt12cJsvGRoArIwz1XV5q3Dc6Bw4CoddNhrg4SmfmASNNR8+psUVDWZX2AeXxhDVtkLrtJdA6W1vByiXaRgnObJ4InEhPzoFse9+ULnsUqgdcRhApwncR7IWnDYL5G93AWAf0HDa9Axtj+Epsr427ZMJ/EhxyYfGR1R6q8jW56T9ty5HbmftkTL/ufYup9yoGHESe1pJwyxmW62yWrisOz1XKgqz/GcbBErrahirLTN/WqYJBd54J8CMLJ4T7pkLlmqls23OzbFxA5qyJlosj9WZK4N3QMob6OyiVHEcffyv3//+9yCc90y4Hzv1KuKc/5+5MytGARM1wZpOFOpMqdes1TPBVrfbhWLBWGk36WpICHjl6DCIKAGVJqCRSX/LFrKItvWWEhio1N1GEya5gKHz3gosDEGnicncoSV3j8QIwwCSBLx9FoN/5lnQxEZ+5O6wFAdZcBUn8MJ2Gw6VKSmtGahpL9AMybDvZzizhezso2lMsM0JuRmBKPn6cEPx0LPYadzNquT6BrH1t6hb8i5n5Z3/bCynss9JodMkK+JHRceWNjwPeAFaOJG6gjAngO6eMSamstHdLZ1hMndhm6xxNdcZ7ZgrS9VcypTV6jMyieOrVq1adTY21z7dlnqnwHYO6fC88p0A3ZhzEUiZaowqaC4JWgTPg6nJKevPFcm6orLPnzefDlSKgUuSwouW7AMHo0WZqQOrhpTi1s02CAzYaJAlEnZoSBJNeHZ30QIIDlpmCtnzVhElhzKgNSHW0IMOgjqaxG4bRBUHc1q+N2xVCnwY7rTgpHoN7p+/iNaPZaTuQsoaZC1CQvUeBOUZ4nAD19Ef7E8brDqv2Kat1RInEou+6R5BTj/6u7Peeagul8Y2rrWpVTHK74gH+qvtKBAEJGBnFNAGQWgL+LFeBqsYUyoKw3p0NCzoe6N7iGlw/HyhWIDQD+iOid/Bi8E1XhDvnyXZtGGA20wWxwlD9Aq0/NIHr/zgbR+49AN3uCwo7CkKbTeWj46WHuh0Zv4vDIIT212Jnd8CEwwKrUEQQLcbQb3WgLAQm9oOxJ6ds8g4LPJ9OLVSAtZqAgQCoNWBdOMmY8FdFyE+CA5JlEI3iQFTVzrG9fWUd3tCE10Jp/ahIxgEcQwldDmoaMni2djgCgAntBtwYzoK9whs5nUFb2a+eFbjbUN/4ye74UI9BqW+RgCzBebBXiAm02jwcOMeGEuaKzS0qX+bws4U1lpml1CxBfu9mmhFykrsrWQ8ClQQViyVIEkTqG2tUaCO6BI2WyC27/nUqUJFX+1Om7K5rNbTUjRCxWIJqkNDVD2JwaVJ+9sL09K82Q3lUTeSQeBX9WTjg1rrP3k6ky47LbFy0kkn4VWYvu1tb/uW78sX8K6hpMK0K97G0EKk9lYYqICSus7NoFkfWsMZC+bCfqmCuN4GPloG+cDDxPBDtRPEmG8sHtJUKaYg1hxa0zOQzsyAWIT0azsWV+KBJ7qbSihbH5NwbKt8ChM9OOin1YBT23V4eHQBxDZtTikKrNWgtbnGBavMff3jtpMlu7jy5zIXaLm+AuxDRFJ3lyDJFd5vwxZlv9RXv5GRz7hGA6fkkoLuoaEhUmpMZGG2FpuNMVhEy4s9mmiJse/S4M4GjcGrzPnm6FrgOYuiLnTG2zA1iYORilAulamUAa03WX26O5q9wxb1TrujpZ++5H3ve98CAHhypO/PpEKffPLJ6oYbboBqtfqv3W73Es75HIXpLmOmwdM+hKpABwYtRcADKpjxsHBGa1hWKsFJQQC6VjfWeXIGNKa7iZimN8yNGKYVKhRCEwx0FEHSbUNoFeCxcEj0y5FUhRpaYwk+wr2YoLHhC1rpbqEAJ0xOwM/LQ/A7TMiQpXRtT3mXxlnmvEW2f8g9m71VebcDb/VYC+4sbr+n0V/y2Y9s5Mpj7VrBbgAqI1pRdOcQxZipTRPCQY0WGNMUAyhXyjZANEiHSaJYd8mV4OasPgaBWBqMrlEcd6lcwbggWIfjwcjoKFQqVbooPM/3cau6UfTTxsaNtaeT12OnOeyOyuCqq656xPO8HxSLRaoQchgmJU1sYIInEOkKCGe1w2tOGx2F+UpBUquBjz2EGx4Bmt6DBw3REZe5RouZs3sqVZBibfTjFInZMarZxvbsLEony4b4MXWDMwFBO4bTuy3wlMRyTuB4p7F5GQNd9+hp86cqq13O8+ZZfzNDLpyPzLB5AYM3dHRcoGjXM7sjxfUEOl7nfIkoXlAY6AlTS4LLggULiF6NatKjiKx0tVolizwyZxSq1WHqIEKlRnfQC0zTMkJ5Zh2eee37hGFjYgytcrU6BEPVYXpEf9th25s2bNBI9yZTdX+z1Xzb9NTUSqXU66699loEkPbsoUHFIPh7KeVKN1zPMCfhWfTIkuJTaq1C/1orOKJShRNKBdAbNlInihrfCrLZIKvRq6twxCm5KXyU+ZKQtA2X4A4lZ8lwvYiGIJ80eafSdXS4VDcjnzwqFeDo8U2wLAjgDmExacp6un7v3pD4notgGUnJT7aJGLT+5i6eGdOM3oFpom7oq1KcVbeRt85uhIRrqXKfNT48okA474WBH/gwOjoXkjgmxR8aGoZqpUIzbNAHRhwaLTMqLeHlORg1DzHSncT6yfQ7mFzRJiby0GULfHLbsKM/jmPW7XRUHHf3X7JkyT5/8zd/80X7td4Behpkp0IqNjvEP/O5z/2QM/6dQiE0Bo8oAAwBI17xeAAQxyXyGAA4ZXgYRqOEFBNnL6SbN1PxPp1LDNp60FAWHJF7QQqvIarXexvRowvq2zbnDqT1hmmAJVenlzBwXPeYEsKTmOK5TTW8tNWEqF6DNj52O5DEXVASCQ5TwMS5AEkMRBj1oxXP0kbZqAv0Qy1fRo4nz2yiJnzYIR47tM5ZvOXsfU9FHHaPt3ofj22hCNXKECEwaLHRT543bz7VbuBnS5TqNtaY55TZ/a4LMEk5CHu30CQlkkzWkax2EJDVL9iAE8sVqkNV1mq3ebPVfP+7LrroQ7gOl6N4umSn/5jlldDlSvlK3/PJ2zUGy6ZPiSEJD3yBDtbhxSIcjxH45k3Ay2WqptOtlun8prLH/uAHDzgVRaCrgr6fBohqM49pmV2zdDw9beqjcQ22idZNH3FWDxUEFS0JCvCcLePwXM6IO6Rem6HgqtXEwp52ptygkHM5JbZT5FAytLt4QbqxEaZ60FhZy+uBSE0S21IA263d50zllDzvbthmWOOZ2+QU1Z1gyapxE/A58gDi8UF3oYsXYpJQcwW5Eh5OTOj59YbLI4UEE1UY/HU6hHR0oy5RS/TI6tEloxywxbJ9ujiwYxzPZ6lUZoiGNBpNFXU6l1966eVnORYo2FMV2qU9P/3pT/88DIMvl0oljlOc8G/GUqNSe5T1Gy2X4YyFi2AYGZMQcYhjSLduJStJwZcrQMrzJuaeoB+LAJLckUI7IWtudjUanzAk5tgc4DDdrHGUPmx9XU7Vf6IQwp+02zASYjc6top1oVavEWKAeCsqN6b1UySDTPPKbRbzI5ixswkQicoNECEJDsJjDvbqbWpvm7L6kV79c94lMZChrfqz6XbuFmGSIvgdbHdDPxkTKXjsM7JzukNIulMi21Wz0SRcGvcRaduQG4XIMu0FQdvkElWWPdbER6LnaxdChneGNo5Y7jS+uGrVqsOxA+bpSrDskh+xBOhswYIFlwlPPBgEgWcGd2dFLXQgjh4qw4srJYjHt4If+iC3bgXdjSnLR+eTbtXOb8RvZRpN9QtIJoOTW5OJyf4NmA13OYVOJXS3bLbjJixBb769qVerSbXYqZaAZf/7b52Blw5VYWh4mGAwpDXDbcJIH2kYMAOKqX18TdYwjsjCY8GTWTCpk1KtMl4kGERF3aaB6lwGbkc1z/1v5BxxCwHaasZ8hR+376EVNRnDlJJZTslRHF4doTJjPUyrSfuEvHdoyYvlMrmGyAKLQjx5eNFaAnon7gIS+UUInqZSpUmyuNFoXIEb7lr19kiFJh6KFSsQl54KS8FfBmEghUDnwIBeeECGfB/+aPFi8JA6AIOyKAGNfYLIz0HNQbNQKRdU5duR0H1B6A4ttElbbXd7MrVAyzNTx0jcVNPNUpi+VibLE4233LBUgFPvewCq9nsY7Q8PD8Pw8AghBbhtaG3RwnXaHbplR1GHrBymtGWKhfIxqDQCLTugZTfjATE+q/392Q2uGXlMjv0o7ztni8lMckubRggMoR6eQgvseYFxM+xdytR2SEjihC5AREEQEUEUBC05KalrabO+OfV74vGI8G5qeyu3wcp7bUOMM9FoNmWSJK++7PLLz366XI9ddhtwO/D5z3z+u4HvryqXypiqkw6aem6pBM9GyKdWoyImiWWinRhJInrMPjmIdTYWi8fNE4ymt5JCIwy4vdEV+Z7ZKALd6tgaBLSas4LIPGcFDjOi4fUa2nEE+7UknIIsnilWrXWxR5ACS0xKYBBWHRoGP/Cg3WmRQscx+qQJYbfoz6Y4UcrClaZirdcqtV2Z1W7ljkPGGeKso7PItjBKYAsY59oXQoeFkMboOSUly2ppddE648WKfjyOCUFYju5i7nO2JMV9z0GveLGYKcCGDKrf63fbZ5EepckPbzcb7//EJz5RtM23u9RS71K/BncAlfqaa665wuPsK+VyGcvq0wowfcaCBaCbDWo50VEXUgzWiBLfigFYzdMsmZHjYsPgxMOTqEC1anhP7J8anBOnEApdgajj4Id+NiSj3b2TYckbaYaiRCJJDSc9shH2DUJINAZiHnSjmBb0/3FNI8OYXKhY7LebdbCT5OGwHAlO/59zsJnbX1sqmym1cy9oMQVSrpdReEILIdJSsciGhofxk7cnSZoYRMPVYRgKY3J94oguSKzdMKvupfO3La0yYpARw2hFQ1HJiPSdNHvM6WIV7XZXpalcPjExsRLf3tWox6521DUFBAB88TnnnO8xdm2pVPKOGxmGQ7VJogjsdpuaIXcgG1eRG3jZS4TZA2fxMDImeDKxFmJmBiSON3sMwFN2WlQ/bYa1o1uTDSXpBZu5umKEDLk0jEttrWApKDh9elIPj4xoPwh1ISzpQqlCjRzI7lSrN0gpsXqNmKCcWtg68J569PvBvYkA9KK3wa42hLwpWwRlAzEDgSKq4WnP95Tv+ykms+bMmeMNDQ1vGB4aXbFhwyOfDcMAm0+yK4s6WJSy6IWiGo2skCq/TbPFddTbBgV8pEDRHkMb2eRiARPR47HEO1a73b704x//eNlCu7vMSj8dkaceA1Bjp5yS/sXxx791rtKfO2PeXKYbTYK5dCwBJqYIdUDSbeMruoL4np71cmS9+U9Z3TF2peB8QspV7Di4ihsNSFst2zGTK7vIsm+uWs3xeZiJrR62WmGA1Y7gxC3j7IhQsDD0WLWMeDq6ozH6ihrRAUQ+0EdHGEtYrDd3H8gFnubBQG92OzMAIWvJzRTYcNBZHJiqF33le74shAXk5OZz58z1KtWhDcVC4QOlUvFFn/jEVf/BOT/a9wMs5TV7mfFGS5BJStYZLXte8prW56fn/25dEBQMfk2iyDYU2zyKO4SgsQ2xq6VUh0/OTJ6A39mVVnqXZApnCXU1LHz2s4Njzz/fq1/6vk2lqKNVfSvjpQIkGzeCwrYgrOCiqa0mg5ZvqXOZtSwBgNx19Af8X4BAgnXknN7hFpjvJTMzELcawG2xk6uxzpqJnKB1Jn+TW08Eo74EIi/Q8yLJjrtvfWfdAUuFkjJgGgkvzIRb3/fSglfABlMeBD625G3jQvRJ7uIjK25aYsgNo+5rUyBNgR7nvaHMOH45DEOOASk2H/q+f7vn+V+tVBZ85aMf/estuBZ09Vqt1hJCNmxsYSrjMNFjCv+xYKw/uMy3ls02or1bWV6pyQDYyj5XS2M8qd7MdKQ8SdOEdzvdcwHgh7ALZVcqNLfrL5QXLCjWHnqocOmJLz5MdFtvE/UaAtMKul2uNm8BgTNXXLGN85ldeVzmMc+mxbLZLLRcWCXXbIJtw+0T43taCz0zgwAwCFHsu8Wan3JwlJuNbGEVG9zQSGYGMo0jdvL41mY0d/iv/lmITSHnh8+dM/IqDXCC5/lFtICYck4RRrCIoXNNexvVU2bnbFAa3lFOu349qi41xL6CeyIMQ2Zpb1HJ1/u+/13P8/71+c9//s+xmB5M1aN3/fXXS8aYPPPMM0fyimkyrKbikKz9LOucyWxltm5P76j3/ZECxMAWN2X1KMTCZvdRad5qt5nne2d++MMfXnL55Zdv2FU10jt9JIXrDEYuRqhWcUysX2GsON1ue3929FFnl+LuPrJZV1AqM7luHTW4IpsnUUFT6tmsJtNZV+acN9fO6UBfGi1QEoFErrwdbJBzUtJ6E3zkjA4RcLGxYGb+nQL36oBzLSaG5itJvKRUiorN1vwz1j184pnf+Pd3swMP/KEG+NyFF1xwRLPdPpYxeIUfBC8OWTifMnAYgCHtL4LR2O9l3CrbeZut38GZlmWHtkd4nscw+0ctYUqhZf6N8MR3fd+/YUFhwdr3Xfm+DIDPEb5IC5uKNE1DVGg3ntr+FLlUjqYgd1CtK7ate5svvspPDHd14Rhr4L5u77vmdxlLkxR1fbher78UAP5+V+HS3i5QZt8uHirz4iAIp2Zm4OpTTnvWEgZnwOQU04wpPTnJki0TwIMC4GAcM3/VuhrOj7YWa5sxZY6gjQ4WB9aNQdaxSrHPsPd/BbOEjRkQWlIwRVxCrmzGDJrqfdDNHEaxt01TZCTQ9xQJZzHrdv+0cc45/7lixYofwZo16jOf+cztAIDLP7zzne9cmiTJKWnKzgQBR2lIDw690HekMCYN7oqtyIRjb0+uSRWJXqQSnnjIE+IB4fs/qvilH3zskx+7xcw+NIJKi91CSKSIwRbr7yhAzrpS/ij07lZYd2Jb4fKx6XaP3/b1rhfAGhQG70yI/OQGZWQH34aKKkkSHnUiUmjYRbKzFbqnCdUqK0lidkFafvbHB+x/TjGO95HNpoRykSUPPsiQpdOd2PwByrhx7XvmIFNVR1YUTz4h5pCpXzCCaGpquxtlWrPM2uOZmh1ZQTQwNgKztDhZlbL7eXQzcncKU89kFLpYUqV6swBz5v7ZVW9/+0/YmjXd67B137ajjY2NPQIA/4TLp9/56fCu9K4j01QdrxQco7k+mDHYR0oYweSDKdhjEWdsmnG+SXB+H2Per/2S+M1wqfS7j33sY+ZKBYCrrr6KlBifO2u8o5MxOjqqp6anqD+qj0Jsm2RI/zHazhF8TFDCXIAG2swrQ74iEO89dhzJwcgljs0gu6ISb2cqtNswM2G30ZCLDjxQ3b9lS3T9OeecvNBnL4GN46Z5dcsEpLUmiEKRrJWxzr0Bkq5muH/lTqsszpG1bjHqC4wnZ6W/M7GBGbL/bJ0ED7kqPNs8myc6zKJz68u69qJc0wDlezhnSRqJqFqW3vTUnyxa9aG/A4D/WZnjoXBkjPj8wr8hgkPkXSbuZZSLL764Wq/Xh8IwFIiO+L4fCyHqV199tYFqcoK+prs9IwTq+C52rIBGFi9eLKdnZrpmLqMRl33M56zyYm5+22ZcH12lHUpjkkRZMDs7zgbNKeuahoekabovADyAEwt2Nhf1zlbobNTrIZjNnpqKzzz66OJzC4XXiG57nuy2U1EsidaGccY8P3MtMkuYu/Vt/whuawHwVo21ud2JcfO+JUx3J4HWjL4iVrY1WtRMgFAVzbfeZv29m667E7jsGj2YH0C15zIIkqDWCEDJ93zrBS+4+ZM//WnneltKZZXN6RHDE5dTSvnxj38cAWtcttkAB2k5V+LJBk5jY2Pq7LPP7ljsmCyEuysRopKl93tITB6Sf7wq3TOx5CZlcF7+2FoFZzLF5jk9EkXyMFToXeFH7+yg0Cm1Onyfffi3N25Mbzj66DOqjJ0KGzZJ7NxOJqdY2umQdc5cjZyf3LPMtvDUrdVm8sznMdAhFm/zOcx6ocuBGTuEj3Ic0+5E6kSC7LbIyc9Ah3xKOX823R3BNrLarbHjLlCnPRbHkSdGhmSw/pHTjz1q+R9fD/C1AwDUg/13Knq0VijvHlCQZsniqZjLWdydwDikc3o208O0e8kRoi3O7nqPw2vOrubH+OEcckMIR5/RwNgBS9Q0kzI5CHaR7AqAW+tVq3ThBRuj7152WbjE817NGs1RFcWIY3idLeOA1pk+6HzWrOimV5jjQAfzXjbQrO8AOXZz/HPaNsSDrgEgK5G078kkBtXqZOPeMuudU2qi3M0jbBlAbRdqVjFZMsk0S9CQh0Uoj295118tPnD+zMgI5pBxCXOP+SWwRgQDNrzdEjO+7bfr4YtPUVY44h/mbc5SIjmsmaxorkYkA1uyEzjr7mXDmv5MoP3T9iLw/GP+/OJsL4qZ5AGw5xUngTy92z3e972XypmpFAqhQB9WdyIiO8G2J5TMZcsz9rjbIb1neB8oeHR2hTBrRZaZbnWKQTRdA4nFR24Vro7CpmujiQmIt2zCrgBTC03UpT0/mb7jcGBbx0HomjPmmcthgWXBWZRGPJ0/ooItk885/9hnv2Emjgvz580rQblcgErFKXTRLqUdPOLiPmvQodmDt56gjNtZLdxjd/Zl0nMKTZlRZD/KHe++wKUviOkF6NtsUs5X7HWt5/6U77yxNGWJlPNhT1FoalcfG1P6y1+ugifOhXZrGJIYCwhEvHWKurUJ081sUv/z/CFzSp0dUBNuGqV2dLHUFshhy213wiM/uQkY+nHYVm852ygDGUew4Xs/AHnfg1AaGgYpnR3Ouaf2Z3J5mH7rbDYoc49sbQWLZAr+nDl84bp1f/ZXRx99YCNJCgXfL0GaFqFQKBGTu1torl0JFd4sFZweSopdzi3uPafomVV/vAp+8skn046FYfh/CP8hO25WC2LT5xYa7Nt9s/87uEns4O1sg/qyotua7d56CZ0q7qppWzs9U+ja1dPfrD2Zh8VXy3o9BcFEOl1jKfYQen6Ppf9Rw2enzNsBSG1KmAr1pYJSsQrBxo3wvQ99CI5evx4OOfZY8MsloiRojE/AvT/8IaRfuw72DzgEpSJZWcpX23A/a3W1HOPOZe/vvO9V5NGFJjza2TSJeez7qtRUB75ViDf/Tadz9Zwg4FOm1C5/RTjXQpkZuXYHCwX33PZVERWRWZpN53u7S5kmMM96bxtZvXo1BpNQLpfvarc7D4GAA9I0xXY4bgqcTK8gVglSFtQRk8w6Idu+yj+zzkyW9HJGx7hmfe6Lu1B66An1SuM27tYKneXbLrxwRFbL7+ST04Fst2ImlR+hdaaheL0PZ0GDc5q3cSPduTZd45m7S1Afhs2aBgGVwgLsnwJ077gXbrrq4/CbZftCpToMLFbQ3fgwDG3eAodxD8qVIqkudTr2pdrdz7k6PMcE5GgC7J+tkuP2GEYjgqhYlMSyWCryxesfefl7jz/++1fefPP9w77PawnxMPT21mY2/FkKbuke3AVAz7v4frHYU25cOJdQr+cVOv+oMwfA0BtjannmnHPOuZ4zfi7OpsXdcO1ZWNuMtdBYRupzHFxq5sn0qbWFM7ePEObOnX10nenuVrKN+bUHWghO8OSqVat2ulLvVIV2bmYceq8KZHK6rE3HzONeMjXNZKsDIvDNLBQUl5jLY6IOWrIeZA/56N3ys1sjVcKhpTWfn1epQLXgw6JOA1q33wEpnTgfyoEPc+fNg4qPYyki0yGNLofLDDroil5Y00K9c/mgcLYYmn6y7MQypEVLa1UpVJe8utZ+1UeF+JzEKnsh7OSeWUEfMfQjmy69NIPnsKfMKCPOXlE0VM4kTlTkFB9fl8uSHjFB1a/QMm/JHSTmed7PUin/FHBOnO0DdGSN6ENjbTQV7uex0iwwt5lAa3AeLfWSIRyuDMc+cYVR7rWhgYAm/rfbw3ZUknD++XOVH1wI05OgW02O1EjdySkzxL7vUs9I3ixS4bBep+k5uMkGHM7HNZPcbVcJcsIxDgUGUJxqgAddmJk3DOmSJZD6AhRSIsxM01wXr1IguM/0KroMYb+wHVmg7Fy74iXnEjFQqWZI8V5SKV863TrpvKOP/p9rbr11fdX3WQOVdzaU5yFZQ3b7MUrYU/LZ7oUKiM6VURt5pLH7NlPs7Vlthc/Hx8fpN6vV6g+npqYanPOquUMYSn7XtU2d5ynGHSZt7ZTPJZay45Eln5wVynN4PLornCm1rfxjQlBF4K6QnWuhGdPxZe95i1+bPlpu3Cy5L3h3aoq6RBCDNlm3PKZplTk7MvkgbbaC9yIXQjDIfzajg338YKMJjX3mQ+H1K2HfE08Ab8kSgti6Gx6B2g/+B9rf+x4MRSl4RZ+6s2lbzJj4fDolV57aT+DVcwHtyXEj3TDziLfaNBUNBnI0DJeeM9M44x/C8O9jtH4YT+Qjotk+tfkbMr6bSxaVNElUTrmdsuLNSOLwDuRjjtCi42exuLlSkVaxlf0sv+GGG9SyZcvEZz/72Qfe8KY3fSPk4o2dqEsBYgbbWb5tbBXL6kgcf18uEZM7CrmHbWnLMrKaXMrb/W/fp4MtPO9u2J0V2sRVGup/8RfLeLtzAczMaOxAUYHP0o1bgOO5sG1Evdu7/W5GXGmzhjkIuNd25D5tZg46t4DjIFfugWw0YXq/pTDvi5+D8gue37dtpUMOgTknnwLTL3whTH54DMr1GfD8IoDG0MwefHLIe8VvWbJnVgYt2+CcUrvbLd5/UsG1brX1Ib538luWHfiTL9xx1/2hECxFWKUfobU6kwHsOM3EWFeMTNGCoxVOEiw4ItfXftY5QirETKxRXswy4QZxUuxm01A7IbtDjcpAcNrPtcDY6zEozPYRXS/QxKuBo0OIbxDRIRfk5KgOHivN7voezQjsfF6h/2NYg4V3GT8I1u0qlGPnwHarVhEZX3G4+h7RaCxJxyeoQj0en2Sy0zXuBlmynjKbyNeBdMandYpk0tIGC868T9MVZR1OE9AhNKc7bZgZrcK8z36KlBk5pom7zk2FwjahNIXRl78chs/7C2hFMchubFAKZ+ktXYJ1znt+I/Ud2ttwdqJyfCG2owUXVAAlldcMAjlHqcVnTTXxykJldjuZx5bdc6d8mDl0z82CjQMAAvvyrHV2rz33GGrtFajBAPm5FC4eVCoChobosxMTE7iu0i9+8YubGMDN2HSA9zWHRVMLG7ZyIVUB9RqiV5ObHpArOZ2teb3pAr1L1fjHWb1vfx0MNiLgLHfG7ysuXHhnju5iNxtej/sxNqbqF112uJjYchY021rXmlp2uzqZmqBEhsOLs8RIdkNyXc+9tv3sb7aB1AyLdK6HXVAPhUd9fPW4DeFb3wzlk15EXd3UPGpxVuuv2VlrGkbPPAv0YYeDxlJTGr7ponN8MFeLG2vcY7ixW2qRFfokOQc9Tg3DQm58c4Uk4d2OXib4c05ZtmwEGxlCMwjp0U6eU/R+U0g8zKTs7v1tLgK6EIzSc7LSRrEFVKuk+MPDw8G6detipdTfEDlBdkUa3xY77okSFwnlLVfH7A777b+254uozsyNgmbk0PHo31t3XQRhqMMwuGvswgvriMLsCkbSp26hLSNOKOBN0GzNlxs2K660kFMzDC0hugRu+GrODe5DGTLOulzbfv5A9gH+9mtImIczwmuVIlTPOL13a8wx+1iyClJqLVPw5s6F8KijoIukKdgsindgx+XmlDr7zdn0tT1eDFO+appoe+8bBVcMRItxNQT6sD+SsAy3GOf79e4z/X70rMVJn4sy68TnPSNS8ND0q/E+pcbHapXX8G/DwyM//vGPvw2gfxgEISKdBlFx874dSz8pNTKiItVC7hjkqHW3u2DfpZ1eljNPmSY7/j1sHRPC/1FuFPROl6e0UnJ/x8bU7cuXB7DxoRO5VJhAAd2NmKw3MCeVDdHs95tzJZrWwPVBCpmy51vk7bw/e1WkmkFba+hiGjssWLhv1kiKbC97SD9fsgQaGiCWqWnKtarj8ObsIsqhGoaqy2yr7fzsNe5maXPXTKpBFgI9VGuGh3Si/WhqNNBgAMzTS/tIC+ZlbIcJLu7vxpfOBYezEivbuwhsaYruWXpjuVG5eblQ8Ddt2iTjJP6IL0RMrkHOi3DkNNitHoSBRRYN94YLwPMEOO65GaWRGI5BO8Es498zmJ3LqmK3Df7o1kql9NV8NnNnC3/KvjOAWnDaH+2fbt68FCankCaAqWYbEvRTMQZAfc701N6aMx+61z5n3Nd+i2zbd/puce404tMYFHSQhBvpdHODPrapScgV4sgEAyAFiUKqL/sRt0J3iDO3w1oYCxvmb705L7J3MdieOu0FSjabMKzS0dGREVTKxDfKm1glpiWn3EgqkmZLmkqWpqTsOZTDKX6m9DlldxCgzu13puCtVkuXFywYue66626SSn68UAiFmTnbux5chzkNEwoCas9CVwLvgjjCOhviacfFIesSEuggLS9adxS6R/WxPGXIhyoUCsz3/TUf/ehHt2CTwq6aufLUFNoC43412Fc3O1XZqEGaRhB3IzNXOhfX25JY+0ZO+TJgx1rt3Op7fvPsWhnzPck5dNot2HoXxRi2i8XUJ+QZh8xdwqy5ce86gtlw84hBKa8DpBOznV0L4Lmof9YuGHuYu+PQugVpKd4viuUyKmnMGMMrPL+gEqMZNEuSpCxNY1rw707RAbKLIKfYTtlJqaNelhElv/lGqbVGmltVrVaHbr/99k+D1jcXwlA41yOn0tavFhQo0rg9rPmwUwZoNjtabpoSxiAoBOR7mxRTr3Ggl2QhZaZZFEKI2C+Xv7ir0I2dotDXjy+n06oSHXa7Meu2DQVWat0MGzb1XIrMuvaqgFwkbEo53SD27Siys84WO8bPYm8gjmv73Te+AcmWLVSIRIqMN3m7IHk5tdn7PjR++1vY+tOfoe+Mo9zxt7Iqa1eq6jqVM7cihxw65CPTGcN0kPPZ7edovriHoy/q9cnJNkvTaAcLKm+ECmyV2CkwvXYWPafU7rWMGKOFUuQmNS7t4mpCtlFsWSj4t956a1yv19/GGXvEE56Qsn8mguH/6FF/obXGTnPi8PARETEUvcg7EngBzTjsnaL+UMDCfapcKvEwCP7xM//v//0WdW5XTsR6Sgp98oI7jd1VekPU7bRVRNxtxtNyRs3CWxnmli8nzP3fV/G8HZfBPXXfxMgGRw6XwyJs/ulP4Yav/C3omRlTaZdfwhBEGEK0eRxu+fgnIb3/QShUhkDZEc3E12zdHufGZ45GFh/mmJzsn0wDQkZ6lLkc2CcqO23eqZR1o1xc1+l0moyxTspYmzHW3cES5RerwPmFXBOnxLj0KbB51FaR++s/TPEJKRBS3BbnzKl885vfXNdot88LfK/peUJgRZ4NWWyhkiM3NwxN5FsHJmgMfDMoyAzqtDbG8VfPImpXWqswCAUX4qFCoXCZRWZ2mXV+6omV5ctN+LS4e+/mwH84bMP+aSq1J9D04T/8kGEgMt6c9alyWHQvgZLLvvUpe+915rvarqJQM5hXHYIljTqsveYaqDVbcOKrXg2Lli2jWd/01U4XNt91F/zqC1+A7ne+AwdWKsBwvDLSJ1A6ftu5gQ7syKHmWXVZxnKQB9qsYuPJ8piQcbvlTVcqj4zvu+/a+OGHW0WtqRqnsI3PZdfVN4moJ3i7Rp7SnvnM1YTkLXCuExx2BIWZrCTrdLuyOGfOyDe+9rWfvuaPX3NeqVr6AmMwHMex5KauNOO2o3228XRvw/vdC3Mn2y7ppMJ5LUEQRIWw/M5PfvKTWy1Ut0vnFT7l4hC9YoVga9bIO172io8Ev/nVJUG7zQvCV0GxZPmnejP5XD8b5tV6PC79wVhWJ+AU195ECBLLIQzEwQUaElAQKYD7Wi2409NQOOJwGD7kMCjNWwDc86G5eQM0brsNqnetg2WFAMpFREQEeCAAR0li2tx4Dabli567u0l2iGzyx+HiBJBhDhcpUJ2iEyisAukl7fUPFR4KvX//wmtedeFXvva1aEhrXndK65CI/sf+c7E9Be8pqtOvvELvCNaDvvX3UBAohKHXnZmpnfVHf3RKZWTks0qpfaI4lsIMXaEEpZk5kxWK9v9ANj/RxTq9OAiV2cPqxlKZe744/0tf+tLTNtD+qSu0ObVqauXKo++44frvLY6TRWGqVXmoarRXKqxKMGltVADiMna3eWvqZgWHrizG2W139rKMlUtV4+px8A5ip4mGmSSCh+IuTDGANgYzHJVWAw7KW1osQcnDoTfIH+HTODkPG2YzMkTHamDcmYwZlBp4LQFOhvxq071O7VwciAyMUniejKdm2NZ6oxMddND5z/3tr//jgAMOEA8++KDeTrZwdtaw3wWsVHqJlm0VfJaGbd/CQ+/7BOEVTAqdqjsxIYNE9M1ms3nccccsO+CAg6/0/OA4w5pKxVAZb8yjURz0xRjmJiXDIPSwnwGAv+srX/nbTx9zzDH+2rVrMT6A3V6hUTQmV8bG9M3HHHOFfuD+y+ZFKh3GgY7IT4zYGJli7q5903Wc1U44WCGfmXNkje5omakleXyY1oG3Q8EpCJWxhEgpiLggKK+bpDQPXAQeFLCyDBTmi8G348+QQsKMcevRxjoWJaPQblNsGWTuiGE+BvsScVqQwl4QLrRgXHLJ0s0bHy5Oe8HfHr91/AL0h1cBsLHZVnPHSj1b4Z2Cm/er1Xy9wGxrv40Vzr8ObTYxlzqndi8RhoVusxnNnTt36LjjjntjtVpdyYUo4ZgKrI6yU3K34cDMjbVwbrESQggkTheCb1aKXXLttV/5l/nz55cmJiYw4HVwo97tFdpJ4/RXLbj+3luvnTs5+bIF2pPDlbJiggsMOTA8EZQwMhNHCamwi2lOzQ9Tsbd8y1/oYDOTDbTJQKJ0RdyKMGLMv0JXKuRyxrIjo+RYiE/dKeihMBYKDiERpSMNL0exCt0TB3cbA+2iPXuwkBnfVnd6Ajko0EfhCkSAQZnYtGWj2NiNv3Psaae+Y/Sb30SznFEwPs5zMVu5szT3dmtBnBXvKTa3z3lOkfOp8rxS45iQEDyvwDmvyCjypZTpskMPfe6ygw56ZbFUOsr3/cCwldLiakt7G2z8bTqOiIRo0EiY85+bt279zA//+79/Xa1WK41GI5mVUJJ7jEKj/PLZxx65fnzzF+ZMTb1woRfAwmolRZXC2iQ8/0JgG5D1oW1ETQqda4I1paHoQyOnHMFrxgmxc7aN52KfcITppMLDhMSuESo2DsLBbCL54cYCe1xDgTMIEY7CHKYjDc9Mvq1RQleFivZtUNQPjmvaB60BpxwWZKo5E6IJit3TrsGklN89+vQzLlq6Zs3deNfCGpeneDhd88dsxe5/Xq32lFlntR30PKfQpu6j95w4CMlSe16olapw3x9JWi1MFQ4vXbrf4fsfcMDxQ9XKwZ7vVQLfN2Wn9mA5bg+ldCQE3woAP5mcHP/qD3/445/jdhfnzPE6OHK22VR9CSTzqPcYhUa59dgTjrxr4yNXii2bTj1UeIW5xQqU/ILENiBiesFYF+sr7PQJ4xL3ZuS5oIysrx34YxSMvq4Fmnq0MWQgjdVUsQKpFaSaQyTRr5Y0ZE3b7+DoCp9pRhYaC1rt0PnMJFt3hway0c8z3Aw6g462xmgCvimZwO7lKIJxpmCdYA/BwsXfetFRR32k8vWvb3KtaDvxkD6a9e635JWKUWin2NZ/pjrqbS21KWoyik3z3oQQRVTuuNPBht05xWp1n2qlss9QubKwVCoNFYrFIudIXcYn4zS5r93p3NGq1+9Zv3490p/JarXqxZynEfosnKfQauUVmXD2nXhctnugdonoFecNf/sXP37r+IYHVy4Q7NAlzB9exH2ohJ4KhUcjk22ZtE2q5AqTsOjHTHgljcSOKbScKPhFsg4earNJdRmOYhxypSDSDCIsWkelBo1V8ugLIlJnSYSMLyOxXNKZDrI0EhIMLpEOFy19NlPQCH6eNILcHfI54tjzGt7wvJ8decDBnzj6xh/9hPZ75yvzYyk4jWzcRrmr1V6RkrHMWQGTs9o5i40+Ncuvy/OwKFuESdIpSimxCx1HFVRtNzp+tmtbqZogRLNQLLa4Ug0pZTPCDCjnMbTbTpHzSr17w3bbk1x/r9Znn73wX372k9dG0/Vz5kl1cKjUiIeeB/nSlK+js59gbQZ5GtZSK3wPaWiNK4FHA5WafG+E/hjXSjCImYbIfreLQaHSgFNUEjpD6LmD9ARXIecp40Iy35OccZlyJlPGZKoBuU+JZwHHhidKqVhrGZmuMAxpE/RGJE4G15AI7nW4YM3RUrjlhCX73vLGMLyxfMMNW9YA8BU9yvJdrdCPptzcvu4pebWKit0rWOr523kFN/iNeZ7x7Fo0xJWqBlqLQIskBC1wQD06fSqVMmKcY0a0zTlvRULgDApUeApnng5Fzh+MXSIYEK2FY8SxsDbRJ53k3T80b/mPHnrw1E3TW09oduOFCmQojZ3F7lAVM6FTIopCfcYwj9O4SkUBNk80x9oFJgXTifC8hANLOcckN4cY2/qU1jFZZgojU84gFlrEged1Q89rFzzeLPiiWxJBVGS8U/C8KPB5VAYvCYElBS1kwGk0lSyHXJWVllwJVQ54UvQ8WdJaLgkKEYTFGLgfgd+NYM2aDgOQOENmda5gD55ZYY/plri/o3vSH0z2K70JKtl2kj39yumaeHsuBiqyq0d5Wo/HLlNoFLyC1wLwb8NJ+ky4gR2z/PnV++ZV5j4AujITRUGKdLJxgmGyYpyrkhASLXEolNIs0D7aZq8kqzqShSBIR4NAzo85egiy6KcKSiVJHK6eh7WMytwRMTvY0VBCJzdRUK0q+M24hPl3SZhYp2AtHWBsI9kZBzrLaOwGirwjmQ0R5pUdHhUuHBrqQYL55I1pynWVfg65sJU2z+xx2KUK7dyPNSuAw5oVsBJoTt3ucOIfz35TyIg48vb+iBbZuVWwZwqb9Xw2Rr49yWcrd5dz+fQq9GzZ8bzXx/xeJqsfx3Y7F2B7kvvybndCBjKQgQxkIAMZyEAGMpCBDGQgAxnIQAYykIEMZCADGchABjKQgQxkIAMZyEAGMpCBDGQgAxnIQAYykIEMZCADGchABjKQgQxkIAMZyEAGMpCBDGQgAxnIQAYykIEMZCADGchABjKQgQxkIAMZCDyj8v8Bye+LKrGNiukAAAAASUVORK5CYII=" alt="">
@@ -6751,6 +7046,7 @@ body{
             <span class="trow__count" id="countMech">0/0</span>
           </span>
           <img class="trow__go" src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJjaGV2cm9uX2ZvcndhcmQiPgo8bWFzayBpZD0ibWFzazBfMF8xMiIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4KPHJlY3QgaWQ9IkJvdW5kaW5nIGJveCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRDlEOUQ5Ii8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMF8wXzEyKSI+CjxwYXRoIGlkPSJjaGV2cm9uX2ZvcndhcmRfMiIgZD0iTTEyLjk0NjIgMTJMOC44NzMgNy45MjdDOC43MzQ2NyA3Ljc4ODUgOC42NjM4MyA3LjYxNDQyIDguNjYwNSA3LjQwNDc1QzguNjU3MzMgNy4xOTUyNSA4LjcyODE3IDcuMDE4IDguODczIDYuODczQzkuMDE4IDYuNzI4MTcgOS4xOTM2NyA2LjY1NTc1IDkuNCA2LjY1NTc1QzkuNjA2MzMgNi42NTU3NSA5Ljc4MiA2LjcyODE3IDkuOTI3IDYuODczTDE0LjQyMTIgMTEuMzY3M0MxNC41MTQ3IDExLjQ2MDkgMTQuNTgwOCAxMS41NTk3IDE0LjYxOTMgMTEuNjYzNUMxNC42NTc4IDExLjc2NzMgMTQuNjc3IDExLjg3OTUgMTQuNjc3IDEyQzE0LjY3NyAxMi4xMjA1IDE0LjY1NzggMTIuMjMyNyAxNC42MTkzIDEyLjMzNjVDMTQuNTgwOCAxMi40NDAzIDE0LjUxNDcgMTIuNTM5MSAxNC40MjEyIDEyLjYzMjhMOS45MjcgMTcuMTI3QzkuNzg4NSAxNy4yNjUzIDkuNjE0NDIgMTcuMzM2MiA5LjQwNDc1IDE3LjMzOTVDOS4xOTUyNSAxNy4zNDI3IDkuMDE4IDE3LjI3MTggOC44NzMgMTcuMTI3QzguNzI4MTcgMTYuOTgyIDguNjU1NzUgMTYuODA2MyA4LjY1NTc1IDE2LjZDOC42NTU3NSAxNi4zOTM3IDguNzI4MTcgMTYuMjE4IDguODczIDE2LjA3M0wxMi45NDYyIDEyWiIgZmlsbD0iIzFDMUIxRiIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" alt="">
+        <span class="trow__tick" aria-hidden="true"></span>
         </button>
         <!-- No illustration: the frame draws this tile empty, and inventing one
              would be inventing a design decision. The tile still holds the row's
@@ -6762,6 +7058,7 @@ body{
             <span class="trow__count" id="countElec">0/0</span>
           </span>
           <img class="trow__go" src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJjaGV2cm9uX2ZvcndhcmQiPgo8bWFzayBpZD0ibWFzazBfMF8xMiIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4KPHJlY3QgaWQ9IkJvdW5kaW5nIGJveCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRDlEOUQ5Ii8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMF8wXzEyKSI+CjxwYXRoIGlkPSJjaGV2cm9uX2ZvcndhcmRfMiIgZD0iTTEyLjk0NjIgMTJMOC44NzMgNy45MjdDOC43MzQ2NyA3Ljc4ODUgOC42NjM4MyA3LjYxNDQyIDguNjYwNSA3LjQwNDc1QzguNjU3MzMgNy4xOTUyNSA4LjcyODE3IDcuMDE4IDguODczIDYuODczQzkuMDE4IDYuNzI4MTcgOS4xOTM2NyA2LjY1NTc1IDkuNCA2LjY1NTc1QzkuNjA2MzMgNi42NTU3NSA5Ljc4MiA2LjcyODE3IDkuOTI3IDYuODczTDE0LjQyMTIgMTEuMzY3M0MxNC41MTQ3IDExLjQ2MDkgMTQuNTgwOCAxMS41NTk3IDE0LjYxOTMgMTEuNjYzNUMxNC42NTc4IDExLjc2NzMgMTQuNjc3IDExLjg3OTUgMTQuNjc3IDEyQzE0LjY3NyAxMi4xMjA1IDE0LjY1NzggMTIuMjMyNyAxNC42MTkzIDEyLjMzNjVDMTQuNTgwOCAxMi40NDAzIDE0LjUxNDcgMTIuNTM5MSAxNC40MjEyIDEyLjYzMjhMOS45MjcgMTcuMTI3QzkuNzg4NSAxNy4yNjUzIDkuNjE0NDIgMTcuMzM2MiA5LjQwNDc1IDE3LjMzOTVDOS4xOTUyNSAxNy4zNDI3IDkuMDE4IDE3LjI3MTggOC44NzMgMTcuMTI3QzguNzI4MTcgMTYuOTgyIDguNjU1NzUgMTYuODA2MyA4LjY1NTc1IDE2LjZDOC42NTU3NSAxNi4zOTM3IDguNzI4MTcgMTYuMjE4IDguODczIDE2LjA3M0wxMi45NDYyIDEyWiIgZmlsbD0iIzFDMUIxRiIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" alt="">
+        <span class="trow__tick" aria-hidden="true"></span>
         </button>
         <!-- Assessment only, and hidden in the repair flow — a repair has no
              penalty to record. Empty tile like Electrical's: no art has been
@@ -6773,6 +7070,7 @@ body{
             <span class="trow__count" id="countPenalty">No penalty</span>
           </span>
           <img class="trow__go" src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJjaGV2cm9uX2ZvcndhcmQiPgo8bWFzayBpZD0ibWFzazBfMF8xMiIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4KPHJlY3QgaWQ9IkJvdW5kaW5nIGJveCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRDlEOUQ5Ii8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMF8wXzEyKSI+CjxwYXRoIGlkPSJjaGV2cm9uX2ZvcndhcmRfMiIgZD0iTTEyLjk0NjIgMTJMOC44NzMgNy45MjdDOC43MzQ2NyA3Ljc4ODUgOC42NjM4MyA3LjYxNDQyIDguNjYwNSA3LjQwNDc1QzguNjU3MzMgNy4xOTUyNSA4LjcyODE3IDcuMDE4IDguODczIDYuODczQzkuMDE4IDYuNzI4MTcgOS4xOTM2NyA2LjY1NTc1IDkuNCA2LjY1NTc1QzkuNjA2MzMgNi42NTU3NSA5Ljc4MiA2LjcyODE3IDkuOTI3IDYuODczTDE0LjQyMTIgMTEuMzY3M0MxNC41MTQ3IDExLjQ2MDkgMTQuNTgwOCAxMS41NTk3IDE0LjYxOTMgMTEuNjYzNUMxNC42NTc4IDExLjc2NzMgMTQuNjc3IDExLjg3OTUgMTQuNjc3IDEyQzE0LjY3NyAxMi4xMjA1IDE0LjY1NzggMTIuMjMyNyAxNC42MTkzIDEyLjMzNjVDMTQuNTgwOCAxMi40NDAzIDE0LjUxNDcgMTIuNTM5MSAxNC40MjEyIDEyLjYzMjhMOS45MjcgMTcuMTI3QzkuNzg4NSAxNy4yNjUzIDkuNjE0NDIgMTcuMzM2MiA5LjQwNDc1IDE3LjMzOTVDOS4xOTUyNSAxNy4zNDI3IDkuMDE4IDE3LjI3MTggOC44NzMgMTcuMTI3QzguNzI4MTcgMTYuOTgyIDguNjU1NzUgMTYuODA2MyA4LjY1NTc1IDE2LjZDOC42NTU3NSAxNi4zOTM3IDguNzI4MTcgMTYuMjE4IDguODczIDE2LjA3M0wxMi45NDYyIDEyWiIgZmlsbD0iIzFDMUIxRiIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" alt="">
+        <span class="trow__tick" aria-hidden="true"></span>
         </button>
       </div>
       <!-- Figma 2875:23044. Assessment only. The primary thing to do from this
@@ -6780,8 +7078,13 @@ body{
            being only a row in the list — the Active checklist row above still
            opens the same page, and that is deliberate: the row reports how much
            is left, the button is the way in. -->
+      <!-- One button, walking the five rows above it in order — see
+           ASSESS_FLOW in screens/rnm/script.js. It reads "Start" until something
+           has been done, then names the next step still outstanding, then
+           "Finish". It used to be a fixed "Assessment checklist", which is now
+           the first row. -->
       <div class="rnfoot" id="rnAssessFoot">
-        <button class="btn-primary t-label-md700" id="btnAssessChecklist" type="button">Assessment checklist</button>
+        <button class="btn-primary t-label-md700" id="btnAssessStep" type="button">Start</button>
       </div>
     </div><!-- /#rnPanelTasks -->
 
@@ -6795,7 +7098,55 @@ body{
          The hero's bike is not drawn here either: the bike belongs to Bike
          essentials, and this panel is meant to read as empty rather than as a
          page that failed to load its content. -->
-    <div class="rntabpanel" id="rnPanelInfo" role="tabpanel" aria-labelledby="rnTabInfo" hidden=""></div>
+    <!-- ── Tab 2: Bike Info ──────────────────────────────────────────────────
+         The bike's record: three readings across the top, then the last five
+         repairs. Everything below is written by paintBikeInfo() in script.js
+         from REPAIRS — the rows are differences between consecutive visits, so
+         typing them out would be typing the same numbers twice. -->
+    <div class="rntabpanel rntabpanel--info" id="rnPanelInfo" role="tabpanel" aria-labelledby="rnTabInfo" hidden="">
+      <div class="bi__stats" id="biStats"><div class="bi__stat">
+        <span class="bi__statv">7,245 kms</span>
+        <span class="bi__statl">Odometer</span>
+      </div><div class="bi__stat">
+        <span class="bi__statv">Today</span>
+        <span class="bi__statl">Pack ended</span>
+      </div><div class="bi__stat">
+        <span class="bi__statv">1,234 kms</span>
+        <span class="bi__statl">After repair</span>
+      </div></div>
+      <h2 class="rnpanel__head bi__rhhead">Repair history</h2>
+      <div class="rhlist" id="biRepairs"><button class="rh__row" type="button" data-repair="0">
+        <span class="rh__text">
+          <span class="rh__when">20 days ago</span>
+          <span class="rh__kms">1,234 kms travelled</span>
+        </span>
+        <img class="rh__go" src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJjaGV2cm9uX2ZvcndhcmQiPgo8bWFzayBpZD0ibWFzazBfMF8xMiIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4KPHJlY3QgaWQ9IkJvdW5kaW5nIGJveCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRDlEOUQ5Ii8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMF8wXzEyKSI+CjxwYXRoIGlkPSJjaGV2cm9uX2ZvcndhcmRfMiIgZD0iTTEyLjk0NjIgMTJMOC44NzMgNy45MjdDOC43MzQ2NyA3Ljc4ODUgOC42NjM4MyA3LjYxNDQyIDguNjYwNSA3LjQwNDc1QzguNjU3MzMgNy4xOTUyNSA4LjcyODE3IDcuMDE4IDguODczIDYuODczQzkuMDE4IDYuNzI4MTcgOS4xOTM2NyA2LjY1NTc1IDkuNCA2LjY1NTc1QzkuNjA2MzMgNi42NTU3NSA5Ljc4MiA2LjcyODE3IDkuOTI3IDYuODczTDE0LjQyMTIgMTEuMzY3M0MxNC41MTQ3IDExLjQ2MDkgMTQuNTgwOCAxMS41NTk3IDE0LjYxOTMgMTEuNjYzNUMxNC42NTc4IDExLjc2NzMgMTQuNjc3IDExLjg3OTUgMTQuNjc3IDEyQzE0LjY3NyAxMi4xMjA1IDE0LjY1NzggMTIuMjMyNyAxNC42MTkzIDEyLjMzNjVDMTQuNTgwOCAxMi40NDAzIDE0LjUxNDcgMTIuNTM5MSAxNC40MjEyIDEyLjYzMjhMOS45MjcgMTcuMTI3QzkuNzg4NSAxNy4yNjUzIDkuNjE0NDIgMTcuMzM2MiA5LjQwNDc1IDE3LjMzOTVDOS4xOTUyNSAxNy4zNDI3IDkuMDE4IDE3LjI3MTggOC44NzMgMTcuMTI3QzguNzI4MTcgMTYuOTgyIDguNjU1NzUgMTYuODA2MyA4LjY1NTc1IDE2LjZDOC42NTU3NSAxNi4zOTM3IDguNzI4MTcgMTYuMjE4IDguODczIDE2LjA3M0wxMi45NDYyIDEyWiIgZmlsbD0iIzFDMUIxRiIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" alt="">
+      </button><button class="rh__row" type="button" data-repair="1">
+        <span class="rh__text">
+          <span class="rh__when">35 days earlier</span>
+          <span class="rh__kms">1,221 kms travelled</span>
+        </span>
+        <img class="rh__go" src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJjaGV2cm9uX2ZvcndhcmQiPgo8bWFzayBpZD0ibWFzazBfMF8xMiIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4KPHJlY3QgaWQ9IkJvdW5kaW5nIGJveCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRDlEOUQ5Ii8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMF8wXzEyKSI+CjxwYXRoIGlkPSJjaGV2cm9uX2ZvcndhcmRfMiIgZD0iTTEyLjk0NjIgMTJMOC44NzMgNy45MjdDOC43MzQ2NyA3Ljc4ODUgOC42NjM4MyA3LjYxNDQyIDguNjYwNSA3LjQwNDc1QzguNjU3MzMgNy4xOTUyNSA4LjcyODE3IDcuMDE4IDguODczIDYuODczQzkuMDE4IDYuNzI4MTcgOS4xOTM2NyA2LjY1NTc1IDkuNCA2LjY1NTc1QzkuNjA2MzMgNi42NTU3NSA5Ljc4MiA2LjcyODE3IDkuOTI3IDYuODczTDE0LjQyMTIgMTEuMzY3M0MxNC41MTQ3IDExLjQ2MDkgMTQuNTgwOCAxMS41NTk3IDE0LjYxOTMgMTEuNjYzNUMxNC42NTc4IDExLjc2NzMgMTQuNjc3IDExLjg3OTUgMTQuNjc3IDEyQzE0LjY3NyAxMi4xMjA1IDE0LjY1NzggMTIuMjMyNyAxNC42MTkzIDEyLjMzNjVDMTQuNTgwOCAxMi40NDAzIDE0LjUxNDcgMTIuNTM5MSAxNC40MjEyIDEyLjYzMjhMOS45MjcgMTcuMTI3QzkuNzg4NSAxNy4yNjUzIDkuNjE0NDIgMTcuMzM2MiA5LjQwNDc1IDE3LjMzOTVDOS4xOTUyNSAxNy4zNDI3IDkuMDE4IDE3LjI3MTggOC44NzMgMTcuMTI3QzguNzI4MTcgMTYuOTgyIDguNjU1NzUgMTYuODA2MyA4LjY1NTc1IDE2LjZDOC42NTU3NSAxNi4zOTM3IDguNzI4MTcgMTYuMjE4IDguODczIDE2LjA3M0wxMi45NDYyIDEyWiIgZmlsbD0iIzFDMUIxRiIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" alt="">
+      </button><button class="rh__row" type="button" data-repair="2">
+        <span class="rh__text">
+          <span class="rh__when">43 days earlier</span>
+          <span class="rh__kms">1,388 kms travelled</span>
+        </span>
+        <img class="rh__go" src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJjaGV2cm9uX2ZvcndhcmQiPgo8bWFzayBpZD0ibWFzazBfMF8xMiIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4KPHJlY3QgaWQ9IkJvdW5kaW5nIGJveCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRDlEOUQ5Ii8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMF8wXzEyKSI+CjxwYXRoIGlkPSJjaGV2cm9uX2ZvcndhcmRfMiIgZD0iTTEyLjk0NjIgMTJMOC44NzMgNy45MjdDOC43MzQ2NyA3Ljc4ODUgOC42NjM4MyA3LjYxNDQyIDguNjYwNSA3LjQwNDc1QzguNjU3MzMgNy4xOTUyNSA4LjcyODE3IDcuMDE4IDguODczIDYuODczQzkuMDE4IDYuNzI4MTcgOS4xOTM2NyA2LjY1NTc1IDkuNCA2LjY1NTc1QzkuNjA2MzMgNi42NTU3NSA5Ljc4MiA2LjcyODE3IDkuOTI3IDYuODczTDE0LjQyMTIgMTEuMzY3M0MxNC41MTQ3IDExLjQ2MDkgMTQuNTgwOCAxMS41NTk3IDE0LjYxOTMgMTEuNjYzNUMxNC42NTc4IDExLjc2NzMgMTQuNjc3IDExLjg3OTUgMTQuNjc3IDEyQzE0LjY3NyAxMi4xMjA1IDE0LjY1NzggMTIuMjMyNyAxNC42MTkzIDEyLjMzNjVDMTQuNTgwOCAxMi40NDAzIDE0LjUxNDcgMTIuNTM5MSAxNC40MjEyIDEyLjYzMjhMOS45MjcgMTcuMTI3QzkuNzg4NSAxNy4yNjUzIDkuNjE0NDIgMTcuMzM2MiA5LjQwNDc1IDE3LjMzOTVDOS4xOTUyNSAxNy4zNDI3IDkuMDE4IDE3LjI3MTggOC44NzMgMTcuMTI3QzguNzI4MTcgMTYuOTgyIDguNjU1NzUgMTYuODA2MyA4LjY1NTc1IDE2LjZDOC42NTU3NSAxNi4zOTM3IDguNzI4MTcgMTYuMjE4IDguODczIDE2LjA3M0wxMi45NDYyIDEyWiIgZmlsbD0iIzFDMUIxRiIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" alt="">
+      </button><button class="rh__row" type="button" data-repair="3">
+        <span class="rh__text">
+          <span class="rh__when">43 days earlier</span>
+          <span class="rh__kms">1,287 kms travelled</span>
+        </span>
+        <img class="rh__go" src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJjaGV2cm9uX2ZvcndhcmQiPgo8bWFzayBpZD0ibWFzazBfMF8xMiIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4KPHJlY3QgaWQ9IkJvdW5kaW5nIGJveCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRDlEOUQ5Ii8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMF8wXzEyKSI+CjxwYXRoIGlkPSJjaGV2cm9uX2ZvcndhcmRfMiIgZD0iTTEyLjk0NjIgMTJMOC44NzMgNy45MjdDOC43MzQ2NyA3Ljc4ODUgOC42NjM4MyA3LjYxNDQyIDguNjYwNSA3LjQwNDc1QzguNjU3MzMgNy4xOTUyNSA4LjcyODE3IDcuMDE4IDguODczIDYuODczQzkuMDE4IDYuNzI4MTcgOS4xOTM2NyA2LjY1NTc1IDkuNCA2LjY1NTc1QzkuNjA2MzMgNi42NTU3NSA5Ljc4MiA2LjcyODE3IDkuOTI3IDYuODczTDE0LjQyMTIgMTEuMzY3M0MxNC41MTQ3IDExLjQ2MDkgMTQuNTgwOCAxMS41NTk3IDE0LjYxOTMgMTEuNjYzNUMxNC42NTc4IDExLjc2NzMgMTQuNjc3IDExLjg3OTUgMTQuNjc3IDEyQzE0LjY3NyAxMi4xMjA1IDE0LjY1NzggMTIuMjMyNyAxNC42MTkzIDEyLjMzNjVDMTQuNTgwOCAxMi40NDAzIDE0LjUxNDcgMTIuNTM5MSAxNC40MjEyIDEyLjYzMjhMOS45MjcgMTcuMTI3QzkuNzg4NSAxNy4yNjUzIDkuNjE0NDIgMTcuMzM2MiA5LjQwNDc1IDE3LjMzOTVDOS4xOTUyNSAxNy4zNDI3IDkuMDE4IDE3LjI3MTggOC44NzMgMTcuMTI3QzguNzI4MTcgMTYuOTgyIDguNjU1NzUgMTYuODA2MyA4LjY1NTc1IDE2LjZDOC42NTU3NSAxNi4zOTM3IDguNzI4MTcgMTYuMjE4IDguODczIDE2LjA3M0wxMi45NDYyIDEyWiIgZmlsbD0iIzFDMUIxRiIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" alt="">
+      </button><button class="rh__row" type="button" data-repair="4">
+        <span class="rh__text">
+          <span class="rh__when">62 days earlier</span>
+          <span class="rh__kms">1,475 kms travelled</span>
+        </span>
+        <img class="rh__go" src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJjaGV2cm9uX2ZvcndhcmQiPgo8bWFzayBpZD0ibWFzazBfMF8xMiIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4KPHJlY3QgaWQ9IkJvdW5kaW5nIGJveCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRDlEOUQ5Ii8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMF8wXzEyKSI+CjxwYXRoIGlkPSJjaGV2cm9uX2ZvcndhcmRfMiIgZD0iTTEyLjk0NjIgMTJMOC44NzMgNy45MjdDOC43MzQ2NyA3Ljc4ODUgOC42NjM4MyA3LjYxNDQyIDguNjYwNSA3LjQwNDc1QzguNjU3MzMgNy4xOTUyNSA4LjcyODE3IDcuMDE4IDguODczIDYuODczQzkuMDE4IDYuNzI4MTcgOS4xOTM2NyA2LjY1NTc1IDkuNCA2LjY1NTc1QzkuNjA2MzMgNi42NTU3NSA5Ljc4MiA2LjcyODE3IDkuOTI3IDYuODczTDE0LjQyMTIgMTEuMzY3M0MxNC41MTQ3IDExLjQ2MDkgMTQuNTgwOCAxMS41NTk3IDE0LjYxOTMgMTEuNjYzNUMxNC42NTc4IDExLjc2NzMgMTQuNjc3IDExLjg3OTUgMTQuNjc3IDEyQzE0LjY3NyAxMi4xMjA1IDE0LjY1NzggMTIuMjMyNyAxNC42MTkzIDEyLjMzNjVDMTQuNTgwOCAxMi40NDAzIDE0LjUxNDcgMTIuNTM5MSAxNC40MjEyIDEyLjYzMjhMOS45MjcgMTcuMTI3QzkuNzg4NSAxNy4yNjUzIDkuNjE0NDIgMTcuMzM2MiA5LjQwNDc1IDE3LjMzOTVDOS4xOTUyNSAxNy4zNDI3IDkuMDE4IDE3LjI3MTggOC44NzMgMTcuMTI3QzguNzI4MTcgMTYuOTgyIDguNjU1NzUgMTYuODA2MyA4LjY1NTc1IDE2LjZDOC42NTU3NSAxNi4zOTM3IDguNzI4MTcgMTYuMjE4IDguODczIDE2LjA3M0wxMi45NDYyIDEyWiIgZmlsbD0iIzFDMUIxRiIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" alt="">
+      </button></div>
+    </div>
 
     <!-- Bottom tabs — Figma 2621:29373. 88px, bottom-anchored: an 844 frame is
          now min(844, 100dvh), so anything pinned by a top offset floats off the
@@ -6811,18 +7162,24 @@ body{
         <svg class="rntabbar__glyph" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-tab-tasks"></use></svg>
         <span>Tasks done</span>
       </button>
-      <span class="rntabbar__rule" aria-hidden="true"></span>
-      <button class="rntabbar__tab" id="rnTabBike" type="button" role="tab" aria-selected="false" aria-controls="rnPanelBike">
-        <svg class="rntabbar__glyph" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-tab-bike"></use></svg>
-        <span>Bike essentials</span>
-      </button>
-      <!-- Assessment only. A real tab now: it selects #rnPanelInfo and takes the
-           marker, where it used to open the Bike info overlay and leave the
-           marker behind on whichever tab you had been on. -->
+      <!-- Assessment only, and the rule that PRECEDES it goes with it — pair
+           them, or a repair shows two dividers with nothing between them. A real
+           tab: it selects #rnPanelInfo and takes the marker, where it used to
+           open the Bike info overlay and leave the marker behind on whichever
+           tab you had been on.
+
+           Second, not third. It is the bike's record — who it is and what has
+           been done to it — which is what a QCA reads before deciding anything,
+           so it sits next to the work rather than after the controls. -->
       <span class="rntabbar__rule" id="rnTabRule2" aria-hidden="true"></span>
       <button class="rntabbar__tab" id="rnTabInfo" type="button" role="tab" aria-selected="false" aria-controls="rnPanelInfo">
         <svg class="rntabbar__glyph" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-tab-info"></use></svg>
-        <span>Bike Info</span>
+        <span>Info</span>
+      </button>
+      <span class="rntabbar__rule" aria-hidden="true"></span>
+      <button class="rntabbar__tab" id="rnTabBike" type="button" role="tab" aria-selected="false" aria-controls="rnPanelBike">
+        <svg class="rntabbar__glyph" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-tab-bike"></use></svg>
+        <span>Essentials</span>
       </button>
     </nav>
 
@@ -6901,7 +7258,10 @@ body{
 
         <div class="bi__stats">
           <div class="bi__stat">
-            <span class="bi__statv">7,245 kms</span>
+            <!-- Written from ODO_KMS in script.js: the Bike Info tab derives
+                 "After repair" from the same figure, and two copies of an
+                 odometer is one copy too many. -->
+            <span class="bi__statv" id="biOdo">7,245 kms</span>
             <span class="bi__statl">Odometer</span>
           </div>
           <div class="bi__stat">
@@ -7127,6 +7487,126 @@ body{
         </section>
       </div>
     </section>
+  </section>
+  <!-- ══════════════════════════════════════════════════════════════════════
+       ACTIVE CHECKLISTS — which checklists this assessment runs
+       ══════════════════════════════════════════════════════════════════════
+       Not the same page as the Assessment checklist (screens/assess), and the
+       split is deliberate: that one is the parts themselves, swiped one at a
+       time; this one is which lists of parts are in play. Both used to hang off
+       the same route — the dashboard's Active checklist ROW and its Assessment
+       checklist BUTTON both opened the carousel — so the row had nowhere of its
+       own to go. It has one now; the button is untouched.
+       ══════════════════════════════════════════════════════════════════════ -->
+  <section class="screen screen--checklists" id="scrChecklists" data-pos="right" aria-label="Active checklists">
+
+    <header class="appbar">
+      <div class="appbar__row">
+        <div class="appbar__lhs">
+          <div class="leading-action">
+            <button class="icon-btn" id="clBack" aria-label="Back to assessment">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10.4538 12L14.5269 16.0731C14.6654 16.2116 14.7362 16.3856 14.7394 16.5952C14.7426 16.8048 14.6718 16.982 14.5269 17.1269C14.382 17.2718 14.2064 17.3442 14 17.3442C13.7936 17.3442 13.618 17.2718 13.4731 17.1269L8.97888 12.6327C8.88528 12.5391 8.81925 12.4404 8.7808 12.3365C8.74233 12.2327 8.7231 12.1205 8.7231 12C8.7231 11.8795 8.74233 11.7673 8.7808 11.6635C8.81925 11.5596 8.88528 11.4609 8.97888 11.3673L13.4731 6.8731C13.6116 6.73463 13.7856 6.6638 13.9952 6.6606C14.2048 6.65738 14.382 6.72822 14.5269 6.8731C14.6718 7.01797 14.7442 7.1936 14.7442 7.4C14.7442 7.6064 14.6718 7.78203 14.5269 7.9269L10.4538 12Z" fill="#222222"></path></svg>
+            </button>
+          </div>
+          <div class="appbar__titles">
+            <p class="t-label-md"><span data-bike-id="">543210</span><span class="appbar__suffix" aria-hidden="true">&nbsp;/ Active checklists</span></p>
+          </div>
+        </div>
+        <!-- No ⋮. Every option the sheet offers on this flow is about the bike or
+             the job, and this page is neither — it is one question with one
+             answer control per row. A menu here would be a button that can only
+             take you somewhere else. -->
+      </div>
+    </header>
+
+    <main class="clscroll" id="clScroll">
+      <div class="listhead">
+        <h2 class="t-title-page">Active checklists</h2>
+      </div>
+      <div class="cllist" id="clList"><button class="cl-item" type="button" role="checkbox" aria-checked="true" data-cl="periodic">
+      <span class="cl-item__text">
+        <span class="t-label-md cl-item__name">Periodic maintenance</span>
+        <span class="t-label-sm cl-item__sub">9 items</span>
+      </span>
+      <span class="cl-check"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6" fill="#222222"></rect><path d="M10.6 16.2 6.4 12l1.4-1.4 2.8 2.8 6-6L18 8.8z" fill="#fff"></path></svg></span>
+    </button><button class="cl-item" type="button" role="checkbox" aria-checked="true" data-cl="monsoon">
+      <span class="cl-item__text">
+        <span class="t-label-md cl-item__name">Monsoon checklist</span>
+        <span class="t-label-sm cl-item__sub">8 items</span>
+      </span>
+      <span class="cl-check"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6" fill="#222222"></rect><path d="M10.6 16.2 6.4 12l1.4-1.4 2.8 2.8 6-6L18 8.8z" fill="#fff"></path></svg></span>
+    </button><button class="cl-item" type="button" role="checkbox" aria-checked="false" data-cl="mre">
+      <span class="cl-item__text">
+        <span class="t-label-md cl-item__name">MRE checklist</span>
+        <span class="t-label-sm cl-item__sub">6 items</span>
+      </span>
+      <span class="cl-check"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.75" y="2.75" width="18.5" height="18.5" rx="5.25" stroke="#B0B0B0" stroke-width="1.5"></rect></svg></span>
+    </button><button class="cl-item" type="button" role="checkbox" aria-checked="false" data-cl="xyz">
+      <span class="cl-item__text">
+        <span class="t-label-md cl-item__name">XYZ checklist</span>
+        <span class="t-label-sm cl-item__sub">4 items</span>
+      </span>
+      <span class="cl-check"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.75" y="2.75" width="18.5" height="18.5" rx="5.25" stroke="#B0B0B0" stroke-width="1.5"></rect></svg></span>
+    </button></div>
+    </main>
+
+    <!-- Two buttons, stacked, one of which is usually absent. The PRIMARY is
+         this flow's step CTA: it names the next outstanding step, or says
+         Assessment done. UPDATE grows in BELOW it the moment the selection
+         differs from what is saved — and while it is there the primary is
+         disabled, because moving on from an uncommitted edit would be moving on
+         from a decision nobody took.
+
+         Primary on top, secondary under it, which is the arrangement the fault
+         record's footer already uses. It read the other way round for one build,
+         and two screens in the same flow disagreeing about where the way forward
+         lives is worse than either order.
+
+         Update is wrapped in a collapsing row rather than simply hidden: a
+         button that arrives has to push the footer open, and `hidden` cannot be
+         animated. See .clfoot__slot in style.css. -->
+    <div class="clfoot" id="clFoot">
+      <button class="btn-primary t-label-md700" id="clNext"><span>Next</span></button>
+      <div class="clfoot__slot">
+        <div>
+          <button class="btn-secondary t-label-md700" id="clUpdate" tabindex="-1" aria-hidden="true"><span>Update</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ══════════════════════════════════════════════════════════════════════
+       ONE REPAIR VISIT
+       ══════════════════════════════════════════════════════════════════════
+       A level under the Bike Info tab's repair history. The header and the back
+       arrow are the whole screen for now — Sagar is briefing what goes in the
+       body. The breadcrumb names the row that opened it ("20 days ago"), which
+       is the only thing a QCA has to identify one visit by, so it is written by
+       openRepairVisit() rather than fixed here.
+       ══════════════════════════════════════════════════════════════════════ -->
+  <section class="screen screen--visit" id="scrVisit" data-pos="right" aria-label="Repair visit">
+
+    <header class="appbar">
+      <div class="appbar__row">
+        <div class="appbar__lhs">
+          <div class="leading-action">
+            <button class="icon-btn" id="visitBack" aria-label="Back">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10.4538 12L14.5269 16.0731C14.6654 16.2116 14.7362 16.3856 14.7394 16.5952C14.7426 16.8048 14.6718 16.982 14.5269 17.1269C14.382 17.2718 14.2064 17.3442 14 17.3442C13.7936 17.3442 13.618 17.2718 13.4731 17.1269L8.97888 12.6327C8.88528 12.5391 8.81925 12.4404 8.7808 12.3365C8.74233 12.2327 8.7231 12.1205 8.7231 12C8.7231 11.8795 8.74233 11.7673 8.7808 11.6635C8.81925 11.5596 8.88528 11.4609 8.97888 11.3673L13.4731 6.8731C13.6116 6.73463 13.7856 6.6638 13.9952 6.6606C14.2048 6.65738 14.382 6.72822 14.5269 6.8731C14.6718 7.01797 14.7442 7.1936 14.7442 7.4C14.7442 7.6064 14.6718 7.78203 14.5269 7.9269L10.4538 12Z" fill="#222222"></path></svg>
+            </button>
+          </div>
+          <div class="appbar__titles">
+            <p class="t-label-md"><span data-bike-id="">543210</span><span class="appbar__suffix" aria-hidden="true">&nbsp;/ <span id="visitWhen">Repair</span></span></p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="visitscroll" id="visitScroll">
+      <div class="listhead">
+        <h2 class="t-title-page" id="visitHead">Repair</h2>
+      </div>
+      <!-- Body to come. Left empty rather than filled with a placeholder: an
+           invented layout here is a design decision taken by the wrong person. -->
+    </main>
   </section>
   <!-- ====================================================================
        SERVICING CHECKS — ported from mechanic-checks/
@@ -8019,7 +8499,7 @@ body{
       <div class="appbar__row">
         <div class="appbar__lhs">
           <div class="leading-action">
-            <button class="icon-btn" id="faultsBack" aria-label="Back to assessment">
+            <button class="icon-btn" id="faultsBack" aria-label="Back">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10.4538 12L14.5269 16.0731C14.6654 16.2116 14.7362 16.3856 14.7394 16.5952C14.7426 16.8048 14.6718 16.982 14.5269 17.1269C14.382 17.2718 14.2064 17.3442 14 17.3442C13.7936 17.3442 13.618 17.2718 13.4731 17.1269L8.97888 12.6327C8.88528 12.5391 8.81925 12.4404 8.7808 12.3365C8.74233 12.2327 8.7231 12.1205 8.7231 12C8.7231 11.8795 8.74233 11.7673 8.7808 11.6635C8.81925 11.5596 8.88528 11.4609 8.97888 11.3673L13.4731 6.8731C13.6116 6.73463 13.7856 6.6638 13.9952 6.6606C14.2048 6.65738 14.382 6.72822 14.5269 6.8731C14.6718 7.01797 14.7442 7.1936 14.7442 7.4C14.7442 7.6064 14.6718 7.78203 14.5269 7.9269L10.4538 12Z" fill="#222222"></path></svg>
             </button>
           </div>
@@ -8055,15 +8535,18 @@ body{
     </main>
 
     <div class="fempty" id="fempty" hidden="">
-      <p class="t-label-md700">No faults to detail</p>
-      <p class="t-body-sm">Every part came back good. Carry on to the bike photos.</p>
+      <p class="t-label-md700">Assessment pending</p>
+      <p class="t-body-sm">Penalty options appear here for the faults you mark.</p>
     </div>
 
+    <!-- The step CTA. It is NOT the Done button that used to stand here: that
+         one said "Done", closed nothing and went where the back arrow already
+         went. This one names the next step of the assessment and goes there —
+         see RnM.nextStepLabel in screens/rnm/script.js — and it only appears once
+         every fault on screen has a penalty against it, because until then the
+         thing it is offering to move on from is not finished. -->
     <div class="ffooter" id="ffooter">
-      <!-- "Done", not the name of the next screen: there is no next screen any
-           more. It closes the checklist and hands the QCA back to the
-           dashboard they opened it from. -->
-      <button class="btn-primary t-label-md700" id="submitBtn"><span>Done</span></button>
+      <button class="btn-primary t-label-md700" id="faultsNext"><span>Next</span></button>
     </div>
   </section>
 
@@ -8497,6 +8980,12 @@ const ICON = {
   sheetChevron:`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12.9462 12L8.8731 7.9269C8.73463 7.78845 8.6638 7.61442 8.6606 7.4048C8.65738 7.1952 8.72822 7.01797 8.8731 6.8731C9.01797 6.72822 9.1936 6.65578 9.4 6.65578C9.6064 6.65578 9.78203 6.72822 9.9269 6.8731L14.4211 11.3673C14.5147 11.4609 14.5808 11.5596 14.6192 11.6635C14.6577 11.7673 14.6769 11.8795 14.6769 12C14.6769 12.1205 14.6577 12.2327 14.6192 12.3365C14.5808 12.4404 14.5147 12.5391 14.4211 12.6327L9.9269 17.1269C9.78845 17.2654 9.61442 17.3362 9.4048 17.3394C9.1952 17.3426 9.01797 17.2718 8.8731 17.1269C8.72822 16.982 8.65578 16.8064 8.65578 16.6C8.65578 16.3936 8.72822 16.218 8.8731 16.0731L12.9462 12Z" fill="currentColor"/></svg>`,
   rowGood:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#00654F"/><path d="M10.6 16.2 6.4 12l1.4-1.4 2.8 2.8 6-6L18 8.8z" fill="#fff"/></svg>`,
   rowFaulty:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#C13515"/><path d="M12 13.06l-3.06 3.06-1.06-1.06L10.94 12 7.88 8.94 8.94 7.88 12 10.94l3.06-3.06 1.06 1.06L13.06 12l3.06 3.06-1.06 1.06z" fill="#fff"/></svg>`,
+  /* A checkbox, not the ring/disc pair above: those report what the bike or the
+     inspection FOUND, this one records a choice the QCA is making. Square so the
+     two never read as the same control. */
+  checkbox:on => on
+    ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6" fill="#222222"/><path d="M10.6 16.2 6.4 12l1.4-1.4 2.8 2.8 6-6L18 8.8z" fill="#fff"/></svg>`
+    : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.75" y="2.75" width="18.5" height="18.5" rx="5.25" stroke="#B0B0B0" stroke-width="1.5"/></svg>`,
   rowPending:`<svg width="21.5" height="21.5" viewBox="0 0 21.5 21.5" fill="none"><circle cx="10.75" cy="10.75" r="10" stroke="#B0B0B0" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="4 4"/></svg>`,
   faulty:`<svg viewBox="0 0 24 24" fill="none"><path d="M12 13.0537L15.073 16.127C15.2115 16.2653 15.3856 16.3362 15.5952 16.3395C15.8047 16.3427 15.982 16.2718 16.127 16.127C16.2718 15.982 16.3443 15.8063 16.3443 15.6C16.3443 15.3937 16.2718 15.218 16.127 15.073L13.0538 12L16.127 8.927C16.2653 8.7885 16.3362 8.61442 16.3395 8.40475C16.3427 8.19525 16.2718 8.018 16.127 7.873C15.982 7.72817 15.8063 7.65575 15.6 7.65575C15.3937 7.65575 15.218 7.72817 15.073 7.873L12 10.9462L8.927 7.873C8.7885 7.73467 8.61442 7.66383 8.40475 7.6605C8.19525 7.65733 8.018 7.72817 7.873 7.873C7.72817 8.018 7.65575 8.19367 7.65575 8.4C7.65575 8.60633 7.72817 8.782 7.873 8.927L10.9462 12L7.873 15.073C7.73467 15.2115 7.66383 15.3856 7.6605 15.5952C7.65733 15.8047 7.72817 15.982 7.873 16.127C8.018 16.2718 8.19367 16.3443 8.4 16.3443C8.60633 16.3443 8.782 16.2718 8.927 16.127L12 13.0537ZM12.0017 21.5C10.6877 21.5 9.45267 21.2507 8.2965 20.752C7.14033 20.2533 6.13467 19.5766 5.2795 18.7218C4.42433 17.8669 3.74725 16.8617 3.24825 15.706C2.74942 14.5503 2.5 13.3156 2.5 12.0017C2.5 10.6877 2.74933 9.45267 3.248 8.2965C3.74667 7.14033 4.42342 6.13467 5.27825 5.2795C6.13308 4.42433 7.13833 3.74725 8.294 3.24825C9.44967 2.74942 10.6844 2.5 11.9982 2.5C13.3122 2.5 14.5473 2.74933 15.7035 3.248C16.8597 3.74667 17.8653 4.42342 18.7205 5.27825C19.5757 6.13308 20.2528 7.13833 20.7518 8.294C21.2506 9.44967 21.5 10.6844 21.5 11.9982C21.5 13.3122 21.2507 14.5473 20.752 15.7035C20.2533 16.8597 19.5766 17.8653 18.7218 18.7205C17.8669 19.5757 16.8617 20.2528 15.706 20.7518C14.5503 21.2506 13.3156 21.5 12.0017 21.5Z" fill="#C13515"/></svg>`,
   good:`<svg viewBox="0 0 24 24" fill="none"><path d="M10.5808 14.1463L8.25775 11.823C8.11925 11.6847 7.94517 11.6138 7.7355 11.6105C7.526 11.6073 7.34875 11.6782 7.20375 11.823C7.05892 11.968 6.9865 12.1437 6.9865 12.35C6.9865 12.5563 7.05892 12.732 7.20375 12.877L9.948 15.6212C10.1288 15.8019 10.3398 15.8922 10.5808 15.8922C10.8218 15.8922 11.0327 15.8019 11.2135 15.6212L16.777 10.0577C16.9153 9.91925 16.9862 9.74517 16.9895 9.5355C16.9927 9.326 16.9218 9.14875 16.777 9.00375C16.632 8.85892 16.4563 8.7865 16.25 8.7865C16.0437 8.7865 15.868 8.85892 15.723 9.00375L10.5808 14.1463ZM12.0017 21.5C10.6877 21.5 9.45267 21.2507 8.2965 20.752C7.14033 20.2533 6.13467 19.5766 5.2795 18.7218C4.42433 17.8669 3.74725 16.8617 3.24825 15.706C2.74942 14.5503 2.5 13.3156 2.5 12.0017C2.5 10.6877 2.74933 9.45267 3.248 8.2965C3.74667 7.14033 4.42342 6.13467 5.27825 5.2795C6.13308 4.42433 7.13833 3.74725 8.294 3.24825C9.44967 2.74942 10.6844 2.5 11.9982 2.5C13.3122 2.5 14.5473 2.74933 15.7035 3.248C16.8597 3.74667 17.8653 4.42342 18.7205 5.27825C19.5757 6.13308 20.2528 7.13833 20.7518 8.294C21.2506 9.44967 21.5 10.6844 21.5 11.9982C21.5 13.3122 21.2507 14.5473 20.752 15.7035C20.2533 16.8597 19.5766 17.8653 18.7218 18.7205C17.8669 19.5757 16.8617 20.2528 15.706 20.7518C14.5503 21.2506 13.3156 21.5 12.0017 21.5Z" fill="#00654F"/></svg>`,
@@ -8577,7 +9066,7 @@ function mediaHTML(part){
    ahead of it, and the later iteration wins — which parked the task page off to
    the right the moment it opened Feedback, exactly the movement the transition is
    supposed to have removed. Keep aliases adjacent. */
-const ORDER   = ["home", "shift", "task", "qc", "repair", "tokens", "job", "token", "feedback", "complaint", "rnm", "checks", "issues", "markissues", "start", "assess", "faults"];
+const ORDER   = ["home", "shift", "task", "qc", "repair", "tokens", "job", "token", "feedback", "complaint", "rnm", "checklists", "visit", "checks", "issues", "markissues", "start", "assess", "faults"];
 const SCREENS = {
   home:   document.getElementById("scrHome"),
   /* Three routes, one element. The task listings are all the same page — see
@@ -8589,6 +9078,13 @@ const SCREENS = {
   job:    document.getElementById("scrJob"),
   feedback: document.getElementById("scrFeedback"),
   rnm:    document.getElementById("scrRnm"),
+  /* The picker, not the parts — see screens/checklists. It sits beside rnm in
+     ORDER because that is the only place it is opened from and the only place
+     it returns to. */
+  checklists: document.getElementById("scrChecklists"),
+  /* One repair, a level under the Bike Info tab. Beside rnm for the same
+     reason the picker is: opened from there, returns there. */
+  visit:      document.getElementById("scrVisit"),
   issues:     document.getElementById("scrIssues"),
   markissues: document.getElementById("scrMarkIssues"),
   checks:     document.getElementById("scrChecks"),
@@ -8605,6 +9101,14 @@ const SCREENS = {
   faults: document.getElementById("scrFaults"),
 };
 let current = "home";
+
+/* The assessment's step CTA, borrowed by four screens. It lives in the RnM
+   dashboard — that is where ASSESS_FLOW and the visited set are — and this is
+   the shim, for one reason: two of the four screens (the checklist and the
+   picker) are loaded BEFORE screens/rnm/script.js and paint themselves once at
+   load, so a bare window.RnM.nextStepLabel() throws before the dashboard exists.
+   The label is repainted on every entry, so the fallback is never seen. */
+const stepLabel = () => window.RnM ? window.RnM.nextStepLabel() : "Next";
 
 function goTo(name){
   if (name === current || !SCREENS[name]) return;
@@ -8631,6 +9135,12 @@ function goTo(name){
   if (name === "issues")     enterIssues();
   if (name === "markissues") enterMarkIssues();
   if (name === "checks")     enterChecks();
+  if (name === "checklists") enterChecklists();
+  /* The checklist repaints on arrival for one reason: its CTA names whichever
+     step is still outstanding, and that moves while the QCA is off this screen.
+     Nothing used to bring them back here mid-flow, so a stale label was never
+     visible; the step CTA made it possible. */
+  if (name === "assess")     enterAssess();
   /* enterToken takes the tapped row; goTo() passes nothing, which keeps
      whatever token was last opened. */
   if (name === "token")      enterToken();
@@ -9191,11 +9701,22 @@ function render(){
   document.getElementById("progressFill").style.width = (done / PARTS.length * 100) + "%";
   /* No disabled state to design: the footer simply does not exist until the
      checklist is finished, so Next is only ever reachable when it is valid. */
+  /* It said "Mark penalty" for as long as Mark penalties was the only thing that
+     could follow this screen. It is one of five steps now, so it names whichever
+     is still outstanding — a QCA who has already done the penalties and comes
+     back to re-swipe a part should be pointed forwards, not at a step behind
+     them. See RnM.nextStepLabel. */
+  if (finished) nextBtn.textContent = stepLabel();
   assessFooter.classList.toggle("is-shown", finished);
   scrAssessEl.classList.toggle("has-footer", finished);
 
   bindCard();
 }
+
+/* Called by the router on arrival — see the note there. render() does the work;
+   this is the name the router knows it by, alongside enterRnm, enterIssues and
+   the rest. */
+function enterAssess(){ render(); }
 
 /* The large heading hands its words to the app bar as it scrolls out. The
    threshold is measured off the heading itself rather than hard-coded, so it
@@ -9661,7 +10182,11 @@ listEl.addEventListener("click", e => {
 });
 
 nextBtn.addEventListener("click", () => {
-  if (PARTS.every(p => p.status !== "pending")) goTo("faults");
+  /* Whichever step is still outstanding, which is usually Mark penalties and is
+     not always — see the note in screens/assess/script.js. The guard stays: the
+     footer only exists once the checklist is finished, so a click arriving any
+     other way should do nothing rather than skip the list. */
+  if (PARTS.every(p => p.status !== "pending")) RnM.advance();
 });
 /* Back to the dashboard, not the task page. This checklist is opened FROM the
    assessment dashboard — its Assessment checklist button and its Active checklist
@@ -10618,6 +11143,157 @@ function enterComplaint(){
 }
 
 cpPaint();
+/* ═══════════════════════════════════════════════════════════════════════════
+   ACTIVE CHECKLISTS — which lists of parts this assessment runs
+   ═══════════════════════════════════════════════════════════════════════════
+   The dashboard's Active checklist row counts CHECKLISTS now, not parts: "2
+   checklists", where it used to say "17 active". The two numbers answer
+   different questions and the row was answering the wrong one — how many parts
+   are still pending is progress, and progress belongs to the carousel that is
+   making it, not to the row that opens the picker.
+
+   Nothing here is wired to the parts themselves yet. Selecting MRE does not add
+   its six parts to the carousel: PARTS is one fixed list and splitting it by
+   checklist is a data change, not a screen. So this page is honest about what it
+   IS today — the record of which checklists are running — and the counts below
+   are chosen so it cannot lie about the ones that are.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* The two running checklists between them ARE the carousel, so their counts are
+   derived from it rather than typed. Otherwise this page would go on saying 17
+   after somebody added an eighteenth part. */
+const CL_PERIODIC = 9;
+
+const CHECKLISTS = [
+  {id:"periodic", name:"Periodic maintenance", items:CL_PERIODIC,                 on:true},
+  {id:"monsoon",  name:"Monsoon checklist",    items:PARTS.length - CL_PERIODIC,  on:true},
+  {id:"mre",      name:"MRE checklist",        items:6,                           on:false},
+  {id:"xyz",      name:"XYZ checklist",        items:4,                           on:false},
+];
+
+/* What is SAVED, as against what is on screen. The Update button exists because
+   the two can differ — a checkbox on this page is a proposal until it is
+   pressed, which is why leaving by the back arrow changes nothing. */
+let clSaved = CHECKLISTS.filter(c => c.on).map(c => c.id);
+let clDraft = clSaved.slice();
+
+/* Read by the dashboard. A function rather than a number because the row is
+   repainted on every entry and the count moves. */
+function activeChecklistCount(){ return clSaved.length; }
+
+/* Local. Three screens have one of these and every one of them is inside an
+   IIFE, so there is no global tap() to borrow — calling it as though there were
+   is a ReferenceError inside the handler, which swallows the whole tap. */
+function clTap(){ if (navigator.vibrate) navigator.vibrate(10); }
+
+const clList   = document.getElementById("clList");
+const clFoot   = document.getElementById("clFoot");
+const clUpdate = document.getElementById("clUpdate");
+const clNext   = document.getElementById("clNext");
+
+const clDirty = () =>
+  clDraft.length !== clSaved.length || clDraft.some(id => !clSaved.includes(id));
+
+function paintChecklists(){
+  clList.innerHTML = CHECKLISTS.map(c => {
+    const on = clDraft.includes(c.id);
+    /* The whole row is the control, not the box on the end of it — a 24px target
+       for the one thing this page does, with 342px of dead text beside it, is a
+       row you have to aim at. One <button> rather than a row that CONTAINS one:
+       nesting a button inside a clickable div gives the same tap two owners, and
+       role=checkbox on the row is what makes it announce as one thing. */
+    return `<button class="cl-item" type="button" role="checkbox"
+                    aria-checked="${on}" data-cl="${c.id}">
+      <span class="cl-item__text">
+        <span class="t-label-md cl-item__name">${esc(c.name)}</span>
+        <span class="t-label-sm cl-item__sub">${c.items} items</span>
+      </span>
+      <span class="cl-check">${ICON.checkbox(on)}</span>
+    </button>`;
+  }).join("");
+  /* Two buttons and one of them is usually absent. Clean, the page is finished
+     with and the step CTA is live. Dirty, the only thing worth doing is saving
+     the change, so Update appears and the primary goes disabled — offering to
+     move on from an edit nobody committed is how an edit gets lost.
+
+     There is no third state where both are live: "next" would have to choose
+     between saving and discarding on the QCA's behalf, and neither answer is
+     safe to guess. */
+  const dirty = clDirty();
+  /* A class on the footer, not `hidden` on the button: Update grows in and
+     pushes the primary down, and `hidden` cannot be animated. Collapsed it is
+     zero-height inside an overflow:hidden row, so it cannot be tapped, but it is
+     still in the tab order — hence the two attributes below. */
+  clFoot.classList.toggle("is-editing", dirty);
+  clUpdate.tabIndex = dirty ? 0 : -1;
+  clUpdate.setAttribute("aria-hidden", String(!dirty));
+  clNext.disabled = dirty;
+  clNext.querySelector("span").textContent = stepLabel();
+}
+
+/* Delegated: the rows are rewritten on every repaint, so a listener bound to a
+   checkbox would not survive its own click. */
+clList.addEventListener("click", e => {
+  const btn = e.target.closest(".cl-item");
+  if (!btn) return;
+  clTap();
+  const id = btn.dataset.cl;
+  clDraft = clDraft.includes(id) ? clDraft.filter(x => x !== id) : clDraft.concat(id);
+  paintChecklists();
+});
+
+/* Back DISCARDS, which is the other way out of a dirty page and the reason the
+   primary can be disabled without trapping anyone: there is always something to
+   press. It lands on the dashboard, like every back arrow in this flow. */
+document.getElementById("clBack").addEventListener("click", () => { clTap(); goTo("rnm"); });
+
+/* Update commits and STAYS. It used to save and return to the dashboard, which
+   made saving and leaving the same act — so a QCA who wanted to change the
+   selection and carry on had to come back in. Now the page goes clean, the
+   primary lights up, and the way on is the same button it is everywhere else. */
+clUpdate.addEventListener("click", () => {
+  clTap();
+  clSaved = clDraft.slice();
+  CHECKLISTS.forEach(c => { c.on = clSaved.includes(c.id); });
+  paintChecklists();
+});
+
+/* The step CTA. Disabled while the page is dirty, so this cannot fire on an
+   uncommitted change. */
+clNext.addEventListener("click", () => { clTap(); RnM.advance(); });
+
+function enterChecklists(){
+  /* The draft is thrown away on the way IN, not on the way out: a QCA who ticks
+     MRE, backs out and returns should find the page as they last saved it, and
+     doing it here means every route in gets that without each one remembering. */
+  clDraft = clSaved.slice();
+  paintChecklists();
+}
+
+paintChecklists();
+/* ═══════════════════════════════════════════════════════════════════════════
+   ONE REPAIR VISIT — a level under the Bike Info tab's repair history
+   ═══════════════════════════════════════════════════════════════════════════
+   Which visit, and what it is called. The label comes from the row that opened
+   it rather than being recomputed here: the row already says "20 days ago" or
+   "35 days earlier", and deriving the same words twice is how two screens end
+   up disagreeing about the same repair.
+
+   visitIndex is kept because the body, when it is briefed, will need to know
+   WHICH repair — the label alone is a caption, not an identity.
+   ═══════════════════════════════════════════════════════════════════════════ */
+let visitIndex = 0;
+
+function openRepairVisit(i, label){
+  visitIndex = i;
+  document.getElementById("visitWhen").textContent = label;
+  document.getElementById("visitHead").textContent = label;
+  goTo("visit");
+}
+
+/* The Bike Info tab, which is where it was opened from. The dashboard restores
+   its own tab on entry, so there is nothing to put back. */
+document.getElementById("visitBack").addEventListener("click", () => goTo("rnm"));
 
 /* ========================================================================
    RnM DASHBOARD — ported from RnM-home-page/prototype.html
@@ -10661,7 +11337,13 @@ let rnmShowCommands = () => {};
 
        The one thing here I inferred rather than was told. Everything else about
        this dashboard is still the repair flow's, verbatim. */
-    onOpenChecks()    { goTo(rnmKind === 'assessment' ? 'assess' : 'checks'); },
+    /* The ROW. On a repair it is the repair's checklist; on an assessment it is
+       the picker — which checklists are running — not the parts inside them.
+       Those two were one destination until the picker existed, which left the
+       row and the Assessment checklist button below it opening the same page. */
+    onOpenChecks()    { goTo(rnmKind === 'assessment' ? 'checklists' : 'checks'); },
+    /* The BUTTON. The parts themselves, swiped one at a time. */
+    onOpenParts()     { goTo(rnmKind === 'assessment' ? 'assess' : 'checks'); },
     onOpenIssues(section) { goTo('issues'); if (section) issuesShowSection(section); },
     /* Every check judged and every issue settled, so the job's RnM step is over.
        Back to the task page, standing on the step AFTER this one.
@@ -10764,13 +11446,17 @@ let rnmShowCommands = () => {};
      says that — a slide would claim they are two halves of one page.
      The sheet that used to raise the task list is gone, and its drag-to-dismiss
      with it; a tab does not need dismissing. */
+  /* VISUAL order, which every index in this file reads off — the marker, the
+     is-tab-bike flag and rnmShowCommands all count along this list. Bike Info is
+     second: it is the bike's record, which is what a QCA reads before deciding
+     anything, so it sits next to the work rather than after the controls. */
   const rnTabs = [
     {btn: document.getElementById('rnTabTasks'), panel: document.getElementById('rnPanelTasks')},
-    {btn: document.getElementById('rnTabBike'),  panel: document.getElementById('rnPanelBike')},
-    /* Assessment only, and empty until Sagar says what goes in it. It is in this
-       list rather than opening an overlay, which is what makes the marker land
-       on it -- see the note where the old handler used to be. */
+    /* Assessment only. It is in this list rather than opening an overlay, which
+       is what makes the marker land on it -- see the note where the old handler
+       used to be. */
     {btn: document.getElementById('rnTabInfo'),  panel: document.getElementById('rnPanelInfo')},
+    {btn: document.getElementById('rnTabBike'),  panel: document.getElementById('rnPanelBike')},
   ];
   const rnTabInk = document.getElementById('rnTabInk');
 
@@ -10801,7 +11487,9 @@ let rnmShowCommands = () => {};
     /* The assessment draws the bike only on Bike essentials — hero.css. It is
        recorded on the screen rather than read off a panel's `hidden`, because
        the footage lives outside both panels, in the hero they share. */
-    rnScreenEl.classList.toggle('is-tab-bike', i === 1);
+    /* Index 2, not 1 — Bike Info took the middle seat, so Bike essentials is the
+     third tab now. rnTabs below is in VISUAL order and this reads off it. */
+  rnScreenEl.classList.toggle('is-tab-bike', i === 2);
     moveRnTabInk();
   }
   rnTabs.forEach((t, i) => t.btn.addEventListener('click', () => { tap(); setRnTab(i); }));
@@ -10816,7 +11504,7 @@ let rnmShowCommands = () => {};
 
   /* The ⋮'s Bike commands. They are on the second tab now rather than under a
      sheet, so asking for them selects that tab. */
-  rnmShowCommands = () => setRnTab(1);
+  rnmShowCommands = () => setRnTab(2);
 
   /* ---- Hero carousel ----------------------------------------------------- */
   /* Two slides, dots only — no swipe. The band sits under the app bar and over
@@ -11390,8 +12078,184 @@ let rnmShowCommands = () => {};
   const countMech   = document.getElementById('countMech');
   const countElec   = document.getElementById('countElec');
   const countPen    = document.getElementById('countPenalty');
+  const countAssess = document.getElementById('countAssess');
   const rnScreen    = document.getElementById('scrRnm');
   const rnTabTasksLabel = document.querySelector('#rnTabTasks span');
+
+  /* ── BIKE INFO ─────────────────────────────────────────────────────────────
+     The bike's record: three readings, then the last five repairs.
+
+     Stored as ABSOLUTE facts — the day of each visit and the odometer when it
+     left — and every number on screen is a difference between two of them. The
+     rows read as intervals ("35 days earlier", "1,221 kms travelled"), and
+     typing intervals out would mean typing each figure twice and letting the two
+     copies drift the first time a repair is added. It also makes the top block
+     honest for free: "After repair" is today's odometer minus the last visit's,
+     which is the same subtraction the first row does.
+     ─────────────────────────────────────────────────────────────────────────── */
+  const ODO_KMS = 7245;
+  /* Newest first. Five, because the panel shows five — a sixth here would be a
+     record the screen silently drops. */
+  const REPAIRS = [
+    {daysAgo:  20, odo: 6011},
+    {daysAgo:  55, odo: 4790},
+    {daysAgo:  98, odo: 3402},
+    {daysAgo: 141, odo: 2115},
+    {daysAgo: 203, odo:  640},
+  ];
+  /* 0 is today, and it is today deliberately: a pack running out is what sends a
+     bike for assessment, so the interesting reading is the one a QCA will
+     actually be standing in front of. */
+  const PACK_ENDED_DAYS = 0;
+
+  const kms = n => n.toLocaleString('en-IN') + ' kms';
+  /* today / 1 day ago / x days ago — the three cases Sagar named. "1 days ago"
+     is the one that gives a prototype away. */
+  const daysAgoText = d => d === 0 ? 'Today' : d === 1 ? '1 day ago' : d + ' days ago';
+
+  const biStats      = document.getElementById('biStats');
+  const biStatsTasks = document.getElementById('biStatsTasks');
+  const biRepairs = document.getElementById('biRepairs');
+
+  function paintBikeInfo(){
+    /* The same three-tile block the Bike info overlay uses — .bi__stats in
+       bikeinfo.css — with this tab's three readings in it. */
+    /* Odometer, then the pack, then the distance since the last repair. The
+       middle two were the other way round: "After repair" is the same figure the
+       first row of the history states, so putting it next to the odometer read
+       as two odometer readings side by side. The pack between them separates
+       the two distances, and it is also the reading that says why the bike is
+       here at all. */
+    const html = [
+      [kms(ODO_KMS),                    'Odometer'],
+      [daysAgoText(PACK_ENDED_DAYS),    'Pack ended'],
+      [kms(ODO_KMS - REPAIRS[0].odo),   'After repair'],
+    ].map(([v, l]) => `<div class="bi__stat">
+        <span class="bi__statv">${v}</span>
+        <span class="bi__statl">${l}</span>
+      </div>`).join('');
+    /* Two panels, one block. Tasks added carries it too — see the note in the
+       markup — and rendering it twice from one array is what stops the two
+       tabs disagreeing about the same bike. */
+    biStats.innerHTML = html;
+    biStatsTasks.innerHTML = html;
+
+    /* Each row is the gap between this visit and the one ABOVE it in the list —
+       for the first, the gap to now. So the first row's kms is the same figure
+       as "After repair" above, which is the point: the top block states where
+       the bike has got to since it was last worked on, and the list says how
+       that compares with every stretch before it. */
+    biRepairs.innerHTML = REPAIRS.map((r, i) => {
+      const prev = i === 0 ? {daysAgo: 0, odo: ODO_KMS} : REPAIRS[i - 1];
+      const when = i === 0 ? daysAgoText(r.daysAgo)
+                           : (r.daysAgo - prev.daysAgo) + ' days earlier';
+      return `<button class="rh__row" type="button" data-repair="${i}">
+        <span class="rh__text">
+          <span class="rh__when">${when}</span>
+          <span class="rh__kms">${kms(prev.odo - r.odo)} travelled</span>
+        </span>
+        <img class="rh__go" src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJjaGV2cm9uX2ZvcndhcmQiPgo8bWFzayBpZD0ibWFzazBfMF8xMiIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4KPHJlY3QgaWQ9IkJvdW5kaW5nIGJveCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRDlEOUQ5Ii8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMF8wXzEyKSI+CjxwYXRoIGlkPSJjaGV2cm9uX2ZvcndhcmRfMiIgZD0iTTEyLjk0NjIgMTJMOC44NzMgNy45MjdDOC43MzQ2NyA3Ljc4ODUgOC42NjM4MyA3LjYxNDQyIDguNjYwNSA3LjQwNDc1QzguNjU3MzMgNy4xOTUyNSA4LjcyODE3IDcuMDE4IDguODczIDYuODczQzkuMDE4IDYuNzI4MTcgOS4xOTM2NyA2LjY1NTc1IDkuNCA2LjY1NTc1QzkuNjA2MzMgNi42NTU3NSA5Ljc4MiA2LjcyODE3IDkuOTI3IDYuODczTDE0LjQyMTIgMTEuMzY3M0MxNC41MTQ3IDExLjQ2MDkgMTQuNTgwOCAxMS41NTk3IDE0LjYxOTMgMTEuNjYzNUMxNC42NTc4IDExLjc2NzMgMTQuNjc3IDExLjg3OTUgMTQuNjc3IDEyQzE0LjY3NyAxMi4xMjA1IDE0LjY1NzggMTIuMjMyNyAxNC42MTkzIDEyLjMzNjVDMTQuNTgwOCAxMi40NDAzIDE0LjUxNDcgMTIuNTM5MSAxNC40MjEyIDEyLjYzMjhMOS45MjcgMTcuMTI3QzkuNzg4NSAxNy4yNjUzIDkuNjE0NDIgMTcuMzM2MiA5LjQwNDc1IDE3LjMzOTVDOS4xOTUyNSAxNy4zNDI3IDkuMDE4IDE3LjI3MTggOC44NzMgMTcuMTI3QzguNzI4MTcgMTYuOTgyIDguNjU1NzUgMTYuODA2MyA4LjY1NTc1IDE2LjZDOC42NTU3NSAxNi4zOTM3IDguNzI4MTcgMTYuMjE4IDguODczIDE2LjA3M0wxMi45NDYyIDEyWiIgZmlsbD0iIzFDMUIxRiIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" alt="">
+      </button>`;
+    }).join('');
+  }
+
+  /* Delegated — the rows are rewritten on every paint. */
+  biRepairs.addEventListener('click', e => {
+    const row = e.target.closest('[data-repair]');
+    if (!row) return;
+    tap();
+    openRepairVisit(Number(row.dataset.repair),
+                    row.querySelector('.rh__when').textContent);
+  });
+
+  /* The overlay hard-coded the same odometer in its markup. One number, one
+     place — see ODO_KMS. */
+  document.getElementById('biOdo').textContent = kms(ODO_KMS);
+
+  paintBikeInfo();
+
+  /* ── The assessment as a sequence ──────────────────────────────────────────
+     Five rows in the order a QCA works through them, and one button below that
+     walks them. This replaced a fixed "Assessment checklist" CTA sitting under
+     four findings rows, which said the checklist was the work and the rows were
+     the report — true of the report, wrong about the job. All five are steps.
+
+     DONE means three different things here, deliberately:
+
+       the CHECKLIST is done when every part has been judged. It is the only step
+       with a completion a machine can see, and visiting it proves nothing — a
+       QCA can open the carousel, swipe one part and leave.
+
+       MARK PENALTIES is done once visited AND no faulty part is still waiting
+       for a penalty. Visited alone was wrong, and wrong in a way that quietly
+       lost work: go back into a finished checklist, mark a good part faulty, and
+       that new fault arrives with no penalty against it — but the step stayed
+       ticked, the dashboard said "No penalty", and the assessment could be
+       signed off with a fault nobody had priced. Nothing decided that there was
+       no penalty; the app was reporting the absence of an answer as an answer.
+       Now the tick comes off, the sub-line counts what is waiting, and every CTA
+       in the flow — including the one on the checklist the QCA is standing on —
+       goes back to naming this step.
+
+       the OTHER THREE are done once VISITED. Nothing on them can be finished: a
+       bike can have no mechanical faults to read, and the picker's answer may
+       already be right. So the mark says "you have been here", which is the only
+       honest claim available — and it is what makes the sequence walkable.
+
+       Worth knowing, and NOT changed here: adding a fault does not un-tick
+       Mechanical faults, even though it files one. Penalty has a completion to
+       fall back to and that record does not, so un-ticking it would mean sending
+       a QCA back to re-read a list with no way to say they had.
+
+     Visited is not reset between entries. One dashboard serves one bike for one
+     job, so a QCA who has been to Mark penalties has been there. A second bike
+     would want it cleared, and there is no second bike in this prototype.
+     ─────────────────────────────────────────────────────────────────────────── */
+  const ASSESS_FLOW = [
+    {id:'assess',  row:'rowAssess',  label:'Assessment checklist',
+     open:() => goTo('assess')},
+    {id:'penalty', row:'rowPenalty', label:'Mark penalties',
+     open:() => goTo('faults')},
+    {id:'mech',    row:'rowMech',    label:'Mechanical faults',
+     open:() => window.YuzenRnM.onOpenIssues('Mechanical')},
+    {id:'elec',    row:'rowElec',    label:'Electrical faults',
+     open:() => window.YuzenRnM.onOpenIssues('Electrical')},
+    {id:'checks',  row:'rowChecks',  label:'Active checklist',
+     open:() => goTo('checklists')},
+  ];
+  const assessVisited = new Set();
+  /* Faults with no penalty against them yet. Not "faults without a MINOR or
+     MAJOR" — "No" is an answer, and a deliberate one; null is the absence of
+     one. */
+  const penaltyOutstanding = () =>
+    PARTS.filter(p => p.status === 'faulty' && p.penalty === null).length;
+  const stepDone = s => {
+    if (s.id === 'assess')  return PARTS.every(p => p.status !== 'pending');
+    if (!assessVisited.has(s.id)) return false;
+    if (s.id === 'penalty') return penaltyOutstanding() === 0;
+    return true;
+  };
+
+  /* Every route into a step goes through here — the row and the CTA both — so
+     there is one place that records the visit. A row tapped in the REPAIR flow
+     never reaches it. */
+  function openAssessStep(id){
+    const s = ASSESS_FLOW.find(x => x.id === id);
+    assessVisited.add(id);
+    s.open();
+  }
+
+  const assessStepBtn = document.getElementById('btnAssessStep');
+  assessStepBtn.addEventListener('click', () => {
+    tap();
+    const next = ASSESS_FLOW.find(s => !stepDone(s));
+    /* Nothing left outstanding, so the button is the end of the job rather than
+       another step — the same onDone the repair signs off with. This is also the
+       only control in the assessment that closes its dashboard step; the ⋮ used
+       to carry Finish repair and no longer does. */
+    if (!next) { window.YuzenRnM.onDone(); return; }
+    openAssessStep(next.id);
+  });
 
   /* ── The assessment's four rows ────────────────────────────────────────────
      A repair's rows are work still to do — x of y checks closed. An assessment's
@@ -11444,17 +12308,48 @@ let rnmShowCommands = () => {};
     rowName('rowMech',    'Mechanical faults');
     rowName('rowElec',    'Electrical faults');
     rowName('rowChecks',  'Active checklist');
-    rowName('rowPenalty', 'Penalty');
+    /* Named for the screen it opens and for what the CTA calls it when it is the
+       next step. It read "Penalty" while the button below said "Mark penalties",
+       which made the row the CTA was pointing at hard to find. */
+    rowName('rowPenalty', 'Mark penalties');
     countMech.textContent   = c.mech + ' marked';
     countElec.textContent   = c.elec + ' detected';
-    countChecks.textContent = c.active + ' active';
-    countPen.textContent    = c.penalty ? c.penalty + ' penalty' : 'No penalty';
-    /* "Tasks added", not "Tasks done". These four are not work being closed out —
-       they are what the assessment has turned up, and the count that would have
-       gone in the heading has gone with the heading (hidden in tabbar.css): a
-       done-over-total over three rows that cannot be "done" was arithmetic
-       nobody could act on. */
-    rnTabTasksLabel.textContent = 'Tasks added';
+    /* CHECKLISTS, not parts. "17 active" was progress through the carousel,
+       and progress belongs to the thing making it — this row opens the picker
+       that says which checklists are running, so it counts those. */
+    countChecks.textContent = activeChecklistCount() + ' checklist'
+                            + (activeChecklistCount() === 1 ? '' : 's');
+    /* What is WAITING beats what was found. "No penalty" under a fault nobody
+       has priced is the app answering a question on the QCA's behalf; the count
+       of outstanding ones is the thing they have to act on. */
+    countPen.textContent    = penaltyOutstanding()
+      ? penaltyOutstanding() + ' pending'
+      : c.penalty ? c.penalty + ' penalty' : 'No penalty';
+    /* Pending / Finished rather than a count. "12/17" belongs to the carousel,
+       which shows it while you are in there; on the dashboard the only question
+       the row answers is whether this step is behind you. */
+    countAssess.textContent = c.judged === c.total ? 'Finished' : 'Pending';
+    /* The trailing mark on every row, and the CTA that walks them. Both are
+       recomputed on every entry, which is why every back arrow in this flow
+       returns HERE — see the note on each screen's back. */
+    ASSESS_FLOW.forEach(s => {
+      document.querySelector('#' + s.row + ' .trow__tick').innerHTML =
+        stepDone(s) ? ICON.rowGood : ICON.rowPending;
+    });
+    const next = ASSESS_FLOW.find(s => !stepDone(s));
+    /* "Start" only while the assessment is untouched. Once a QCA has been
+       anywhere, naming the next step is more use than repeating the invitation —
+       and once nothing is outstanding the button stops being a step at all. */
+    assessStepBtn.textContent = !next ? 'Finish'
+      : (assessVisited.size === 0 && !stepDone(ASSESS_FLOW[0])) ? 'Start'
+      : next.label;
+    /* "Assessment", not "Tasks added" and not the repair's "Tasks done". This
+       panel stopped being a list of things that had happened when it became the
+       five steps of the job — it is the assessment itself, and the tab names it.
+       The count that would have gone in a heading over it went with the heading
+       (hidden in tabbar.css): a done-over-total over rows that cannot be "done"
+       was arithmetic nobody could act on. */
+    rnTabTasksLabel.textContent = 'Assessment';
   }
 
   function paintRepair() {
@@ -11465,7 +12360,7 @@ let rnmShowCommands = () => {};
        hidden here, so a QCA who left the dashboard on it would hand the repair a
        live tab with no button: a blank screen under a bar with nothing lit. Only
        that one case is corrected. */
-    if (rnTabs[2].btn.classList.contains('is-on')) setRnTab(0);
+    if (rnTabs[1].btn.classList.contains('is-on')) setRnTab(0);
     /* The bar reads the WHOLE job — splitting the rows did not split the work. */
     const done  = REPAIR.checksDone + REPAIR.issuesDone;
     const total = REPAIR.checksTotal + REPAIR.issuesTotal;
@@ -11494,20 +12389,75 @@ let rnmShowCommands = () => {};
   window.RnM = {
     setRepair(next) { Object.assign(REPAIR, next); paintRepair(); },
     getRepair() { return { ...REPAIR }; },
+    /* Forget which assessment steps have been visited. Nothing in the app calls
+       it — one dashboard serves one bike for one job, so a QCA who has been to
+       Mark penalties has been there — but a second bike would want it, and the
+       suites need a clean sequence to assert the order of. */
+    resetAssessFlow() { assessVisited.clear(); paintRepair(); },
+    assessVisited() { return [...assessVisited]; },
+    /* ── THE STEP CTA, for the step screens themselves ──────────────────────
+       The dashboard's button walks the five steps; so does a button on each of
+       the step screens, so a QCA who is standing on Mark penalties does not have
+       to come back here to find out what is next. Both read the same two
+       functions, which is what keeps them agreeing.
+
+       nextStepLabel names the next step NOT YET DONE, which is not the same as
+       the step after this one. That matters for the case Sagar named: someone
+       who opens Electrical faults straight off the list, having already been to
+       Mechanical, should be offered the picker rather than a step behind them.
+       The step you are standing on is already marked visited by the time you get
+       there, so it never offers you itself.
+
+       "Assessment done" rather than "Finish" on these screens: on the dashboard
+       the word sits under a list of five ticks and its meaning is obvious, and
+       on a step screen it has to carry that meaning alone. */
+    nextStepLabel(){
+      const n = ASSESS_FLOW.find(s => !stepDone(s));
+      return n ? n.label : 'Assessment done';
+    },
+    advance(){
+      const n = ASSESS_FLOW.find(s => !stepDone(s));
+      if (!n) { window.YuzenRnM.onDone(); return; }
+      openAssessStep(n.id);
+    },
+    /* Which flow the dashboard is standing in. The issues screen serves both and
+       must not grow a step CTA on a repair. */
+    isAssessment(){ return rnmKind === 'assessment'; },
+    /* today / 1 day ago / N days ago. Exposed because the rule is the whole
+       point of the reading and the suite has to be able to try all three — the
+       panel itself can only ever show one of them at a time. */
+    daysAgoText,
   };
 
-  document.getElementById('rowChecks').addEventListener('click', () => { tap(); window.YuzenRnM.onOpenChecks(); });
+  /* Each row is a step in the assessment and a plain way in on a repair, so the
+     assessment's routes are recorded and the repair's are not. */
+  document.getElementById('rowAssess').addEventListener('click', () => { tap(); openAssessStep('assess'); });
+  document.getElementById('rowChecks').addEventListener('click', () => {
+    tap();
+    if (rnmKind === 'assessment') { openAssessStep('checks'); return; }
+    window.YuzenRnM.onOpenChecks();
+  });
   /* Both issue rows lead to the same screen — it is one list with two sections,
      and it opens on the one that was asked for. */
-  document.getElementById('rowMech').addEventListener('click', () => { tap(); window.YuzenRnM.onOpenIssues('Mechanical'); });
-  document.getElementById('rowElec').addEventListener('click', () => { tap(); window.YuzenRnM.onOpenIssues('Electrical'); });
+  document.getElementById('rowMech').addEventListener('click', () => {
+    tap();
+    if (rnmKind === 'assessment') { openAssessStep('mech'); return; }
+    window.YuzenRnM.onOpenIssues('Mechanical');
+  });
+  document.getElementById('rowElec').addEventListener('click', () => {
+    tap();
+    if (rnmKind === 'assessment') { openAssessStep('elec'); return; }
+    window.YuzenRnM.onOpenIssues('Electrical');
+  });
   /* The penalty is recorded on the Mark penalty screen, so the row opens it.
      Reachable whether or not anything is faulty — an assessment that found
      nothing still has a "no penalty" to look at. */
-  document.getElementById('rowPenalty').addEventListener('click', () => { tap(); goTo('faults'); });
-  /* Same destination as the Active checklist row — see the note in the markup. */
-  document.getElementById('btnAssessChecklist')
-    .addEventListener('click', () => { tap(); window.YuzenRnM.onOpenChecks(); });
+  /* A step like the rest, and — like the rest — its back arrow returns here. */
+  document.getElementById('rowPenalty').addEventListener('click', () => { tap(); openAssessStep('penalty'); });
+  /* The Assessment checklist BUTTON stood here, opening the parts carousel while
+     the Active checklist row opened the picker. It is the first ROW now
+     (#rowAssess) and the button below the rows is the stepper — see ASSESS_FLOW.
+     onOpenParts survives as the hook that row and the stepper both call. */
   /* + Add Issues — Mark Issues, which is the flow for putting faults on parts.
      Same destination the ⋮'s Report issues on bike has; this is the primary on the
      screen where a mechanic is standing at the bike, so it earns a button rather
@@ -13240,6 +14190,19 @@ function paintDone(){
      So the way out of Electrical needs all three: resolved by the mechanic, the
      check run, and the bike reporting it clear. Anything less and the button
      would be offering to move on from a fault nothing has confirmed is gone. */
+  /* An ASSESSMENT does not close faults here — it reads them. There is no
+     "cleared" to wait for: a QCA looking at a list of what the bike has wrong
+     with it may add to it, may not, and either way is finished with the screen
+     when they say so. So the button is always there and always live, and it is
+     the step CTA rather than this screen's own Done. Sagar's call, and the
+     reason is that the condition below has no meaning on this side: a bike with
+     three unresolved electrical faults is a perfectly complete assessment. */
+  if (forAssessment){
+    doneBtn.textContent = RnM.nextStepLabel();
+    doneBtn.hidden = false;
+    screenEl.classList.add("iq-footer-tall");
+    return;
+  }
   const rows = inSection();
   const cleared = S.section === "Electrical"
     ? i => i.done && i.locked
@@ -13742,6 +14705,9 @@ document.getElementById("iqBackBtn").addEventListener("click", () => {
 });
 doneBtn.addEventListener("click", () => {
   tap();
+  /* Two jobs behind one button, split by flow — see paintDone. A repair closes
+     the task out; an assessment moves on to its next step. */
+  if (forAssessment) { RnM.advance(); return; }
   endOfTaskCTA(openTaskId()).go();
 });
 /* Her options sheet is gone — this app has one, shared across every screen,
@@ -15374,6 +16340,7 @@ const fscrollEl    = document.getElementById("fscroll");
 const flistEl      = document.getElementById("flist");
 const femptyEl     = document.getElementById("fempty");
 const ffooterEl    = document.getElementById("ffooter");
+const faultsNextEl = document.getElementById("faultsNext");
 const faultsHeadEl = document.getElementById("faultsHead");
 const faultsAppbar = document.getElementById("faultsAppbar");
 
@@ -15523,6 +16490,9 @@ function renderFaults(){
   femptyEl.hidden = !empty;
   fscrollEl.style.display = empty ? "none" : "";
   syncFaultsHeading();
+  /* Every fault judged, or none to judge. The label is read fresh each time
+     because the next step moves as the QCA works — see RnM.nextStepLabel. */
+  faultsNextEl.querySelector("span").textContent = RnM.nextStepLabel();
   ffooterEl.classList.toggle("is-shown", empty || parts.every(isDetailed));
 }
 
@@ -15580,28 +16550,19 @@ fscrollEl.addEventListener("click", e => {
   }
 });
 
-document.getElementById("faultsBack").addEventListener("click", () => goTo("assess"));
+/* THE DASHBOARD, whichever door was used. Mark penalties has two — the end of
+   the checklist, and the dashboard's own Penalty row — and for one build the
+   back arrow remembered which, so the checklist's door led back to the
+   checklist. That is gone: the dashboard is now a sequence of five steps and
+   this is one of them, so backing out of a step returns to the list of steps
+   rather than to whatever screen happened to hand over. Sagar's rule, and it
+   holds on every screen in this flow: assess, issues, checklists and here. */
+document.getElementById("faultsBack").addEventListener("click", () => goTo("rnm"));
 
-/* The end of the assessment checklist, and back to the dashboard that opened
-   it — Sagar's call, and the right one: the checklist is a thing you go and do
-   from the dashboard, so finishing it should return you there with the findings
-   rows moved, not skip you past it to the task page.
-
-   It used to open Bike photos, which carried the button that closed the whole
-   step (`jobAt = 1; goTo("job")`). That screen is archived — see
-   archive/README.md — and the step is closed from the dashboard's own Done
-   instead, which is where the QCA now ends up. So the step advances in ONE place
-   again rather than two, which is worth more than the click it saves. */
-document.getElementById("submitBtn").addEventListener("click", () => {
-  console.log("Assessment checklist done →", {
-    bike: BIKE.id,
-    faults: faultyParts().map(p => ({
-      part: p.name, penalty: p.penalty, photos: p.photos.length,
-    })),
-  });
-  goTo("rnm");
-  toast("Assessment checklist done");
-});
+/* On to the next outstanding step, or off the job if there is none. A "Done"
+   button stood here once: it went where the back arrow went and closed nothing,
+   which is why it was taken off. This one moves the assessment along. */
+faultsNextEl.addEventListener("click", () => { RnM.advance(); });
 
 /* ── Customer photos carousel ─────────────────────────────────────────────── */
 const carouselEl = document.getElementById("carousel");
