@@ -2,7 +2,7 @@
 <html><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
 <title>Yuzen · Bike Assessment</title>
-<meta name="build-id" content="1b069183fa9d">
+<meta name="build-id" content="a88b57bbdc39">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#ffffff">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -717,6 +717,64 @@ body{
   width:8px;height:8px;border-radius:4px;flex:0 0 auto;
   background:var(--content-negative);
 }
+/* ── Sort sheet ──────────────────────────────────────────────────────────────
+   The listing's ordering control, beside the filter sheet and deliberately
+   shaped like it: same 24px head, same Reset pill, same slide-up off .sheet.
+   A mechanic who has opened one should not have to learn the other.
+
+   WHERE IT DIFFERS, and why. The filter sheet offers CHIPS, because a filter is
+   many-of-many — several can be on at once and each is its own small target. An
+   order is one-of-many and it carries a DIRECTION, so an option here is a
+   full-width row: the label leads, the arrow sits at the far edge, and the row
+   has room to say which way it is pointing. Chips could not hold the arrow
+   without growing a second control inside each one.
+   ─────────────────────────────────────────────────────────────────────────── */
+.srtsheet{
+  padding-bottom:var(--s6);
+  /* The whole sheet is the drag handle — see the foot of sortsheet.js. Without
+     this the browser claims the vertical gesture before a pointermove lands. */
+  touch-action:none;
+  max-height:calc(100% - 44px);
+}
+.srtsheet__head{
+  flex:0 0 auto;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s4);
+  padding:var(--s6) var(--s6) 0;
+}
+.srtsheet__title{color:var(--content-primary)}
+/* The filter sheet's Reset, to the pixel — same two states, same reason: the
+   fill carries the enabled/disabled weight so the control keeps its shape. */
+.srtsheet__reset{
+  flex:0 0 auto;
+  display:flex;align-items:center;gap:var(--s2);
+  height:48px;padding:0 var(--s4);
+  border:0;border-radius:40px;cursor:pointer;
+  background:var(--surface-secondary);color:var(--content-primary);
+  font:inherit;
+}
+.srtsheet__reset svg{display:block;width:20px;height:20px;order:1}
+.srtsheet__reset[disabled]{
+  background:var(--surface-disabled);color:var(--content-disabled);cursor:default;
+}
+.srtsheet__body{
+  /* The body keeps its own vertical gesture; the drag only takes over once it
+     is at the top. Two options today, but a kind may declare more. */
+  touch-action:pan-y;
+  flex:1 1 auto;min-height:0;overflow-y:auto;
+  padding:var(--s6) var(--s6) 0;
+  display:flex;flex-direction:column;gap:var(--s2);
+}
+/* NO STYLES OF ITS OWN FOR THE CONTENTS. Figma 2982:1287 draws this sheet with
+   the library's Chips/Large and Headings/Small — the same two the filter sheet
+   already uses — so the groups here are .flgroup / .flgroup__h / .flgroup__chips
+   and the chips are .qchip, all from shared/filtersheet.css. A second set of
+   classes that happened to look the same is how the two sheets would drift.
+
+   WHAT WENT: .srtopt, a 56px full-width row with an arrow at its far edge, and
+   the rotating arrow glyph with it. The frame states the direction in words —
+   High to low / Low to high — which needs no glyph and no rotation, and says
+   which way "up" means on a battery percentage, which an arrow never did.
+   ─────────────────────────────────────────────────────────────────────────── */
 /* ── Fault sheet ─────────────────────────────────────────────────────────────
    Rides on .sheet for the slide-up, the scrim, the grabber and the 24px top
    corners, and adds only what this one is: the part it is asking about, a run of
@@ -1842,6 +1900,67 @@ body{
 #scrQueue .qrow.is-muted .who .id,
 #scrQueue .qrow.is-muted .wait{color:var(--content-tertiary)}
 #scrQueue .qrow.is-muted .who .sub{color:var(--content-disabled)}
+
+/* ── A board's note ──────────────────────────────────────────────────────────
+   Figma 2982:673. Sits between the tab strip and the rows on any section that
+   declares one; today that is Transfer done. Full-bleed on surface/secondary so
+   it reads as a band the list starts under, not as a card floating in it — the
+   rows below are white and edge-to-edge, and a card would have introduced a
+   third inset the page does not otherwise use.
+
+   16 top and bottom, 24 either side: the frame's own inset, so the text lines
+   up with the row titles under it. The Figma frame is 176 tall, which is what
+   this content comes to at these paddings — height is left to fall out of the
+   text rather than being pinned, because the copy is config and the next board
+   to declare a note will not be six lines long.
+   ─────────────────────────────────────────────────────────────────────────── */
+.qnote{
+  padding:var(--s4) var(--s6);
+  background:var(--surface-secondary);
+  color:var(--content-primary);
+  /* 24, not the type scale's 20. This is a paragraph to be read, not a label —
+     see the leading on 2982:675. */
+  line-height:24px;
+}
+.qnote p{margin:0}
+/* The blank line between the two sentences in the frame is a line of its own
+   there; here it is the gap, so an empty <p> does not have to be carried in
+   config where it would be invisible to whoever edits it next. */
+.qnote p + p{margin-top:24px}
+.qnote ul{margin:0;padding-left:var(--s6);list-style:disc}
+.qnote li{line-height:24px}
+
+/* ── A bike on charge ────────────────────────────────────────────────────────
+   Figma 2982:1400. Same 92px row, tinted, with the right-hand column turned
+   into two lines that mirror the left: the state on the title's line, the time
+   on charge under it.
+
+   Tinted rather than badged. A stack of these sits above the board and the tint
+   is what separates the two groups at a glance — a badge on each row would say
+   the same thing three times and still leave the boundary unmarked.
+   ─────────────────────────────────────────────────────────────────────────── */
+.qrow.is-reviving{background:var(--surface-secondary)}
+/* The wait column becomes a column. Right-aligned against the frame's inset, on
+   the same two baselines as .who opposite it — 8px gap, same as the left. */
+.qrow.is-reviving .wait{
+  display:flex;flex-direction:column;align-items:flex-end;gap:var(--s2);
+}
+.qrow.is-reviving .wait__st{color:var(--content-primary)}
+.qrow.is-reviving .wait__since{color:var(--content-tertiary)}
+/* The flat pack still reads as the warning it is — .is-low already colours it,
+   and a reviving row is always a flat one, so nothing here overrides that. */
+
+/* A bike that has reported in — Figma 2982:1404. It carries .is-reviving too, so
+   the tint and the two-line column above already apply; this is only the second
+   phase on top of them. The pack reading goes back to the ordinary colour in the
+   row markup, not here: it is at 5% and climbing on a charger, which is a result
+   rather than a warning.
+
+   The glyph sits WITH the word, not beside the column — 8px, the row's own gap,
+   20px to match the frame, taking the text colour so the two states read as one
+   control in two readings. */
+.qrow.is-reviving .wait__st{display:inline-flex;align-items:center;gap:var(--s2)}
+.qrow.is-reviving .wait__st svg{display:block;width:20px;height:20px;flex:0 0 auto}
 /* ═══════════════════════════════════════════════════════════════════════════
    JOB — the task a bike carries
    Built from Figma 2144:30682. Hero, title block, then the steps that make up
@@ -1916,6 +2035,12 @@ body{
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .jb__barTitle .s{color:var(--content-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .jb__bar button{
+  /* NEVER SHRINK. These are fixed 40px circles (Figma 2144:30682) and the title
+     between them is `flex:1 1 auto`, so without this the flex row takes the
+     shortfall out of all three children and the buttons come back 37px on a long
+     title. They are round, so a shrunk one is visibly an oval. The title is the
+     part that gives — it already truncates with an ellipsis. */
+  flex:0 0 40px;
   width:40px;height:40px;border:0;cursor:pointer;border-radius:20px;
   background:var(--surface-inverse);box-shadow:var(--shadow-1);
   display:flex;align-items:center;justify-content:center;
@@ -2032,12 +2157,24 @@ body{
   background:repeating-linear-gradient(to bottom,
     var(--border-primary) 0 4px, transparent 4px 8px);
 }
+/* EVERY STEP IS A 72px BAND, active or not. The active one used to be 72 and the
+   rest 56 — a 24px inset against the others' 16 — so the list re-flowed under the
+   mechanic's thumb every time a step completed: the rows below jumped up 16px at
+   the moment one row grew by the same. Sagar's call to settle them all at 72, and
+   it costs nothing: the active row's tint is what marks it, which it did already.
+
+   One rule, one screen, every kind. #scrJob is the single task detail page behind
+   Assessment details, Task details and RnM details, so this is the only place the
+   step row is drawn. */
 .jb__step{
   position:relative;z-index:1;width:100%;border:0;background:none;cursor:pointer;
-  padding:var(--s4) var(--s6);text-align:left;
+  padding:var(--s6);text-align:left;
   display:flex;gap:var(--s4);align-items:flex-start;
 }
-.jb__step.is-active{background:var(--surface-secondary);padding-top:var(--s6);padding-bottom:var(--s6)}
+/* Tint only. The padding that used to live here is the base rule's now — a step
+   that declares a sub-line still grows past 72, which is the one case where a row
+   should be taller than its neighbours because it is saying more. */
+.jb__step.is-active{background:var(--surface-secondary)}
 .jb__step .dot{
   width:24px;height:24px;flex:0 0 auto;border-radius:12px;
   background:var(--surface-secondary);
@@ -7237,7 +7374,7 @@ body{
 
              Placeholder thumbnails, the generic image mark, so they read as "art
              pending" rather than as a render nobody looked at. -->
-        <button class="hm__task" data-task="allocation" hidden=""><img class="ic" src="data:image/png;base64,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" alt=""><span class="n t-label-md">14</span><span class="l t-label-sm">Unallocated bikes</span></button>
+        <button class="hm__task" data-task="allocation" hidden=""><img class="ic" src="data:image/png;base64,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" alt=""><span class="n t-label-md">19</span><span class="l t-label-sm">Unallocated bikes</span></button>
         <button class="hm__task" data-task="allocated" hidden=""><img class="ic" src="data:image/png;base64,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" alt=""><span class="n t-label-md">27</span><span class="l t-label-sm">Allocated bikes</span></button>
         <!-- These two were appended in pipeline order — waiting to be assessed,
              repairable, waiting on QC, waiting to go out — back when one home
@@ -10003,6 +10140,32 @@ body{
       <div class="flsheet__body" id="fltBody"></div>
     </section>
   <!-- ══════════════════════════════════════════════════════════════════════
+       Sort sheet — the listing's ordering control
+
+       Shared chrome for the same reason the filter sheet is: a sheet nested
+       inside an off-canvas screen renders off-canvas too, and every listing is
+       off-canvas until you open it.
+
+       Empty by design. The options are built on open from the listing's own
+       kind — see QUEUE_KINDS.sorts — so nothing here names a sort or a queue.
+       ══════════════════════════════════════════════════════════════════════ -->
+    <div class="scrim" id="srtScrim"></div>
+    <section class="sheet srtsheet" id="srtSheet" role="dialog" aria-modal="true" aria-label="Sort">
+      <div class="srtsheet__head" id="srtGrab">
+        <h2 class="srtsheet__title t-heading-lg">Sort by</h2>
+        <!-- Disabled until the order has been moved OFF the kind's default.
+             Reset does not mean "no order" — a list always has one, and one chip
+             in here is always pressed — it means back to that default. -->
+        <button class="srtsheet__reset" id="srtReset" type="button" disabled="" data-icon="reset"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M8.18796 17.25C6.75741 16.8472 5.59074 16.059 4.68796 14.8854C3.78519 13.7118 3.3338 12.3611 3.3338 10.8333C3.3338 10.0416 3.46574 9.28815 3.72963 8.57287C3.99352 7.85759 4.36852 7.20134 4.85463 6.60412C5.00741 6.43745 5.19491 6.35065 5.41713 6.3437C5.63935 6.33676 5.84074 6.42357 6.0213 6.60412C6.17408 6.7569 6.25394 6.9444 6.26088 7.16662C6.26783 7.38884 6.19491 7.59718 6.04213 7.79162C5.7088 8.22218 5.45185 8.6944 5.2713 9.20829C5.09074 9.72218 5.00046 10.2638 5.00046 10.8333C5.00046 11.9583 5.33033 12.9618 5.99005 13.8437C6.64977 14.7256 7.50046 15.3263 8.54213 15.6458C8.72269 15.7013 8.87199 15.8055 8.99005 15.9583C9.1081 16.1111 9.16713 16.2777 9.16713 16.4583C9.16713 16.7361 9.06991 16.9548 8.87546 17.1145C8.68102 17.2743 8.45185 17.3194 8.18796 17.25ZM11.813 17.25C11.5491 17.3194 11.3199 17.2708 11.1255 17.1041C10.931 16.9375 10.8338 16.7152 10.8338 16.4375C10.8338 16.2708 10.8928 16.1111 11.0109 15.9583C11.1289 15.8055 11.2782 15.7013 11.4588 15.6458C12.5005 15.3125 13.3512 14.7083 14.0109 13.8333C14.6706 12.9583 15.0005 11.9583 15.0005 10.8333C15.0005 9.4444 14.5144 8.26384 13.5421 7.29162C12.5699 6.3194 11.3894 5.83329 10.0005 5.83329H9.93796L10.2713 6.16662C10.4241 6.3194 10.5005 6.51384 10.5005 6.74995C10.5005 6.98607 10.4241 7.18051 10.2713 7.33329C10.1185 7.48607 9.92408 7.56245 9.68796 7.56245C9.45185 7.56245 9.25741 7.48607 9.10463 7.33329L7.35463 5.58329C7.2713 5.49995 7.21227 5.40968 7.17755 5.31245C7.14283 5.21523 7.12546 5.11107 7.12546 4.99995C7.12546 4.88884 7.14283 4.78468 7.17755 4.68745C7.21227 4.59023 7.2713 4.49995 7.35463 4.41662L9.10463 2.66662C9.25741 2.51384 9.45185 2.43745 9.68796 2.43745C9.92408 2.43745 10.1185 2.51384 10.2713 2.66662C10.4241 2.8194 10.5005 3.01384 10.5005 3.24995C10.5005 3.48606 10.4241 3.68051 10.2713 3.83329L9.93796 4.16662H10.0005C11.8616 4.16662 13.438 4.81245 14.7296 6.10412C16.0213 7.39579 16.6671 8.97218 16.6671 10.8333C16.6671 12.3472 16.2157 13.6944 15.313 14.875C14.4102 16.0555 13.2435 16.8472 11.813 17.25Z" fill="currentColor"></path></svg>
+          <span class="t-label-md">Reset</span>
+        </button>
+      </div>
+      <!-- No footer, for the reason the filter sheet has none: the row IS the
+           action, the list behind re-orders as you tap, and the way out is to
+           slide the sheet down. -->
+      <div class="srtsheet__body" id="srtBody"></div>
+    </section>
+  <!-- ══════════════════════════════════════════════════════════════════════
        Fault sheet — the mechanic's checklist pattern, lifted
 
        Marking a part faulty asks WHAT is wrong before it will take the verdict.
@@ -10188,6 +10351,19 @@ const CONFIG = {
      'sample' → always drop in the sample photo (fastest for demoing)        */
   CAMERA_MODE: 'auto',
   MAX_PHOTOS: 3,
+  /* How long a bike takes on an external power source. Sagar: 5-10 minutes, so
+     9 is a long one — and it is REAL time, not a demo shortcut, because the
+     point of the stack is that revivals outlast the attention of the person who
+     started them. A four-second version would have made it a progress bar.
+
+     THE REAL SIGNAL IS THE BIKE'S: the app sends nothing and cannot hurry it.
+     This stands in for a message that arrives when it arrives.
+
+     Counted from the revival's OWN start, so the two bikes seeded part-way
+     through in fleets.js finish when they are due rather than restarting their
+     wait at load. To watch one come back without waiting, call
+     finishRevival("<id>") — that is the bike reporting in. */
+  REVIVE_MS: 9 * 60000,
 };
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -10369,6 +10545,21 @@ const ICON = {
      48px one; the mask and bounding rect the export carries are dropped, since
      the rect IS the viewBox and clips nothing. */
   filter:`<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M8.75 14.5C8.5375 14.5 8.35938 14.4285 8.21563 14.2856C8.07188 14.1427 8 13.9656 8 13.7544C8 13.5431 8.07188 13.3646 8.21563 13.2188C8.35938 13.0729 8.5375 13 8.75 13H11.25C11.4625 13 11.6406 13.0715 11.7844 13.2144C11.9281 13.3573 12 13.5344 12 13.7456C12 13.9569 11.9281 14.1354 11.7844 14.2812C11.6406 14.4271 11.4625 14.5 11.25 14.5H8.75ZM5.75 10.75C5.5375 10.75 5.35938 10.6785 5.21563 10.5356C5.07188 10.3927 5 10.2156 5 10.0044C5 9.79312 5.07188 9.61458 5.21563 9.46875C5.35938 9.32292 5.5375 9.25 5.75 9.25H14.25C14.4625 9.25 14.6406 9.32146 14.7844 9.46438C14.9281 9.60729 15 9.78438 15 9.99563C15 10.2069 14.9281 10.3854 14.7844 10.5312C14.6406 10.6771 14.4625 10.75 14.25 10.75H5.75ZM3.75 7C3.5375 7 3.35937 6.92854 3.21562 6.78563C3.07187 6.64271 3 6.46563 3 6.25438C3 6.04313 3.07187 5.86458 3.21562 5.71875C3.35937 5.57292 3.5375 5.5 3.75 5.5H16.25C16.4625 5.5 16.6406 5.57146 16.7844 5.71437C16.9281 5.85729 17 6.03437 17 6.24562C17 6.45687 16.9281 6.63542 16.7844 6.78125C16.6406 6.92708 16.4625 7 16.25 7H3.75Z" fill="currentColor"/></svg>`,
+  /* The band's Sort button. Two arrows running opposite ways — the one glyph
+     that says "order" without naming a direction, which is right for a control
+     that opens a sheet rather than applying a sort itself. */
+  sort:`<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6.5 3.75V16.25M6.5 3.75L3.75 6.5M6.5 3.75L9.25 6.5M13.5 16.25V3.75M13.5 16.25L10.75 13.5M13.5 16.25L16.25 13.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  /* Discard task. A plain close, drawn at the 24px the sheet's other rows use —
+     its own glyph rather than one of the borrowed placeholders above, because
+     this row ends a task and a borrowed icon on that one is worth avoiding. */
+  sheetDiscard:`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.4 18.65 5.35 17.6l5.6-5.6-5.6-5.6L6.4 5.35l5.6 5.6 5.6-5.6 1.05 1.05-5.6 5.6 5.6 5.6-1.05 1.05-5.6-5.6z" fill="currentColor"/></svg>`,
+  /* The two revival states, exported from Figma 2982:1404 — Material's
+     `bolt_boost` while a bike is on charge and `charger` once it has reported
+     in. Path data is the export's, not drawn here; the mask/bounding-box
+     wrappers and the xmlns are stripped, the latter because an absolute URL
+     scheme anywhere in source fails the build (see trap 2 in MAP.md). */
+  boltBoost:`<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M11.3333 17.0702C11.2778 17.0059 11.2569 16.9269 11.2708 16.8333L11.75 11.5H8.5C8.19444 11.5 7.96875 11.3646 7.82292 11.0938C7.67708 10.8229 7.69444 10.5625 7.875 10.3125L13.0417 2.9375C13.0972 2.85417 13.1667 2.80556 13.25 2.79167C13.3333 2.77778 13.4097 2.78472 13.4792 2.8125C13.5486 2.84028 13.6111 2.88833 13.6667 2.95667C13.7222 3.025 13.7431 3.10889 13.7292 3.20833L13 8.5H16.4792C16.7894 8.5 17.0128 8.63542 17.1494 8.90625C17.2859 9.17708 17.2639 9.4375 17.0833 9.6875L11.9375 17.0833C11.8819 17.1667 11.816 17.2153 11.7396 17.2292C11.6632 17.2431 11.5903 17.2361 11.5208 17.2083C11.4514 17.1806 11.3889 17.1345 11.3333 17.0702ZM3.77083 14.5C3.55833 14.5 3.38021 14.4285 3.23646 14.2856C3.09271 14.1427 3.02083 13.9656 3.02083 13.7544C3.02083 13.5431 3.09271 13.3646 3.23646 13.2188C3.38021 13.0729 3.55833 13 3.77083 13H9.125C9.375 13 9.5625 13.0781 9.6875 13.2344C9.8125 13.3906 9.875 13.5625 9.875 13.75C9.875 13.9375 9.8125 14.1094 9.6875 14.2656C9.5625 14.4219 9.375 14.5 9.125 14.5H3.77083ZM2.75 10.75C2.5375 10.75 2.35937 10.6785 2.21562 10.5356C2.07187 10.3927 2 10.2156 2 10.0044C2 9.79313 2.07187 9.61458 2.21562 9.46875C2.35937 9.32292 2.5375 9.25 2.75 9.25H5.3125C5.5625 9.25 5.75 9.32813 5.875 9.48438C6 9.64063 6.0625 9.8125 6.0625 10C6.0625 10.1875 6 10.3594 5.875 10.5156C5.75 10.6719 5.5625 10.75 5.3125 10.75H2.75ZM4.74917 7C4.54139 7 4.36458 6.92854 4.21875 6.78563C4.07292 6.64271 4 6.46563 4 6.25438C4 6.04313 4.07188 5.86458 4.21563 5.71875C4.35938 5.57292 4.5375 5.5 4.75 5.5H7.98458C8.23097 5.5 8.41319 5.57812 8.53125 5.73438C8.64931 5.89062 8.70833 6.0625 8.70833 6.25C8.70833 6.4375 8.64583 6.60938 8.52083 6.76562C8.39583 6.92188 8.20833 7 7.95833 7H4.74917Z" fill="currentColor"/></svg>`,
+  charger:`<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M9.75 15.8542L13.1875 9.10417C13.2569 8.97958 13.2527 8.8582 13.1748 8.74C13.0969 8.62167 12.99 8.5625 12.8542 8.5625H10.6667V4.20833C10.6667 4.10736 10.6181 4.04736 10.5208 4.02833C10.4236 4.00944 10.3542 4.04167 10.3125 4.125L6.875 10.8542C6.80556 10.9788 6.80979 11.1001 6.88771 11.2183C6.96563 11.3367 7.0725 11.3958 7.20833 11.3958H9.39583V15.7708C9.39583 15.8718 9.44445 15.9318 9.54167 15.9508C9.63889 15.9697 9.70833 15.9375 9.75 15.8542ZM10 18.3333C8.84722 18.3333 7.76389 18.1146 6.75 17.6771C5.73611 17.2396 4.85417 16.6458 4.10417 15.8958C3.35417 15.1458 2.76042 14.2639 2.32292 13.25C1.88542 12.2361 1.66667 11.1528 1.66667 10C1.66667 8.84722 1.88542 7.76389 2.32292 6.75C2.76042 5.73611 3.35417 4.85417 4.10417 4.10417C4.85417 3.35417 5.73611 2.76042 6.75 2.32292C7.76389 1.88542 8.84722 1.66667 10 1.66667C11.1528 1.66667 12.2361 1.88542 13.25 2.32292C14.2639 2.76042 15.1458 3.35417 15.8958 4.10417C16.6458 4.85417 17.2396 5.73611 17.6771 6.75C18.1146 7.76389 18.3333 8.84722 18.3333 10C18.3333 11.1528 18.1146 12.2361 17.6771 13.25C17.2396 14.2639 16.6458 15.1458 15.8958 15.8958C15.1458 16.6458 14.2639 17.2396 13.25 17.6771C12.2361 18.1146 11.1528 18.3333 10 18.3333ZM14.6563 14.6613C15.941 13.3799 16.5833 11.8278 16.5833 10.005C16.5833 8.18222 15.9426 6.62847 14.6613 5.34375C13.3799 4.05903 11.8278 3.41667 10.005 3.41667C8.18222 3.41667 6.62847 4.05736 5.34375 5.33875C4.05903 6.62014 3.41667 8.17222 3.41667 9.995C3.41667 11.8178 4.05736 13.3715 5.33875 14.6563C6.62014 15.941 8.17222 16.5833 9.995 16.5833C11.8178 16.5833 13.3715 15.9426 14.6563 14.6613Z" fill="currentColor"/></svg>`,
   reset:`<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M8.18796 17.25C6.75741 16.8472 5.59074 16.059 4.68796 14.8854C3.78519 13.7118 3.3338 12.3611 3.3338 10.8333C3.3338 10.0416 3.46574 9.28815 3.72963 8.57287C3.99352 7.85759 4.36852 7.20134 4.85463 6.60412C5.00741 6.43745 5.19491 6.35065 5.41713 6.3437C5.63935 6.33676 5.84074 6.42357 6.0213 6.60412C6.17408 6.7569 6.25394 6.9444 6.26088 7.16662C6.26783 7.38884 6.19491 7.59718 6.04213 7.79162C5.7088 8.22218 5.45185 8.6944 5.2713 9.20829C5.09074 9.72218 5.00046 10.2638 5.00046 10.8333C5.00046 11.9583 5.33033 12.9618 5.99005 13.8437C6.64977 14.7256 7.50046 15.3263 8.54213 15.6458C8.72269 15.7013 8.87199 15.8055 8.99005 15.9583C9.1081 16.1111 9.16713 16.2777 9.16713 16.4583C9.16713 16.7361 9.06991 16.9548 8.87546 17.1145C8.68102 17.2743 8.45185 17.3194 8.18796 17.25ZM11.813 17.25C11.5491 17.3194 11.3199 17.2708 11.1255 17.1041C10.931 16.9375 10.8338 16.7152 10.8338 16.4375C10.8338 16.2708 10.8928 16.1111 11.0109 15.9583C11.1289 15.8055 11.2782 15.7013 11.4588 15.6458C12.5005 15.3125 13.3512 14.7083 14.0109 13.8333C14.6706 12.9583 15.0005 11.9583 15.0005 10.8333C15.0005 9.4444 14.5144 8.26384 13.5421 7.29162C12.5699 6.3194 11.3894 5.83329 10.0005 5.83329H9.93796L10.2713 6.16662C10.4241 6.3194 10.5005 6.51384 10.5005 6.74995C10.5005 6.98607 10.4241 7.18051 10.2713 7.33329C10.1185 7.48607 9.92408 7.56245 9.68796 7.56245C9.45185 7.56245 9.25741 7.48607 9.10463 7.33329L7.35463 5.58329C7.2713 5.49995 7.21227 5.40968 7.17755 5.31245C7.14283 5.21523 7.12546 5.11107 7.12546 4.99995C7.12546 4.88884 7.14283 4.78468 7.17755 4.68745C7.21227 4.59023 7.2713 4.49995 7.35463 4.41662L9.10463 2.66662C9.25741 2.51384 9.45185 2.43745 9.68796 2.43745C9.92408 2.43745 10.1185 2.51384 10.2713 2.66662C10.4241 2.8194 10.5005 3.01384 10.5005 3.24995C10.5005 3.48606 10.4241 3.68051 10.2713 3.83329L9.93796 4.16662H10.0005C11.8616 4.16662 13.438 4.81245 14.7296 6.10412C16.0213 7.39579 16.6671 8.97218 16.6671 10.8333C16.6671 12.3472 16.2157 13.6944 15.313 14.875C14.4102 16.0555 13.2435 16.8472 11.813 17.25Z" fill="currentColor"/></svg>`,
   /* Scan bike, on both listing FABs. Vaishnavi's from qc-task-list — the glyph
      exports as its inner 16.5 box, so it is drawn true size inside the 56px
@@ -10623,8 +10814,9 @@ const MODELS = ["Miracle", "Dex GR", "Dex NV"];
    not the union of the other two, which is what a checkbox pair would make it. */
 const ISSUE_KINDS = ["mech", "elec", "both"];
 
-/* 21 waiting on assessment: 15 with charge, 6 flat. */
-const FLEET = Array.from({length:21}, (_, i) => ({
+/* 26 in the yard: 15 with charge, 11 flat. Sixteen are lifted out into DONE
+   below, leaving the 10 that are actually waiting on assessment. */
+const FLEET = Array.from({length:26}, (_, i) => ({
   id: String(5078900 + i * 137),
   model: MODELS[i % MODELS.length],
   waitMins: 40 + ((i * 47) % 260),
@@ -10637,12 +10829,36 @@ const FLEET = Array.from({length:21}, (_, i) => ({
   issue: ISSUE_KINDS[(i + Math.floor(i / 3)) % 3],
 }));
 
+/* THE WHOLE YARD, counted before a single bike is spliced out of it. Pending and
+   done are one pool split in two, and this is the number that has to hold however
+   the split moves: a bike lost or duplicated on the way across changes it, growing
+   the fixture does not. Captured here because DONE's map below mutates FLEET. */
+const YARD = FLEET.length;
+
+/* ── WHERE A TRANSFERRED BIKE IS PARKED ──────────────────────────────────────
+   Three zones, and a transferred bike is in exactly one of them. Named here
+   rather than written into the rows because two places say them: the row's
+   second line, and the note above the Transfer done list (see the `note` on that
+   section in queue-kinds.js, which builds its bullets from this array). A note
+   that listed a zone no row used — or missed one a row showed — would be the
+   page contradicting itself.
+
+   The weighting is INVENTED, like every other figure in these fixtures: most
+   bikes go to allocation, fewer to QC, fewest are stuck. It is here to make the
+   column look like a real day rather than a round robin. */
+const TRANSFER_ZONES = ["Allocation zone", "QC pending zone", "Stuck bike zone"];
+
 /* ── ASSESSED ALREADY ────────────────────────────────────────────────────────
-   Eleven bikes lifted OUT of FLEET, not invented beside it: an assessed bike is
+   Sixteen bikes lifted OUT of FLEET, not invented beside it: an assessed bike is
    a bike that was waiting an hour ago, and two lists that do not share their
-   bikes cannot show one moving between them. FLEET is 10 now and DONE is 11;
-   finishing an assessment moves an eleventh across (see completeAssessment in
+   bikes cannot show one moving between them. FLEET is 10 now and DONE is 16;
+   finishing an assessment moves a seventeenth across (see completeAssessment in
    shared/assessment-record.js), which is the whole point of the pair.
+
+   GROWING THE TRANSFERRED HALF MEANS GROWING THE YARD. These bikes are spliced
+   out of FLEET, so adding one here without adding one to FLEET takes a bike off
+   Assessment pending — the two counts are one pool, and that is the point of
+   the splice. Five were added to both when Transfer done went from 6 to 11.
 
    DONE has two halves, split by `transferred` — assessed, and assessed AND
    handed over to the Sr. Mechanic's bay. They are two accordions on one page,
@@ -10707,19 +10923,19 @@ const ASSESSED = [
      the prototype, and the only clock on screen is the frame's painted 9:41 —
      which would put every one of these in the small hours. These are ordered to
      match doneMins so the column still reads down: longest ago, earliest time. */
-  {i:  0, doneMins:  95, doneAt: 13*60 + 10, allocMins:  5, spentMins: 7, elecN: 0, transferred:true, faults:[
+  {i:  0, doneMins:  95, doneAt: 13*60 + 10, allocMins:  5, spentMins: 7, elecN: 0, transferred:true, zone:"Allocation zone", faults:[
     {part:"Rear wheel",  reasons:["Spokes loose"],             penalty:"minor"},
   ]},
-  {i:  3, doneMins: 140, doneAt: 745, allocMins: 12, spentMins: 11, elecN: 3, transferred:true, faults:[]},
-  {i:  7, doneMins: 215, doneAt: 700, allocMins: 19, spentMins: 6, elecN: 0, transferred:true, faults:[
+  {i:  3, doneMins: 140, doneAt: 745, allocMins: 12, spentMins: 11, elecN: 3, transferred:true, zone:"QC pending zone", faults:[]},
+  {i:  7, doneMins: 215, doneAt: 700, allocMins: 19, spentMins: 6, elecN: 0, transferred:true, zone:"Stuck bike zone", faults:[
     {part:"Horn",        reasons:["Weak"],                     penalty:"no"},
     {part:"Indicators",  reasons:["One not blinking"],         penalty:"minor"},
   ]},
-  {i: 11, doneMins: 300, doneAt: 615, allocMins: 26, spentMins: 12, elecN: 2, transferred:true, faults:[
+  {i: 11, doneMins: 300, doneAt: 615, allocMins: 26, spentMins: 12, elecN: 2, transferred:true, zone:"Allocation zone", faults:[
     {part:"Charging port", reasons:["Pins bent"],              penalty:"major"},
   ]},
-  {i: 15, doneMins: 385, doneAt: 560, allocMins: 34, spentMins: 5, elecN: 1, transferred:true, faults:[]},
-  {i: 20, doneMins: 510, doneAt: 485, allocMins: 44, spentMins: 9, elecN: 3, transferred:true, faults:[
+  {i: 15, doneMins: 385, doneAt: 560, allocMins: 34, spentMins: 5, elecN: 1, transferred:true, zone:"Allocation zone", faults:[]},
+  {i: 20, doneMins: 510, doneAt: 485, allocMins: 44, spentMins: 9, elecN: 3, transferred:true, zone:"QC pending zone", faults:[
     /* Front wheel is one of the five parts the checklist was drawn against, so
        it is one of the five the app has a render of — this row shows a real crop
        where the rest of the catalogue falls back to the no-photo glyph. See
@@ -10728,13 +10944,43 @@ const ASSESSED = [
     {part:"Seat lock",   reasons:["Will not latch"],           penalty:"minor"},
     {part:"Number plate",reasons:["Bent"],                     penalty:"no"},
   ]},
+  /* ── the early shift ──────────────────────────────────────────────────────
+     Five more handed over, taking Transfer done from 6 to 11. They continue the
+     three runs the block above establishes and must keep continuing them or the
+     board stops reading down: doneMins UP, allocMins up with it, doneAt DOWN —
+     longest ago, earliest clock time. These land between 5:15 and 7:30, which is
+     the shift before the one the six above belong to.
+
+     Every part/reason pair here is one already used above, deliberately: the
+     reasons have to come from the part's own catalogue in data.js and flowtest
+     checks all of them, so reusing a proven pair cannot invent an unsettable
+     chip. */
+  {i: 21, doneMins: 585, doneAt: 450, allocMins: 53, spentMins:  8, elecN: 1, transferred:true, zone:"Allocation zone", faults:[
+    {part:"Front brake", reasons:["Pads worn"],                penalty:"minor"},
+  ]},
+  {i: 22, doneMins: 650, doneAt: 420, allocMins: 61, spentMins:  6, elecN: 0, transferred:true, zone:"Stuck bike zone", faults:[]},
+  {i: 23, doneMins: 720, doneAt: 385, allocMins: 70, spentMins: 13, elecN: 2, transferred:true, zone:"Allocation zone", faults:[
+    {part:"Tyre",        reasons:["Tread below limit","Cut"],  penalty:"major"},
+    {part:"Horn",        reasons:["Weak"],                     penalty:"no"},
+  ]},
+  {i: 24, doneMins: 790, doneAt: 350, allocMins: 78, spentMins:  7, elecN: 3, transferred:true, zone:"QC pending zone", faults:[
+    {part:"Charging port", reasons:["Pins bent"],              penalty:"major"},
+  ]},
+  {i: 25, doneMins: 860, doneAt: 315, allocMins: 87, spentMins: 10, elecN: 0, transferred:true, zone:"Allocation zone", faults:[
+    {part:"Headlight",   reasons:["Not lighting"],             penalty:"no"},
+    {part:"Seat lock",   reasons:["Will not latch"],           penalty:"minor"},
+  ]},
 ];
 
-const DONE = ASSESSED.map(({i, doneMins, doneAt, allocMins, spentMins, elecN, transferred, faults}) => {
+const DONE = ASSESSED.map(({i, doneMins, doneAt, allocMins, spentMins, elecN, transferred, zone, faults}) => {
   const at = FLEET.findIndex(b => b.id === String(5078900 + i * 137));
   const [bike] = FLEET.splice(at, 1);
   return {...bike, waitMins: transferred ? allocMins : doneMins,
           transferred: !!transferred,
+          /* Only a transferred bike has one — it is where the QCA walked it to.
+             The row prints it when it is there and says nothing when it is not,
+             so one field covers both halves of the list. */
+          zone: transferred ? zone : null,
           doneAt: doneAt ?? null, spentMins: spentMins ?? null,
           /* HOW MANY the bike reported about itself, not which: the names come
              off the app's one diagnostic set — see issuesElectrical — and a
@@ -10983,6 +11229,118 @@ function allocStopWork(b){
   delete ALLOC_SINCE[b.id];
 }
 
+/* ── REVIVAL ─────────────────────────────────────────────────────────────────
+   A dead bike goes on an external power source and takes 5-10 minutes to come
+   back up. SEVERAL RUN AT ONCE — the mechanic hooks one up and walks to the
+   next, which is the whole reason this is not a task. One assessment is in hand
+   at a time and the dock parks it; revivals stack on the board instead, because
+   nobody is holding them.
+
+   TWO PHASES, not one — Figma 2982:1404:
+
+     charging   the bike is on the charger and has said nothing. The row reads
+                "reviving…" and counts up from `startedAt`.
+     revived    the bike has pinged to say it is live. The row reads "Revived"
+                and counts up from `pingedAt`, and the task page offers Finish
+                revival. It is still in the stack: the QCA has to come back and
+                take it off charge, and until they do it is not on the board.
+
+   The second phase exists because the bike coming back and the MECHANIC dealing
+   with it are different events minutes apart. Collapsing them would put a bike
+   into the assessment queue while it was still physically wired to a charger.
+
+   id -> {startedAt, pingedAt}. Both anchors are stored rather than recomputed:
+   a repaint must not reset a clock, the rule ALLOC_SINCE above exists for.
+   ─────────────────────────────────────────────────────────────────────────── */
+const REVIVAL = {};
+/* On charge, nothing heard yet. */
+const isReviving = id => !!REVIVAL[id] && !REVIVAL[id].pingedAt;
+/* Reported in, still on charge, waiting for the QCA. */
+const isRevived  = id => !!REVIVAL[id] && !!REVIVAL[id].pingedAt;
+/* Either — what pins a row above the board. */
+const onRevival  = id => !!REVIVAL[id];
+
+/* What a bike comes back with. INVENTED, like every figure in these fixtures:
+   a few minutes on a charger is enough to wake the electronics and not much
+   more. Figma 2982:1404 draws 5%. */
+const REVIVE_CHARGE = 5;
+
+/* `sinceMs` backdates the DISPLAY only — see the seeds below. The ping is
+   scheduled for what is LEFT of the wait, not the whole of it. */
+function beginRevival(id, sinceMs){
+  const since = sinceMs || 0;
+  REVIVAL[id] = {startedAt: Date.now() - since, pingedAt: null};
+  setTimeout(() => bikePinged(id), Math.max(0, CONFIG.REVIVE_MS - since));
+}
+
+/* THE BIKE REPORTED IN. Nothing here asked it to — the signal is the bike's and
+   the timer above is the prototype standing in for it. It wakes with a little
+   charge, which is what stops it being a revival candidate a second time and
+   what makes it assessable at all. */
+function bikePinged(id){
+  if (!isReviving(id)) return;
+  REVIVAL[id].pingedAt = Date.now();
+  const bike = fleetBike(id);
+  if (bike && bike.battery < REVIVE_CHARGE) bike.battery = REVIVE_CHARGE;
+  revivalRepaint();
+  if (typeof toast === "function") toast((bike ? bike.model + " " : "") + id + " is revived");
+}
+
+/* THE QCA TOOK IT OFF CHARGE — Finish revival on the task page. Only now does
+   the bike leave the stack and join the bikes waiting to be assessed. */
+function completeRevival(id){
+  if (!REVIVAL[id]) return;
+  delete REVIVAL[id];
+  const bike = fleetBike(id);
+  if (bike) bike.revived = true;
+  revivalRepaint();
+}
+
+const fleetBike = id => FLEET.find(b => b.id === id) || DONE.find(b => b.id === id);
+
+/* TWO SCREENS SHOW A REVIVAL and both must follow it: the board draws the row,
+   the task page draws the footer that turns into Finish revival. A ping arriving
+   while the QCA is standing on the task page has to be visible there — that is
+   the whole sequence — and repainting only the listing left the button saying
+   "Waiting for bike" for a bike that had already answered.
+
+   Guarded on `current` because these fire on timers that outlive any one screen,
+   and on typeof because this file loads before either renderer. */
+function revivalRepaint(){
+  if (typeof current === "undefined") return;
+  if (current === "task" && typeof renderQueue === "function") renderQueue();
+  if (current === "job"  && typeof renderJob   === "function") renderJob();
+}
+
+/* "since 8m" while charging, "4m ago" once it has reported — the frame's words,
+   and they are two different facts: one is how long the wait has run, the other
+   is how long the bike has been sitting there done. Minutes only. The seconds
+   fmtLive shows are right for a job being worked on and wrong here: three
+   stacked rows ticking seconds is movement that means nothing. */
+function fmtSince(from){
+  const m = Math.floor((Date.now() - from) / 60000);
+  return m < 1 ? "just now" : `since ${m}m`;
+}
+function fmtAgo(from){
+  const m = Math.floor((Date.now() - from) / 60000);
+  return m < 1 ? "just now" : `${m}m ago`;
+}
+
+/* TWO ALREADY ON CHARGE — Figma 2982:1400 draws the board with a stack rather
+   than an empty one. A revival takes long enough that the steady state IS two or
+   three of these on top, and a QCA arriving at a board with none would never see
+   the pattern.
+
+   Backdated so they read 8m and 3m like the frame. The ping is still due when it
+   is due, so the one eight minutes in reports shortly and the stack moves while
+   you watch instead of holding still.
+
+   5081092 is deliberately NOT seeded. It is the third flat bike on the board and
+   the one left to start by hand, or there would be no way to see the beginning
+   of this flow. */
+beginRevival("5081229", 8 * 60000);
+beginRevival("5081503", 3 * 60000);
+
 /* "5m 12s". Not "5:12", which reads as a time of day next to a row that says
    "Finished in 43m" — the units are what make it a duration. */
 function fmtLive(from){
@@ -11167,7 +11525,21 @@ const BATT_ICON = `<svg aria-hidden="true" width="20" height="20" viewBox="0 0 2
 
 /* Bikes whose pack has reached zero. They are not a separate list — a bike moves
    between filters by its own state. */
-const REVIVE = b => b.battery === 0;
+/* NOT `revived`. A bike that has been woken is still flat — the pack is removed
+   as a step of the assessment this unblocks, not by the charger — so the battery
+   alone would offer to revive it again the moment it came back. The flag is what
+   says it has already been done. See beginRevival in fleets.js. */
+const REVIVE = b => b.battery === 0 && !b.revived;
+/* WHETHER THE TASK PAGE SHOWS A REVIVE STEP — a different question from whether
+   the bike needs reviving, and it has to be, because the answer must not change
+   while the task is open. A bike wakes with 5% the moment it pings, which makes
+   REVIVE() false; keyed on that alone the step list would drop from four to
+   three under a QCA standing on the page, taking the step they were on with it.
+
+   True while it still needs it, while it is on charge in either phase, and ever
+   after — a bike that has been through a revival keeps the four steps, so the
+   task reads as one job from start to finish. */
+const hasRevivalStep = b => !!b && (REVIVE(b) || onRevival(b.id) || !!b.revived);
 /* Flat is not low: a bike on 0 is in Revive, and having it answer both chips
    would double-count it in two counts sitting side by side. */
 const LOW_BATT = b => b.battery !== null && b.battery > 0
@@ -11179,6 +11551,28 @@ const LOW_BATT = b => b.battery !== null && b.battery > 0
 const BIKE_TYPE_GROUP = {
   id: "model", label: "Bike type",
   chips: MODELS.map(m => ({id: m, label: m, of: b => b.model === m})),
+};
+
+/* ── SORT OPTIONS ────────────────────────────────────────────────────────────
+   Shared for the reason BIKE_TYPE_GROUP is: two listings ordering by the same
+   thing must order by the SAME thing, and a queue that wrote its own comparator
+   is how the three original listings drifted apart in the first place.
+
+   `of` returns the NUMBER to order by, not a comparator — direction is the
+   sheet's business, and a kind that supplied its own would be able to disagree
+   with the arrow the row is drawing. A bike missing the value returns null and
+   the listing sinks it; see queueBikes.
+   ─────────────────────────────────────────────────────────────────────────── */
+const SORT_WAIT = {
+  id: "wait", label: "Wait time",
+  of: b => b.waitMins,
+};
+/* Only worth offering where the queue actually shows a reading. On a listing
+   whose bikes have had their packs pulled every row answers the same, so the
+   option would be a control that does nothing — see `battery` on each kind. */
+const SORT_BATTERY = {
+  id: "battery", label: "Battery %",
+  of: b => b.battery,
 };
 
 /* REMOVED: the Issue type group — Mech. only / Elect. only / Both, on all three
@@ -11241,8 +11635,24 @@ const QUEUE_KINDS = {
          working, and this is the board of what has left. Nor a scan button —
          scanning a bike is how you pick the next one up, and there is nothing
          here to pick up. */
+      /* A NOTE above the rows — Figma 2982:673. This tab is a record of bikes
+         that have left the QCA's hands, and the one question it kept raising was
+         "so where is it now": the rows say what was transferred, not where it
+         went. The note answers that once, above the list, rather than the row
+         growing a location it cannot know.
+
+         Declared here rather than drawn in the template for the same reason the
+         filters are: a note belongs to the board, and the template names no
+         board. Any section can carry one. */
       {id:"transfer", label:"Transfer done", of: b =>  b.transferred,
-       noFilters:true, noAvg:true, noMini:true, noFab:true},
+       noFilters:true, noAvg:true, noMini:true, noFab:true,
+       /* The bullets are BUILT from TRANSFER_ZONES, the same array the rows
+          read their zone out of. Written out by hand they were a second copy of
+          the list, and the first zone added to one and not the other would have
+          the note contradicting the rows underneath it. */
+       note: `<p>\u2705 Assessment for following bikes is done.</p>
+              <p>\u27a1\ufe0f These bike are parked in 1 of the following:</p>
+              <ul>${TRANSFER_ZONES.map(z => `<li>${z}</li>`).join("")}</ul>`},
     ],
     filters: [
       /* Both chips ask about a pack in a bike that is waiting. A transferred bike
@@ -11254,6 +11664,16 @@ const QUEUE_KINDS = {
       ]},
       BIKE_TYPE_GROUP,
     ],
+    /* BOTH options here: this queue shows a live pack reading on every row, so
+       "which is emptiest" is a question its rows can actually answer. Default
+       order is unchanged — longest wait first — and Reset in the sheet returns
+       to it. A listing with no `sorts` shows no Sort button at all. */
+    sorts: [SORT_WAIT, SORT_BATTERY],
+    /* THE ORDER THE LIST IS ALREADY IN, named so the sheet can press it. It has
+       to agree with `sort` below (absent here, so the template's own longest-
+       wait-first) — if the two disagreed the sheet would point at a chip the
+       list was not obeying. */
+    sortDefault: {id:"wait", dir:"desc"},
     battery: true,
     /* The pack is out of a transferred bike, so its row shows the slot and no
        number — the same "-- %" Assessment done uses, per bike here because this
@@ -11280,7 +11700,9 @@ const QUEUE_KINDS = {
        already in the yard, which is the one thing this row must not offer. */
     open: bike => {
       if (bike.transferred){ openFinishedJob(bike); return; }
-      resetAssessment(); jobKind = "assessment"; jobAt = 0; goTo("job");
+      /* jobKind FIRST — jobEntryStep reads the kind's step list to decide
+         whether this bike's revival is already behind it. */
+      resetAssessment(); jobKind = "assessment"; jobAt = jobEntryStep(); goTo("job");
     },
   },
 
@@ -11379,12 +11801,15 @@ const QUEUE_KINDS = {
        A bike with no faults at all is not "mechanical only": it is nothing
        only, and it does not belong under a chip that says what kind of work
        this is. */
-    /* Bike type FIRST in the sheet, then Quick — the sheet lists the groups in
+    /* Quick FIRST in the sheet, then Bike type — the sheet lists the groups in
        array order, and the quick group is found by its flag rather than by its
-       place, so the two can be ordered for reading. The chip that is already on
-       the band goes last: it is the one the sheet is least needed for. */
+       place, so the two can be ordered for reading. Same order as `task`: the
+       narrow, decision-shaped question comes before the broad one. An earlier
+       note here put Bike type first on the grounds that the quick chip is
+       already on the band and so is least needed in the sheet — but `task`'s
+       quick chips sit on its band too and lead its sheet, so that reasoning was
+       not being applied consistently. One order across both listings. */
     filters: [
-      BIKE_TYPE_GROUP,
       {id:"quick", label:"Quick", quick:true, chips:[
         {id:"mechonly", label:"Mechanical only", of: b => {
           if (b.elecN) return false;
@@ -11395,6 +11820,7 @@ const QUEUE_KINDS = {
           });
         }},
       ]},
+      BIKE_TYPE_GROUP,
     ],
     /* No pack reading. Every bike here has had its pack pulled, so the slot
        only ever said "-- %" — a permanent blank where a number goes. The bike
@@ -11681,13 +12107,14 @@ const QUEUE_KINDS = {
    that would come apart at the first change either side took. */
 let rnmKind = "repair";
 
-const TASK_KINDS = {
-  assessment: {
-    title: "Bike Assessment",
-    sub:   () => `${BIKE.model || "Dex NV"} • ${BIKE.id}`,
-    back:  "task",
-    art:   "--img-bike",
-    steps: [
+/* ── THE ASSESSMENT'S STEPS ──────────────────────────────────────────────────
+   Written once and shared by both shapes of the list below: a live bike gets
+   these three, a dead one gets the revive step in front of them. Declared before
+   TASK_KINDS because `const` does not hoist — the kind's `steps` is a function,
+   so it reads this at render time, but REVIVE_STEP below is spread into an array
+   and a const read before its declaration is a TDZ error, not undefined.
+   ─────────────────────────────────────────────────────────────────────────── */
+const ASSESS_STEPS = [
       {id:"assessment", label:"Assessment dashboard", to:"rnm"},
       /* `cta` because the row and the button say different things here: the row
          names the job — what this step IS — and the button names the outcome, in
@@ -11699,7 +12126,98 @@ const TASK_KINDS = {
          this step is — and the BUTTON names the outcome in the past tense,
          because pressing it is the QCA reporting that the thing is now true. */
       {id:"drop",       label:"Drop in Repairable bike area", cta:"Bike dropped"},
-    ],
+];
+
+/* ── REVIVE ──────────────────────────────────────────────────────────────────
+   FIRST, and only for a bike whose pack has reached zero. A dead bike cannot be
+   assessed: nothing on it answers, so the checklist has nothing to read and the
+   dashboard has no vitals to show. Waking it is the job before the job.
+
+   `on` rather than `to` or a bare acknowledgement — the third shape runJobStep
+   offers. The other two do not fit: there is no screen to open, and a plain
+   acknowledgement would let the QCA tick "revived" for a bike that never
+   answered. Pressing it asks, and then the page waits.
+
+   THE BUTTON IS PAST TENSE like every other step's — "Revival started" is the
+   QCA reporting what they have just done, not a command to the app. What happens
+   next is the bike's to report, which is why the label after it is a wait rather
+   than a second action. */
+const REVIVE_STEP = {
+  id: "revive",
+  label: "Revive dead bike",
+  /* THREE STATES, one step — Figma 2982:1404 and the flow around it:
+
+       idle      "Revival started"  the QCA has hooked the bike to a charger and
+                                    is reporting that, past tense like every
+                                    other step's button.
+       charging  "Waiting for bike" the app is listening and there is nothing to
+                                    press. Disabled, because a second press
+                                    cannot make a bike answer sooner.
+       revived   "Finish revival"   the bike has pinged. This is the QCA taking
+                                    it off charge, which is what actually ends
+                                    the step and puts the bike on the board.
+
+     The last two are separate on purpose: the bike coming back and the mechanic
+     dealing with it are minutes apart, and collapsing them would drop a bike
+     into the assessment queue while it was still wired to a charger. */
+  cta: () => isRevived(BIKE.id) ? "Finish revival"
+           : isReviving(BIKE.id) ? "Waiting for bike"
+           : "Revival started",
+  /* NO SUB-HEADING. It said what the footer was already saying a few pixels
+     below — "waiting for the bike", "take it off charge" — and the button is the
+     thing being read there. It also made this the one step taller than 72,
+     which re-flowed the list every time the state changed under it. */
+  on: (step, i) => runRevivalStep(i),
+};
+
+const TASK_KINDS = {
+  assessment: {
+    /* THE SAME WORDS AS THE QUEUE THAT OPENS IT, and as the home card above
+       that — see QUEUE_KINDS.task. A task named one thing on the board and
+       another once you are inside it is how a QCA ends up believing they are
+       two jobs. */
+    title: "Assessment & fault marking",
+    /* Model • number • pack, carried off the row that was tapped: the queue sets
+       BIKE on every open (three places do — the listing, the token queue and the
+       parked-task band) so the page cannot disagree with the row behind it.
+
+       THE PACK READING DASHES ONCE THE BIKE IS IN DONE, which is exactly when the
+       listings dash it: a pack is pulled as part of finishing an assessment — it
+       is one of the steps on this very page — so a number here afterwards would
+       be reporting a battery that is no longer in the bike. Derived rather than
+       carried on BIKE: three places set that object and a fourth field is a
+       fourth thing to forget, where membership of DONE is the fact itself. */
+    sub:   () => {
+      const pulled = typeof DONE !== "undefined" && DONE.some(d => d.id === BIKE.id);
+      /* THE FLEET RECORD'S pack, not the stamped copy's. BIKE is a three-field
+         snapshot the listing takes on open, so a bike that wakes mid-task — a
+         revival pings and takes it from 0% to 5% — left this header disagreeing
+         with the row behind it. Same reason the step list reaches for the record;
+         the copy is a starting point, never the truth. */
+      const rec = (typeof FLEET !== "undefined" && FLEET.find(b => b.id === BIKE.id)) || BIKE;
+      return `${BIKE.model || "Dex NV"} • ${BIKE.id} • ${pulled ? "-- %" : rec.battery + "%"}`;
+    },
+    back:  "task",
+    art:   "--img-bike",
+    /* A FUNCTION, not an array, because a dead bike has one more step than a
+       live one. Everything downstream reads jobSteps(), which resolves either
+       shape — see the note there.
+
+       Keyed on REVIVE(BIKE), the same predicate the queue's Revive chip uses, so
+       "dead" means one thing in the listing and on the page it opens. Reviving
+       does NOT clear it: the pack is still flat — waking the bike is what step 1
+       does, removing its pack is step 3 — so the list keeps the same length for
+       the whole task and jobAt cannot be left pointing at a step that vanished
+       under it. */
+    steps: () => {
+      /* THE FLEET RECORD, not BIKE. BIKE is a three-field copy the listing stamps
+         on open — id, model, battery — and `revived` is not one of them, so a
+         woken bike read off the copy still looks like a candidate and is handed
+         the revive step it has already been through. Same reason `sub` above
+         reaches for DONE rather than trusting what it was handed. */
+      const rec = FLEET.find(b => b.id === BIKE.id) || BIKE;
+      return hasRevivalStep(rec) ? [REVIVE_STEP, ...ASSESS_STEPS] : ASSESS_STEPS;
+    },
     /* Weighted by phase, not counted by click. How many faults a bike has is
        unknown until the checklist is done, so a click-count denominator would
        move under the mechanic mid-task — the bar would go backwards on finding a
@@ -11720,8 +12238,12 @@ const TASK_KINDS = {
          if (!f.length) return PARTS.every(p => p.status !== "pending") ? 1 : 0;
          return f.filter(isDetailed).length / f.length;
        }},
-      {id:"battery",   pct:25, of:() => (jobAt > 1 ? 1 : 0)},
-      {id:"drop",      pct:15, of:() => (jobAt > 2 ? 1 : 0)},
+      /* BY STEP ID, not by index. These read `jobAt > 1` and `jobAt > 2` until a
+         revived bike gained a fourth step in front of the other three and both
+         phases started measuring the step above the one they name — the bar
+         filled a quarter the moment the revival finished. */
+      {id:"battery",   pct:25, of:() => (jobPast("battery") ? 1 : 0)},
+      {id:"drop",      pct:15, of:() => (jobPast("drop")    ? 1 : 0)},
     ],
   },
 
@@ -12509,6 +13031,17 @@ const queueDef = () => QUEUE_KINDS[queueKind];
 const queueFilterBy = {};
 const queueFilters  = () => (queueFilterBy[queueKind] ||= {});
 
+/* The chosen ORDER, per queue and for the same reason: coming back to a listing
+   should find the view it was left in. null is not "unsorted" — a list always
+   has an order — it is the kind's own default, which is what Reset returns to. */
+const queueSortBy = {};
+const queueSort   = () => queueSortBy[queueKind] || null;
+/* What the list is ACTUALLY ordered by: the mechanic's choice, or the kind's
+   stated default standing in for it. The sheet presses this one, and the two
+   have to be the same value or the sheet would point at a chip the list is not
+   obeying. */
+const queueSortLive = () => queueSort() || queueDef().sortDefault || null;
+
 const qTitleEl   = document.getElementById("qTitle");
 const qAvgEl     = document.getElementById("qAvg");
 const qFiltersEl = document.getElementById("qFilters");
@@ -12538,11 +13071,47 @@ function queueMatches(bike, selection){
    override it; Repairable bikes puts the mechanic's own on top first. Copy
    before sorting, so the underlying fleet keeps its own order. */
 function queueBikes(){
-  const def = queueDef(), sel = queueFilters();
-  return def.data()
-    .filter(b => queueMatches(b, sel))
-    .slice()
-    .sort(def.sort || ((a, b) => b.waitMins - a.waitMins));
+  const def = queueDef(), sel = queueFilters(), srt = queueSortLive();
+  const rows = def.data().filter(b => queueMatches(b, sel)).slice();
+  /* A chosen order beats the kind's default. Looked up by id rather than
+     trusted from the stored state: a queue can be left sorted, its kind edited
+     to drop that option, and the stale id would otherwise sort by undefined. */
+  const opt = srt && (def.sorts || []).find(o => o.id === srt.id);
+  if (opt) return queueReviveFirst(rows.sort((a, b) => {
+    const va = opt.of(a), vb = opt.of(b);
+    /* MISSING VALUES SINK, both ways. A bike with no pack reading has no place
+       on a battery order, and floating it to the top of ascending — where
+       null - number is NaN and the comparator gives up — would put the rows
+       that answer the question least where the eye lands first. */
+    const na = va == null, nb = vb == null;
+    if (na || nb) return na && nb ? 0 : na ? 1 : -1;
+    return srt.dir === "asc" ? va - vb : vb - va;
+  }));
+  return queueReviveFirst(rows.sort(def.sort || ((a, b) => b.waitMins - a.waitMins)));
+}
+
+/* BIKES ON CHARGE SIT ON TOP — Figma 2982:1400. Applied after the order, not
+   instead of it: the rest of the board keeps whatever the kind or the sort sheet
+   asked for, and these are lifted out of it.
+
+   Above the board rather than in their place in it because they are not work
+   waiting to be picked up — they are work already running, and a mechanic
+   scanning for the next bike needs to see what is on charge before they see what
+   is not. Oldest first, so the one about to come back is the one at the top.
+
+   Not conditional on the queue: only FLEET carries reviving bikes today, so only
+   the assessment board has any, and a listing with none is unchanged. */
+function queueReviveFirst(rows){
+  const on = rows.filter(b => onRevival(b.id));
+  if (!on.length) return rows;
+  /* REVIVED ABOVE CHARGING. A bike that has reported in is waiting on a person —
+     somebody has to go and take it off the charger — where one still charging is
+     waiting on itself. The row that needs a hand goes where a hand looks first.
+     Within each phase, oldest first: the longest wait is the nearest to done. */
+  on.sort((a, b) =>
+    (isRevived(b.id) - isRevived(a.id))
+    || (REVIVAL[a.id].startedAt - REVIVAL[b.id].startedAt));
+  return on.concat(rows.filter(b => !onRevival(b.id)));
 }
 
 /* Whether this bike shows a reading. `battery` is true, false, "dash", or a
@@ -12581,6 +13150,17 @@ function applyQueueFilters(selection){
   if (typeof fltSyncOpen === "function") fltSyncOpen();
 }
 
+/* The order changed. Same shape as applyQueueFilters and for the same reasons:
+   one place that re-renders, one place that returns the list to the top. A
+   re-order leaves every row on screen but in a different place, so a mechanic
+   left scrolled halfway would be looking at a set they never chose. */
+function applyQueueSort(sort){
+  if (sort) queueSortBy[queueKind] = sort;
+  else delete queueSortBy[queueKind];
+  renderQueue();
+  qListEl.scrollTop = 0; qLastY = 0; queueDockVisible(true);
+}
+
 /* One row of the listing. 24 + 20 + 8 + 16 + 24 = 92 — Figma 2872:22873, and
    2902:31870 draws the same row inside the accordions. */
 function queueRowHTML(b){
@@ -12602,7 +13182,13 @@ function queueRowHTML(b){
   const clock = typeof queueDef().clock === "function"
     && queueDef().clock(b) && b.doneAt != null;
   /* Never red on a dash: there is no pack to warn about. */
-  const low = shows && !dash && b.battery !== null && b.battery < QUEUE_LOW_BATTERY;
+  /* NOT WHILE IT IS COMING BACK. A bike that has just reported in is at 5% and
+     climbing on a charger — red there would be warning about the one bike on the
+     board nobody needs to worry about. It goes back to the ordinary rule the
+     moment the QCA takes it off charge. A bike still CHARGING keeps its red: it
+     is flat, that is why it is there, and the frame draws it so. */
+  const low = shows && !dash && b.battery !== null && b.battery < QUEUE_LOW_BATTERY
+              && !isRevived(b.id);
   /* Model and charge are one line, and the number is the quiet second. The charge
      moved up into the title because it is part of what you are choosing between;
      the number identifies the bike once you have chosen. A queue that shows no
@@ -12613,23 +13199,58 @@ function queueRowHTML(b){
      reading, the number in the title beside the model, the mechanic's name
      underneath, and their face in front. */
   const def = queueDef();
+  /* ON CHARGE, in one of two phases. The row keeps the left-hand column it
+     always had — the pack reading is still the fact you need — and replaces the
+     right, where a wait would otherwise be. It is not waiting: it is running. */
+  const reviving = isReviving(b.id);
+  const revived  = isRevived(b.id);
   const head = typeof def.head === "function" ? def.head(b)
     : shows
       ? `${b.model} &bull; <span class="pct">${dash ? "-- %" : b.battery + "%"}</span>`
       : b.model;
+  /* THE ZONE RIDES ON THE BIKE, not on the queue — see TRANSFER_ZONES. Only a
+     transferred bike carries one, so the same default line covers both halves of
+     a listing: the number alone while the bike is still yours, the number and
+     where you left it once it is not. A kind with its own `sub` is untouched. */
   const sub = typeof def.sub === "function" ? def.sub(b)
-    : `${b.id}${b.mine ? ' &bull; <span class="mine">Assigned to me</span>' : ""}`;
+    : `${b.id}${b.zone ? ` &bull; ${esc(b.zone)}` : ""}${
+        b.mine ? ' &bull; <span class="mine">Assigned to me</span>' : ""}`;
   const art = typeof def.art === "function" ? def.art(b) : "";
   const extra = typeof def.rowClass === "function" ? def.rowClass(b) : "";
   return `
       <button class="qrow${low ? " is-low" : ""}${muted ? " is-muted" : ""}${
-        art ? " qrow--art" : ""}${extra ? " " + extra : ""}" data-qbike="${b.id}">
+        art ? " qrow--art" : ""}${
+        /* BOTH classes on a revived row. is-reviving means "in the stack" — the
+           tint, the two-line right column, and everything asking whether a row
+           is on the board at all; is-revived is the second phase on top of it.
+           One class per state would have every selector name two things. */
+        reviving || revived ? " is-reviving" : ""}${
+        revived ? " is-revived" : ""}${
+        extra ? " " + extra : ""}" data-qbike="${b.id}">
         ${art}
         <span class="who">
           <span class="id t-label-md">${head}</span>
           <span class="sub t-label-sm">${sub}</span>
         </span>
         <span class="wait t-label-md">${
+          /* TWO LINES ON A REVIVING ROW, mirroring the left: the state on the
+             title's line, how long it has been on charge under it. The clock is
+             the shared one — data-live-from is walked every second by the
+             interval below, so the row does not own a timer and a repaint costs
+             it nothing. */
+          /* TWO LINES, mirroring the left: the state on the title's line with its
+             glyph, how long under it. The clock is the app's one interval —
+             data-live-from is walked every second, so no row owns a timer and a
+             repaint costs nothing. Figma 2982:1404. */
+          revived
+            ? `<span class="wait__st">${ICON.charger}Revived</span>
+               <span class="wait__since t-label-sm" data-live-from="${REVIVAL[b.id].pingedAt}"
+                     data-live-fmt="ago">${fmtAgo(REVIVAL[b.id].pingedAt)}</span>`
+          : reviving
+            ? `<span class="wait__st">${ICON.boltBoost}reviving&hellip;</span>
+               <span class="wait__since t-label-sm" data-live-from="${REVIVAL[b.id].startedAt}"
+                     data-live-fmt="since">${fmtSince(REVIVAL[b.id].startedAt)}</span>`
+          :
           /* PER QUEUE, not per bike. The clock time is the QCA's own record —
              "I finished that one at 8:05" — and it belongs on the QCA's board.
              The same bike on the Sr. Mechanic's Unallocated board goes back to
@@ -12686,6 +13307,12 @@ function queueTabsHTML(sections, bikes){
         <span class="t-label-md steptab__n">${all.filter(sec.of).length}</span>
       </button>`;
   }).join("") + `</nav>`
+    /* THE BOARD'S OWN NOTE, between the strip and the rows — see `note` on the
+       section. It scrolls with the list rather than pinning under the tabs: it
+       is read once on arrival and then it is in the way, and a tab whose note
+       held its place while the rows moved under it would read as chrome for the
+       screen rather than as the head of this one board. */
+    + (active.note ? `<div class="qnote t-label-md">${active.note}</div>` : "")
     + bikes.filter(active.of).map(queueRowHTML).join("");
 }
 
@@ -12774,6 +13401,14 @@ function renderQueue(){
        page carries rows that are not its own work. */
     data:      headline,
     onChange:  applyQueueFilters,
+    /* Declared by the kind, like the filters above — a queue with nothing worth
+       ordering by gets no Sort button rather than an empty sheet. */
+    sorts:     def.sorts || [],
+    /* The CHOICE, not the live value — the bar needs to know whether the
+       mechanic has moved off the default, which is what Reset keys off. */
+    sort:      queueSort(),
+    sortDefault: def.sortDefault || null,
+    onSort:    applyQueueSort,
   });
 
   /* Sectioned or flat, the list is the same rows — see queueRowHTML. A queue
@@ -12879,7 +13514,12 @@ function renderQueue(){
    ─────────────────────────────────────────────────────────────────────────── */
 setInterval(() => {
   document.querySelectorAll("[data-live-from]").forEach(el => {
-    el.textContent = fmtLive(+el.dataset.liveFrom);
+    /* Two shapes now. A job being worked on counts in seconds; a bike on charge
+       counts in whole minutes — see fmtSince. The node says which it wants, so
+       the one interval still serves both and neither owns a timer. */
+    el.textContent = el.dataset.liveFmt === "since" ? fmtSince(+el.dataset.liveFrom)
+      : el.dataset.liveFmt === "ago" ? fmtAgo(+el.dataset.liveFrom)
+      : fmtLive(+el.dataset.liveFrom);
   });
 }, 1000);
 
@@ -12920,7 +13560,7 @@ qListEl.addEventListener("click", e => {
        it. Still no queue named in this file: the hook is the kind's, and the
        default below is what a queue with nothing special to say gets. */
     if (def.open) { def.open(bike); return; }
-    jobKind = def.kind; jobAt = 0;
+    jobKind = def.kind; jobAt = jobEntryStep();
     goTo("job");
   };
   /* TWO GUARDS, and they ask the same question about different things.
@@ -13005,7 +13645,11 @@ const jobDef   = () => TASK_KINDS[jobKind];
    reads jobSteps() and never asks which of the two shapes it came from. */
 const jobTabs  = () => jobDef().tabs || null;
 const jobTabDef = () => (jobTabs() || []).find(t => t.id === jobTab) || (jobTabs() || [])[0];
-const jobSteps = () => (jobTabs() ? (jobTabDef() || {}).steps || [] : jobDef().steps);
+/* EITHER SHAPE. A kind's step list may be an array or a function returning one:
+   the assessment's depends on the bike in hand — a dead one gets a revive step in
+   front of the rest — and nothing downstream should have to ask which it got. */
+const jobStepList = v => (typeof v === "function" ? v() : v) || [];
+const jobSteps = () => jobStepList(jobTabs() ? (jobTabDef() || {}).steps : jobDef().steps);
 
 let jobAt  = 0;                /* index of the active step */
 /* READ-ONLY. A bike the QCA has already transferred opens as a RECORD of the
@@ -13038,8 +13682,88 @@ const CLOSE_GLYPH = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><pa
 /* Any progress at all on the task in hand. Past the first step counts, and so
    does a single swipe on the assessment checklist, which happens while jobAt is
    still 0 — the checklist IS step 0, so its own progress is the job's. */
+/* WHERE THE TASK ACTUALLY BEGINS. Normally step 0 — but a dead bike is given a
+   revive step in front of the rest, and that one is not the task: it is hooking
+   a bike to a charger and waiting on it. So the first REAL step is the one after
+   it, and everything that asks "has this begun" has to measure from there. */
+const jobFirstStep = () => {
+  const steps = jobSteps();
+  return steps.length && steps[0].id === "revive" ? 1 : 0;
+};
+
+/* WHERE A FRESHLY OPENED TASK LANDS. The first step, normally — but a bike that
+   has already been through its revival opens PAST it, ticked, because asking a
+   QCA to revive a bike that is awake and on the board is asking them to redo the
+   thing they just did. The steps are kept either way, so the task still reads as
+   one job start to finish.
+
+   Called by the listing on every open; see QUEUE_KINDS.task.open. */
+function jobEntryStep(){
+  const steps = jobSteps();
+  if (steps.length && steps[0].id === "revive"){
+    const rec = typeof FLEET !== "undefined" && FLEET.find(b => b.id === BIKE.id);
+    if (rec && rec.revived && !onRevival(BIKE.id)) return 1;
+  }
+  return 0;
+}
+
+/* Whether a named step is behind us. By ID, not by index: the assessment's steps
+   shift down by one on a bike that needed reviving, and a phase keyed on `jobAt
+   > 1` then measures whichever step happens to be second. */
+const jobPast = id => {
+  const i = jobSteps().findIndex(s => s.id === id);
+  return i >= 0 && jobAt > i;
+};
+
+/* Any progress at all on the task in hand. Past the first real step counts, and
+   so does a single swipe on the assessment checklist, which happens while jobAt
+   is still on it — the checklist IS that step, so its own progress is the job's.
+
+   A REVIVAL IS NOT A START. The bike has been woken and handed back to the
+   board; the QCA has not committed to assessing it, and the slide on the
+   dashboard step is where they do. Until then the corner button closes rather
+   than parks, and backing out leaves nothing behind — see the note on the slide
+   in renderJob. */
 const jobStarted = () =>
-  jobAt > 0 || (jobKind === "assessment" && assessProgress().judged > 0);
+  jobAt > jobFirstStep() || (jobKind === "assessment" && assessProgress().judged > 0);
+
+/* The revive step's button, in whichever of its three states it is in.
+
+   IT DOES NOT LEAVE. The QCA can walk away — the bike is on the board with a
+   clock on it either way — but the page stays put so the sequence reads:
+   press, watch it say it is waiting, come back to Finish revival. An automatic
+   exit made the button feel like it had failed.
+
+   NOT PARKED, either. Minimize holds the dock's one slot because a parked
+   assessment is still the mechanic's — one bike in hand at a time. A revival is
+   nobody's while it runs, so three can be on charge while an assessment is
+   parked, which is the whole point of the stack. */
+function runRevivalStep(i){
+  const id = BIKE.id;
+
+  /* Reported in: this press is the QCA taking it off charge. THE ONLY ONE OF THE
+     THREE THAT ENDS THE STEP — the bike joins the bikes waiting to be assessed
+     and the page moves to the dashboard step, which they can take now or leave
+     for later like any other bike. */
+  if (isRevived(id)){
+    completeRevival(id);
+    jobAt = Math.max(jobAt, i + 1);
+    renderJob();
+    toast(id + " is ready to assess");
+    return true;
+  }
+
+  /* Still listening. Nothing a press can do; the footer is disabled and this is
+     only reachable by tapping the step row itself. */
+  if (isReviving(id)) return true;
+
+  /* On the charger. THE SIGNAL IS THE BIKE'S — beginRevival's timer stands in
+     for a message that in the real system arrives when the IoT comes back up. */
+  beginRevival(id);
+  renderJob();
+  toast("Revival started · " + id + " is on charge");
+  return true;
+}
 
 function jobProgress(){
   const ph = jobDef().progress;
@@ -13262,16 +13986,22 @@ function renderJob(){
      opens a dashboard, and neither of those is what the gesture means. Once
      the task is in hand the button goes back to naming the step, because from
      then on that is exactly what it does. */
-  const slide = !!steps.length && !!active && !jobStarted();
+  const slide = !!steps.length && !!active && !jobStarted()
+                && active.id !== "revive";
   cta.querySelector("span").textContent =
     slide ? "Start task"
     : !steps.length ? "Nothing to do yet"
     : !active ? "Task complete"
-    : active.cta ? active.cta
+    /* A function where the label depends on live state — the revive step's does,
+       because it is three buttons in one place. See REVIVE_STEP. */
+    : active.cta ? jobVal(active.cta, "")
     : (jobKind === "assessment" && jobAt === 0)
         ? (assessProgress().judged ? "Resume task" : "Start task")
     : active.label;
-  cta.disabled = !steps.length || !active;
+  /* Nothing to press while the app is listening — a second press cannot make a
+     bike answer sooner, and an enabled button there invites one. */
+  const listening = !!active && active.id === "revive" && isReviving(BIKE.id);
+  cta.disabled = listening || !steps.length || !active;
   /* THE SLIDE IS THE FIRST PRESS ONLY. Starting a task commits a QCA to a bike,
      and that is the one press worth making deliberate; Resume task, Battery
      removed and the rest are steps within a job already begun, and a gesture on
@@ -13280,7 +14010,13 @@ function renderJob(){
      Keyed on jobStarted(), which is the same test the corner button uses to
      decide between closing and parking — so "a task that has not begun" means
      one thing on this screen rather than two. */
-  cta.classList.toggle("jb__slide", slide);
+  /* NOT ON THE REVIVE STEP. The slide exists because starting a task commits a
+     QCA to a bike they then have in hand — see the note above. Reviving is not
+     that: it is a request to a bike that may never answer, and the QCA does not
+     have the bike until it does. So the first press on a dead bike is a plain
+     button saying what it does, and the slide is skipped rather than made to
+     mean something it does not. */
+  cta.classList.toggle("jb__slide", slide && !(active && active.id === "revive"));
   /* Back to rest whenever the button's job changes under it — a new step, a new
      task, a tab switch. Without this the next one could open half slid. */
   jbSlideReset();
@@ -13298,6 +14034,39 @@ function renderJob(){
 
   sizeJobScroll();
   syncJobBar();
+}
+
+/* ── DISCARD ─────────────────────────────────────────────────────────────────
+   Put the bike back. The task closes, the page returns to the listing it was
+   opened from, and the bike is exactly where it was in it — discarding is not
+   finishing and not failing.
+
+   NOT THE SAME AS MINIMIZE, and the difference is the dock. Minimize parks the
+   task: it holds the one slot, guards the next bike against it, and the band at
+   the bottom keeps saying you owe this bike something. Discard releases all of
+   that. A mechanic who is not coming back today should be able to leave the bike
+   for whoever picks it up next, not carry it around.
+
+   WHAT IT DOES NOT DO: clear the assessment working set. Whatever was judged on
+   the checklist is still there, so reopening the same bike finds those marks —
+   the queue resets the STEP pointer on open, as it does for every bike, so the
+   task restarts at step one with the findings intact.
+
+   ── FLAGGED ──────────────────────────────────────────────────────────────────
+   Sagar asked for this as "close the task, maybe save the progress". The step
+   pointer is the part not saved, and resuming mid-flow would mean storing it per
+   bike the way minimised[] does for a parked task. That is a product call, not a
+   guess: if a discarded task should resume where it was, it is doing Minimize's
+   job without Minimize's band, and the two rows want rethinking together.
+   ─────────────────────────────────────────────────────────────────────────── */
+function discardTask(){
+  const back = jobDef().back || "task";
+  /* Not a record any more either, or the next open of this page would come up
+     ticked. Same reset the queue does on the way in; done here too so the state
+     cannot outlive the task by way of some other entry point. */
+  jobDoneBike = null;
+  goTo(back);
+  toast("Task discarded — the bike is back on the list");
 }
 
 /* Open a finished task as a record. Called from the Transfer done rows; see the
@@ -20597,6 +21366,16 @@ const SHEET_ITEMS = {
   call:     {label:"Call user",              icon:ICON.sheetCall,     chevron:false},
   skip:     {label:"Skip for now",           icon:ICON.sheetSkip,     chevron:false},
   minimise: {label:"Minimize",              icon:ICON.sheetMinimise, chevron:false},
+  /* PUT THE BIKE BACK. Minimize parks a task the mechanic is coming back to —
+     it holds the dock's one slot and guards the next bike against it. This is
+     the other answer to the same interruption: they are not coming back to it
+     today, something else matters more, and the bike should be somebody's to
+     pick up rather than pinned to them.
+
+     The bike stays exactly where it was — the listing it was opened from, in the
+     same place in it. Discarding is not finishing and not failing; it is the
+     task going back on the board. */
+  discard:  {label:"Discard task",          icon:ICON.sheetDiscard,  chevron:false},
   /* The three the RnM dashboard gained when its tab strip went. Part exchange was
      a place on that strip, Feedbacks a step on the task page, and Finish repair
      was the Done button that only appeared once everything closed. All three are now reachable at
@@ -20633,7 +21412,11 @@ const SHEET_FOR = {
      feature alive one tap further in — the same walkthrough, on the page it was
      just taken off. The start screen's Watch video still points at it, which is
      where it now lives alone. */
-  job:      ["commands", "minimise"],
+  /* Minimize then Discard, in that order: they are the two ways to put a task
+     down and they escalate — park it and keep it, or let it go. The house rule
+     is that the dismissive row goes last, and of these two Discard is the more
+     final, so it takes the place Minimize holds on every other screen. */
+  job:      ["commands", "minimise", "discard"],
   assess:   ["commands", "report", "minimise"],
   faults:   ["commands", "minimise"],
   /* Feedbacks is read-only, but it is still somewhere a mechanic can be standing
@@ -20811,6 +21594,10 @@ optSheet.addEventListener("click", e => {
   if (opt.dataset.opt === "minimise"){
     /* Park the task on its own listing — see shared/minitask.js. */
     setTimeout(minimiseTask, 200);
+    return;
+  }
+  if (opt.dataset.opt === "discard"){
+    setTimeout(discardTask, 200);
     return;
   }
   if (opt.dataset.opt === "commands"){
@@ -21021,6 +21808,176 @@ fltReset.addEventListener("click", () => {
   }, true);
 })();
 /* ═══════════════════════════════════════════════════════════════════════════
+   SORT SHEET — the listing's ordering control
+
+   The component only. WHAT can be sorted is the listing's business, and this
+   file names no sort and no queue: it is handed a list of options and the order
+   the listing is already showing, and hands back the new one.
+
+   ONE selection, committed on tap — the same contract the filter sheet settled
+   on. The list behind re-orders as you tap and the way out is to slide the
+   sheet down, so there is nothing left for an Apply to confirm.
+
+   DIRECTION IS A CHIP, NOT A CYCLE — Figma 2982:1287. Every field offers both
+   ways as their own chips, "High to low" and "Low to high", and one chip in the
+   sheet is pressed at all times.
+
+   It replaced a row that cycled its direction on repeat taps. Two reasons the
+   frame is right. A cycle hides half the control: nothing on screen said a
+   second tap would do anything, so the other direction had to be discovered.
+   And an arrow cannot say which way "up" runs on a battery percentage — high to
+   low is unambiguous where an up arrow is a guess.
+
+   SINGLE SELECT ACROSS THE WHOLE SHEET, not one per group: a list has one order,
+   so pressing a chip anywhere releases the chip that was pressed before it.
+
+   THERE IS ALWAYS A SELECTION. The kind names a default — longest wait first
+   for most queues — and it is pressed on arrival, because the list is already in
+   that order and a sheet showing nothing pressed would have denied it. Reset is
+   how you get back to it, and it is dead until you have left it.
+   ═══════════════════════════════════════════════════════════════════════════ */
+const srtScrim = document.getElementById("srtScrim");
+const srtSheet = document.getElementById("srtSheet");
+const srtBody  = document.getElementById("srtBody");
+const srtReset = document.getElementById("srtReset");
+
+/* High to low FIRST, as the frame orders them. It is the direction every queue
+   already opens in, so the chip that is pressed on arrival is also the one the
+   eye reaches first. */
+const SRT_DIRS = [
+  {dir:"desc", label:"High to low"},
+  {dir:"asc",  label:"Low to high"},
+];
+
+let srtOpts     = [];
+let srtCur      = null;   /* the listing's own choice — null while it is on the default */
+let srtDef      = null;   /* the kind's default, pressed whenever srtCur is null */
+let srtOnChange = null;
+
+/* What is actually pressed: the choice if there is one, the default if not. */
+const srtLive = () => srtCur || srtDef;
+
+function renderSortSheet(){
+  const live = srtLive();
+  srtBody.innerHTML = srtOpts.map(o =>
+    '<div class="flgroup" data-srtgroup="' + o.id + '">' +
+      '<p class="flgroup__h">' + esc(o.label) + '</p>' +
+      '<div class="flgroup__chips" role="group" aria-label="' + esc(o.label) + '">' +
+        SRT_DIRS.map(d => {
+          const on = !!live && live.id === o.id && live.dir === d.dir;
+          return '<button class="qchip" type="button" data-srtopt="' + o.id + '"' +
+                 ' data-dir="' + d.dir + '" aria-pressed="' + on + '"' +
+                 /* The field is in the group's own label, so the chip only has to
+                    carry the direction — "Wait time, High to low" is read out by
+                    the group and the chip together. */
+                 '>' + d.label + '</button>';
+        }).join("") +
+      '</div>' +
+    '</div>').join("");
+  /* Dead while the list is in the kind's default order — there is nothing to
+     return to. Not "nothing selected": something always is. */
+  srtReset.disabled = !srtCur;
+}
+
+/* Opened by the listing, which owns the options, the current order and the
+   default that stands in for it. */
+function openSortSheet(opts, current, onChange, fallback){
+  srtOpts     = opts || [];
+  srtCur      = current || null;
+  srtDef      = fallback || null;
+  srtOnChange = onChange || null;
+  renderSortSheet();
+  setSortSheet(true);
+}
+
+function setSortSheet(open){
+  srtScrim.classList.toggle("is-open", open);
+  srtSheet.classList.toggle("is-open", open);
+  const btn = document.getElementById("qSortBtn");
+  if (btn) btn.setAttribute("aria-expanded", String(open));
+}
+
+srtScrim.addEventListener("click", () => setSortSheet(false));
+
+/* The chip is the action. Unlike the filter sheet this REDRAWS the body rather
+   than updating the tapped node in place: the selection is single, so pressing
+   one chip has to release another in a different group, and there is no scroll
+   position to protect — a queue declares two or three fields, not forty chips.
+
+   A PRESSED CHIP DOES NOT UNPRESS. Tapping the one that is already on is a
+   no-op rather than a toggle: releasing it would leave the sheet with nothing
+   pressed while the list stayed in that very order, which is the state this
+   design exists to rule out. Reset is the way back. */
+srtBody.addEventListener("click", e => {
+  const chip = e.target.closest("[data-srtopt]");
+  if (!chip) return;
+  const pick = {id: chip.dataset.srtopt, dir: chip.dataset.dir};
+  const live = srtLive();
+  if (live && live.id === pick.id && live.dir === pick.dir) return;
+  srtCur = pick;
+  if (srtOnChange) srtOnChange(srtCur);
+  renderSortSheet();
+});
+
+srtReset.addEventListener("click", () => {
+  srtCur = null;
+  if (srtOnChange) srtOnChange(null);
+  renderSortSheet();
+});
+
+/* ── Slide it down to close ──────────────────────────────────────────────────
+   The filter sheet's gesture, to the letter — see the long note at the foot of
+   filtersheet.js for why the whole surface is the handle and why a real drag
+   has to swallow the click that follows it. Kept as a copy rather than lifted
+   into a helper because the two sheets differ in what they exclude (Reset here,
+   Reset there) and a shared version would need a config object longer than the
+   twenty lines it replaced. If a third sheet wants it, lift it then.
+   ─────────────────────────────────────────────────────────────────────────── */
+(() => {
+  const ARM = 8;     /* travel before this is a drag and not a tap */
+  const FAR = 60;    /* travel before letting go dismisses */
+  let d = null, swallow = false;
+
+  srtSheet.addEventListener("pointerdown", e => {
+    if (e.target.closest("#srtReset")) return;
+    if (e.target.closest("#srtBody") && srtBody.scrollTop > 0) return;
+    d = {y0:e.clientY, dy:0, on:false, id:e.pointerId};
+  });
+
+  srtSheet.addEventListener("pointermove", e => {
+    if (!d) return;
+    const dy = e.clientY - d.y0;
+    if (!d.on){
+      if (dy < -ARM){ d = null; return; }
+      if (dy < ARM) return;
+      d.on = true;
+      srtSheet.setPointerCapture(d.id);
+      srtSheet.classList.add("sheet--dragging");
+    }
+    d.dy = Math.max(0, dy);
+    srtSheet.style.transform = "translateY(" + d.dy + "px)";
+  });
+
+  const end = () => {
+    if (!d) return;
+    const {on, dy} = d; d = null;
+    if (!on) return;                 /* never moved: it was a tap */
+    swallow = true;                  /* …but this one did, so eat its click */
+    srtSheet.classList.remove("sheet--dragging");
+    srtSheet.style.transform = "";
+    if (dy > FAR) setSortSheet(false);
+  };
+  srtSheet.addEventListener("pointerup", end);
+  srtSheet.addEventListener("pointercancel", end);
+
+  srtSheet.addEventListener("click", e => {
+    if (!swallow) return;
+    swallow = false;
+    e.stopPropagation();
+    e.preventDefault();
+  }, true);
+})();
+/* ═══════════════════════════════════════════════════════════════════════════
    FILTER BAR — the standard filtering control
    ═══════════════════════════════════════════════════════════════════════════
    One 72px band: All, then a run of quick chips, then the button that opens the
@@ -21040,7 +21997,14 @@ fltReset.addEventListener("click", () => {
        selection,              // {groupId: [chipId, …]}  — the caller's state
        data,                   // the rows the counts are taken against
        onChange(selection),    // called with the NEW selection on every tap
+       sorts,                  // [{id, label, of(bike)}] — omit for no Sort button
+       sort,                   // {id, dir:"asc"|"desc"} or null — the caller's state
+       onSort(sort),           // called with the NEW order, or null for the default
      });
+
+   SORT IS OPTIONAL AND PER LISTING. A queue that declares no `sorts` gets no
+   Sort button at all, rather than one that opens an empty sheet — the same rule
+   the filter band already follows for a kind with no filters.
 
    Counts are taken against `data`, not against the filtered view: a count that
    fell to nothing as you narrowed would report what you had already done rather
@@ -21059,8 +22023,9 @@ const FBAR = new WeakMap();
 
 function paintFilterBar(el, opts){
   if (!el) return;
-  const {groups = [], selection = {}, data = [], onChange} = opts || {};
-  FBAR.set(el, {groups, selection, onChange});
+  const {groups = [], selection = {}, data = [], onChange,
+         sorts = [], sort = null, sortDefault = null, onSort} = opts || {};
+  FBAR.set(el, {groups, selection, onChange, sorts, sort, sortDefault, onSort});
 
   el.classList.add("qfilters");
   const quick = groups.find(g => g.quick);
@@ -21096,11 +22061,25 @@ function paintFilterBar(el, opts){
      template is shared by six listings and the Sr. Mechanic's board is one of
      them. A second bar alongside the first would need them dropped; nothing
      here depends on them. */
+  /* THE SORT BUTTON IS THE LAST CHIP, after Filters and inside the same
+     scroller, for the reason Filters is inside it: both open the rest of what
+     the band is for, so they belong to the run rather than standing beside it.
+     IT NEVER LIGHTS, and that is the one place it parts company with Filters.
+     A lit Filters button means rows are being hidden — a fact you cannot see by
+     looking at the list, and worth a mark. Sort hides nothing: one order is
+     always in force, the list in front of you IS the answer, and a ring that
+     was on whenever anything was chosen would be on for a state that is not
+     unusual. So it stays a plain chip whatever is picked. */
   el.innerHTML =
     `<div class="qquick" id="qQuick" role="group" aria-label="Quick filters">${chips}`
     + `<button class="qfbtn${lit ? " is-on" : ""}" id="qFilterBtn" type="button"
                data-fbar-more data-icon="filter" aria-label="Filters"
                aria-haspopup="dialog" aria-expanded="false">${ICON.filter}</button>`
+    + (sorts.length
+        ? `<button class="qfbtn" id="qSortBtn" type="button"
+                   data-fbar-sort data-icon="sort" aria-label="Sort"
+                   aria-haspopup="dialog" aria-expanded="false">${ICON.sort}</button>`
+        : "")
     + `</div>`;
 }
 
@@ -21119,6 +22098,14 @@ document.addEventListener("click", e => {
 
   if (e.target.closest("[data-fbar-more]")){
     openFilterSheet(wired.groups);
+    return;
+  }
+
+  /* Same delegated listener, bound at load, for the same pre-render reason the
+     note above gives: a band can ship already populated, so a bind-on-paint
+     would never run for it. */
+  if (e.target.closest("[data-fbar-sort]")){
+    openSortSheet(wired.sorts, wired.sort, wired.onSort, wired.sortDefault);
     return;
   }
 
