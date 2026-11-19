@@ -331,7 +331,8 @@ main{max-width:1360px;margin:0 auto;padding-top:28px}
 .pm-tabs{display:flex;border-bottom:1px solid #E3E5F2;padding:0 10px;flex:none}
 .pm-tabs button{flex:1;background:none;border:0;border-bottom:3px solid transparent;padding:10px 0;font-weight:600;color:#5A5F8E!important}
 .pm-tabs button.on{border-bottom-color:#E9AE3C;color:#14173A!important}
-.pm-bar{height:8px;border-radius:99px;background:#E3E5F2;overflow:hidden}.pm-bars{display:flex;gap:4px}.stg-div{margin:14px 2px;border-top:1.5px dashed #C9CCE0}.stg-stack{display:flex;flex-direction:column;gap:0}.pm-bar i{display:block;height:100%;background:#1E6B4B}
+.pm-bar{height:8px;border-radius:99px;background:#E3E5F2;overflow:hidden}.pm-bars{display:flex;gap:4px}.ck-sheet.px-fs .mq-top{position:sticky;top:-12px;z-index:3;background:#fff;margin:-12px -16px 0;padding:12px 16px 0}.ck-sheet.px-fs .mq-cta{margin-top:auto;position:sticky;bottom:-14px;z-index:2;background:#fff;padding-top:10px;padding-bottom:0}.px-il.mq-h>span:first-child{display:inline-flex;align-items:center;gap:8px;font:600 16px var(--font-body);color:#222}.mq-rec{display:flex;align-items:center;gap:8px;padding:2px 0}.mq-rec b{font:600 13px var(--font-body);color:#222}.mq-step{display:inline-flex;align-items:center;gap:12px}.mq-step b{min-width:20px;text-align:center;font:700 16px var(--font-body);color:#222}.mq-step button{width:32px;height:32px;border-radius:50%;border:1.5px solid #4B2FC9;background:#fff;color:#4B2FC9;font:700 18px var(--font-body);line-height:1;cursor:pointer;padding:0}.mq-step button.mq-del{border-color:#B5432A;color:#B5432A;display:inline-flex;align-items:center;justify-content:center}.mq-step button:disabled{opacity:.35;cursor:default}
+.stg-div{margin:14px 2px;border-top:1.5px dashed #C9CCE0}.stg-stack{display:flex;flex-direction:column;gap:0}.pm-bar i{display:block;height:100%;background:#1E6B4B}
 .pm-kv{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #EEF0F8}.pm-kv:last-child{border:0}.pm-kv span:first-child{color:#5A5F8E}
 .pm-note{background:#F7E9C8;border:1px solid #E9AE3C;border-radius:12px;padding:8px 12px;font-size:13px}
 .pm-big{width:100%;padding:26px 10px;border-radius:18px;border:2px dashed #5A2DC0;background:#fff;font:700 18px var(--font-display);color:#3B1B8A!important}
@@ -2345,6 +2346,13 @@ document.addEventListener('click',function(e){
    case 'fmresolve':{var fs4=fmS(c),sh4=fs4.sheet;fs4.faults[sh4.i].res={act:sh4.act,old:sh4.old,nw:sh4.nw};fs4.sheet=null;break}
    case 'fmdel':{var fs5=fmS(c);fs5.faults.splice(fs5.sheet.i,1);fs5.sheet=null;break}
    case 'fmsheetx':fmS(c).sheet=null;pxS(c).draft=null;pxS(c).resSel=null;break;
+   case 'fmqm':{var dm=pxS(c).draft,gm=dm&&dm.mq&&dm.secs[+el.dataset.s];if(gm)gm.q=Math.max(1,gm.q-1);break}
+   case 'fmqp':{var dp=pxS(c).draft,gp=dp&&dp.mq&&dp.secs[+el.dataset.s];if(gp&&mqLeft(c,dp)>0)gp.q++;break}
+   case 'fmqmore':{var dmo=pxS(c).draft;if(dmo&&dmo.mq&&mqLeft(c,dmo)>0&&dmo.secs.every(function(g){return g.r.length}))dmo.secs.push({q:1,r:[]});break}
+   case 'fmqun':{var du=pxS(c).draft;if(du&&du.mq)du.secs.splice(+el.dataset.s,1);break}
+   case 'fmqr':{var dq=pxS(c).draft,gq=dq&&dq.mq&&dq.secs[+el.dataset.s];if(gq){var dv=el.dataset.v;if(dv==='Missing')gq.r=gq.r[0]==='Missing'?[]:['Missing'];else if(gq.r[0]==='Missing')gq.r=[dv];else{var di2=gq.r.indexOf(dv);if(di2>=0)gq.r.splice(di2,1);else gq.r.push(dv)}}break}
+   case 'fmqrm':{var fsr=fmS(c),rf=fsr.faults[+el.dataset.i];if(rf){var rn=rf.n;fsr.faults.splice(+el.dataset.i,1);mqSync(c,rn)}break}
+   case 'fmqdone':{var dd=pxS(c).draft;if(dd&&dd.mq){var all=dd.secs.filter(function(g){return g.r.length});if(all.length){var fsd=fmS(c);all.forEach(function(g){fsd.faults.push({n:dd.n,r:g.r.slice(),q:g.q,added:1})});mqSync(c,dd.n);pxS(c).draft=null;pxS(c).info=false;pxS(c).infoN=false;fsd.sheet=null}}break}
    case 'fmadd1':{var ad=pxS(c).draft;if(ad&&ad.fresh&&ad.add&&ad.r.length){var an=ad.n,ap=pxP(pxS(c),an);fmS(c).faults.push({n:an,r:ad.r.slice(),added:1});ap.miss=ad.r[0]==='Missing';ap.rs=ad.r.slice();pxS(c).draft=null;pxS(c).info=false;pxS(c).infoN=false;fmS(c).sheet=null}break}/* adding the fault closes its dialog */
    case 'fmed':{var ed0=pxS(c).draft;if(ed0)ed0.edit=true;break}
    case 'fmcancel':{var cx=pxS(c),cd=cx.draft;if(cd){var cf=fmFind(cd.n);cd.r=cf?cf.r.slice():cd.r;cd.edit=false}break}
@@ -2352,7 +2360,7 @@ document.addEventListener('click',function(e){
    case 'fmupd':{var ux=pxS(c),ud=ux.draft;if(ud){var un=ud.n,up=pxP(ux,un);var fcs=P.cards.filter(isFm);if(fcs.length)fcs.forEach(function(k){var ks=fmS(k);if(ud.r.length)ks.faults.forEach(function(f){if(f.n===un)f.r=ud.r.slice()});else ks.faults=ks.faults.filter(function(f){return f.n!==un})});else for(var fi=FM_EXIST.length-1;fi>=0;fi--){if(FM_EXIST[fi].n===un){if(ud.r.length)FM_EXIST[fi].r=ud.r.slice();else FM_EXIST.splice(fi,1)}}up.miss=ud.r[0]==='Missing';if(!ud.r.length){up.rs=[];up.req=false;up.sc=false}else up.rs=ud.r.slice();if(ud.r.length)ux.draft={n:un,r:ud.r.slice(),edit:!!ud.open,open:!!ud.open};else{ux.draft=null;if(isFm(c))fmS(c).sheet={t:'part',n:un}}}break}/* stay in the dialog: after an update it shows the saved state; a removed fault leaves the part's own dialog open */
    case 'fmadd':fmS(c).view='add';break;
    case 'fmtab':fmS(c).tabF=el.dataset.t;break;
-   case 'fmpart':fmS(c).sheet={t:'part',n:el.dataset.n};pxS(c).info=false;pxS(c).infoN=false;pxS(c).draft=pxDraft(pxList(c),el.dataset.n,true)||{n:el.dataset.n,r:[],edit:true,fresh:true,add:true};break;
+   case 'fmpart':fmS(c).sheet={t:'part',n:el.dataset.n};pxS(c).info=false;pxS(c).infoN=false;pxS(c).draft=PART_QTY[el.dataset.n]?mqNew(el.dataset.n,c):(pxDraft(pxList(c),el.dataset.n,true)||{n:el.dataset.n,r:[],edit:true,fresh:true,add:true});break;
    case 'fmmiss':{var mn=el.dataset.n,mp=pxP(pxS(c),mn),fmc=P.cards.filter(isFm);mp.miss=!mp.miss;
      fmc.forEach(function(k){var ms=fmS(k),mf=ms.faults.filter(function(f){return f.n===mn})[0];
        if(mp.miss){if(mf)mf.r=['Missing'];else if(k===c||fmc.length===1)ms.faults.push({n:mn,r:['Missing'],added:1})}
@@ -2552,9 +2560,9 @@ function penaltyDrawer(m){
 
 
 /* ───────── fault marking (mechanical faults): library details and phone flow ───────── */
-var FM_EXIST=[{n:'Front wheel',r:['Damage'],ex:1},{n:'Rear tyre',r:['Worn out','Cuts'],ex:1},{n:'Throttle controller',r:['No return'],ex:1}];
-var FM_PARTS={Recommended:['Front wheel','Rear tyre','Throttle','Pigtail connector'],Front:['Pigtail connector','Air nozzle','Throttle','Front wheel','Front tyre','Shocker','Display'],Middle:['Seat','Footrest','Battery cover','Kickstand'],Rear:['Rear wheel','Rear tyre','Tail light','Chain']};
-var FM_REASONS=['Damage','Worn out','Cuts','Loose','No return','Not working'];
+var FM_EXIST=[{n:'Front wheel',r:['Damage'],ex:1},{n:'Rear tyre',r:['Worn out','Cuts'],ex:1},{n:'Throttle controller',r:['Not working'],ex:1}];
+var FM_PARTS={Recommended:['Front wheel','Rear tyre','Footrest cover','Crash guard','Footboard screw caps','Throttle','Pigtail connector'],Front:['Pigtail connector','Air nozzle','Throttle','Front wheel','Front tyre','Shocker','Display'],Middle:['Seat','Footrest','Battery cover','Kickstand'],Rear:['Rear wheel','Rear tyre','Tail light','Chain']};
+var FM_REASONS=['Damage','Worn out','Cuts','Loose','Not working'];
 function isFm(c){return !!c&&(c.module==='faults'||c.module==='faultres')}
 function isRes(c){return !!c&&c.module==='faultres'}
 /* parts marked faulty in the checklist flow into the mechanical fault lists for the same bike */
@@ -2603,12 +2611,16 @@ function pImg(n,k){var t=function(ch){return ch==='T'?' t':''};return k.length==
 function pCta(o){var N=' data-n="'+esc(o.n)+'"'+(o.i!=null?' data-i="'+o.i+'"':'');
   if(o.cta==='empty')return '<span class="ck-st" aria-label="To do"></span>';/* dashed check circle */
   if(o.cta==='filled')return '<span class="ck-st g" aria-label="Done">✓</span>';
+  if(o.cta==='fault')return '<span class="ck-st f" aria-label="Fault marked">!</span>';/* Add faults: a marked fault is an exclamation, not a tick */
   if(o.cta==='unres')return '<span class="ck-st f" aria-label="Unresolved">!</span>';
   if(o.cta==='chev')return '<span class="pc-chev" aria-hidden="true">›</span>';
   if(o.cta==='reqnew')return '<button type="button" class="pc-req" data-pa="'+o.reqAct+'"'+N+(o.dis?' disabled':'')+'>Request new</button>';
   if(o.cta==='reqsent')return '<span class="pc-sent">Request sent</span>';
   return o.cta||''}
-function pRow(o){var inner=pImg(o.n,o.img||'S')+'<span class="grow"><b>'+esc(o.n)+'</b>'+(o.sub?'<small>'+esc(o.sub)+'</small>':'')+'</span>';
+/* parts fitted more than once on a bike (from the servicing BOM): shown as "Part name x2" in lists */
+var PART_QTY={'Footrest cover':2,'Crash guard':2,'Footboard screw caps':4,'Rear shocker':2,'Motor caps':2,'Handlebar end cap':2,'Footrest metal bracket':2};
+function pnm(n,q){var k=q!=null?q:PART_QTY[n];return esc(n)+(k>1?' x'+k:'')}
+function pRow(o){var inner=pImg(o.n,o.img||'S')+'<span class="grow"><b>'+pnm(o.n,o.q)+'</b>'+(o.sub?'<small>'+esc(o.sub)+'</small>':'')+'</span>';
   return '<div class="pr'+(o.grey?' gr':'')+'">'+(o.act?'<button type="button" class="pr-m" data-pa="'+o.act+'" data-n="'+esc(o.n)+'"'+(o.i!=null?' data-i="'+o.i+'"':'')+'>'+inner+'</button>':'<div class="pr-m">'+inner+'</div>')+pCta(o)+'</div>'}
 /* who marked a fault and when: placeholder people and times until the fault log is connected */
 var WHO=[['Ravi K.','Service advisor'],['Meena S.','Mechanic'],['Arjun P.','Hub lead'],['Divya R.','Mechanic']];
@@ -2616,8 +2628,31 @@ function fmFind(n){var out=null,fl=P.cards.filter(isFm);fl.forEach(function(k){f
 function fmWho(n,f){f=f||fmFind(n)||{};if(f.added)return {by:'You',role:'Marked in this task',at:'Just now'};if(f.ck)return {by:'Mechanic',role:'Assessment checklist',at:'Today'};var h=pxHash(n),w=WHO[h%WHO.length],d=1+h%6,hr=9+h%8;return {by:w[0],role:w[1],at:d+(d===1?' day':' days')+' ago, '+(hr>12?hr-12:hr)+':'+(h%2?'10':'40')+(hr>=12?' pm':' am')}}
 function fmInfo(c,n,f){var o=pxS(c).info,w=fmWho(n,f);
   return '<div class="px-sec fm-info"><button type="button" class="fm-ih" data-pa="fminfo" aria-expanded="'+!!o+'"><span>Marked by '+esc(w.by)+' · '+esc(w.at)+'</span><i aria-hidden="true">'+(o?'⌃':'⌄')+'</i></button>'+(o?'<div class="fm-ib"><span><small>Marked by</small><b>'+esc(w.by)+'</b></span><span><small>Role</small><b>'+esc(w.role)+'</b></span><span><small>When</small><b>'+esc(w.at)+'</b></span></div>':'')+'</div>'}
+/* a part fitted more than once: choose how many units, tick the faults, add more groups of units until all are marked, then one button marks them */
+function mqRecs(c,n){var out=[];fmS(c).faults.forEach(function(f,i){if(f.n===n)out.push({f:f,i:i})});return out}
+function mqUsed(c,n){return mqRecs(c,n).reduce(function(t,x){return t+(x.f.q||1)},0)}
+function mqSum(d){return d.secs.reduce(function(t,g){return t+g.q},0)}
+function mqLeft(c,d){return PART_QTY[d.n]-mqUsed(c,d.n)-mqSum(d)}/* units not given to any section yet */
+function mqSync(c,n){var p=pxP(pxS(c),n),rc=mqRecs(c,n),un=[];rc.forEach(function(z){z.f.r.forEach(function(q){if(un.indexOf(q)<0)un.push(q)})});p.miss=rc.length>0&&rc.every(function(z){return z.f.r[0]==='Missing'});p.rs=un}
+function mqNew(n,c){var left=PART_QTY[n]-(c?mqUsed(c,n):0);return {n:n,mq:true,secs:left>0?[{q:1,r:[]}]:[]}}
+function mqSheet(c,s,r){
+  var x=pxS(c),n=r.n,tot=PART_QTY[n],d=(x.draft&&x.draft.mq&&x.draft.n===n&&x.draft.secs)?x.draft:(x.draft=mqNew(n,c)),used=mqUsed(c,n),rc=mqRecs(c,n),left=mqLeft(c,d);
+  var rec=function(rs,q,idx){return '<div class="mq-rec"><span class="grow"><b>'+(q>1?'x'+q+' · ':'')+esc(rs.join(' · '))+'</b></span><button type="button" class="px-edit" data-pa="fmqrm" data-i="'+idx+'">Remove</button></div>'};
+  var done=rc.length?'<div class="px-sec"><div class="px-il"><span>Marked · '+used+' of '+tot+'</span></div>'+rc.map(function(z){return rec(z.f.r,z.f.q||1,z.i)}).join('')+'</div>':'';
+  var form='';
+  if(d.secs.length||left>0){/* with no open section but units still free, Add more faults opens one again */
+    var icon='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#D9442B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 2.8 19.5h18.4z"/><path d="M12 10v4.5M12 17.3v.2"/></svg>';
+    d.secs.forEach(function(g){var mx=g.q+Math.max(0,left);if(g.q>mx)g.q=mx;if(g.q<1)g.q=1});
+    form=d.secs.map(function(g,k){return '<div class="px-sec"><div class="px-il mq-h"><span>'+icon+'Mark fault on</span><span class="mq-step">'+((g.q<=1)?'<button type="button" class="mq-del" data-pa="fmqun" data-s="'+k+'" aria-label="Remove this group"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 7V4h4v3M6 7l1 13h10l1-13"/></svg></button>':'<button type="button" data-pa="fmqm" data-s="'+k+'" aria-label="One fewer"'+(g.q<=1?' disabled':'')+'>–</button>')+'<b>'+g.q+'</b><button type="button" data-pa="fmqp" data-s="'+k+'" aria-label="One more"'+(left<=0?' disabled':'')+'>+</button></span></div>'+pxIssueChips(r,'fmqr',g.r).replace(/data-pa="fmqr"/g,'data-pa="fmqr" data-s="'+k+'"')+'</div>'}).join('');
+    var N=d.secs.filter(function(g){return g.r.length}).reduce(function(t,g){return t+g.q},0),allR=d.secs.every(function(g){return g.r.length});
+    form+=(left>0?'<div class="px-sec"><button type="button" class="pm-btn" data-pa="fmqmore"'+(allR?'':' disabled')+'>+ Add more faults</button></div>':'')+
+      '<div class="px-sec mq-cta"><button type="button" class="pm-btn p" data-pa="fmqdone"'+(N?'':' disabled')+'>Mark fault on '+N+'</button></div>';
+  }
+  return '<div class="px-bd" data-pa="fmsheetx"></div><div class="ck-sheet px-fs"><div class="mq-top">'+pxX('fmsheetx')+'<div class="px-sec px-first">'+pxPart(r,tot+' on bike',r.sn?pxSn(n):'',false,'')+'</div></div>'+done+form+'</div>';
+}
 function fmPartSheet(c,s,extra,view){
   var x=pxS(c),n=s.sheet.n,r=pxList(c).filter(function(q){return q.n===n})[0];if(!r)return '';
+  if(PART_QTY[n]&&!view)return mqSheet(c,s,r);
   var D=(!view&&x.draft&&x.draft.n===n)?x.draft:null,dr=(D&&D.edit)?D.r:null;
   var p=r.p,chips=view?fmRo((r.f&&r.f.r)||[]):D?(D.edit?pxIssueChips(r,'fmdr',D.r):fmRo(p.miss?['Missing']:(r.f&&r.f.r)||[])):pxIssueChips(r,'fmrs'),body;
   /* Add issues only marks the issue: resolution and part requests happen in Resolve faults / Part exchange */
@@ -2630,8 +2665,10 @@ function fmAdd(c,s){
   var tabs=TABS.map(function(t){return '<button type="button" class="ck-tab'+(s.tabF===t?' on':'')+'" data-pa="fmtab" data-t="'+esc(t)+'">'+esc(t)+'</button>'}).join('');
   var L=pxList(c),rows=s.tabF==='Recommended'?FM_PARTS.Recommended.map(function(n){return L.filter(function(q){return q.n===n})[0]}).filter(Boolean):L.filter(function(q){return q.area===s.tabF});
   var list=rows.map(function(r){var x=shown.filter(function(y){return y.f.n===r.n})[0],miss=r.q<=0,sub=[];
-    if(r.sn)sub.push('S/N '+pxSn(r.n));if(miss)sub.push('Missing');else if(x)sub.push(x.f.r.join(' • '));
-    return pRow({n:r.n,img:miss?'T':'S',sub:sub.join(' · '),act:'fmpart',cta:(x||miss)?'filled':'empty'})}).join('');
+    if(r.sn)sub.push('S/N '+pxSn(r.n));
+    if(PART_QTY[r.n]){var rc=mqRecs(c,r.n),un=[];rc.forEach(function(z){z.f.r.forEach(function(q){if(un.indexOf(q)<0)un.push(q)})});if(rc.length)sub.push(un.join(' • ')+' · '+mqUsed(c,r.n)+' of '+PART_QTY[r.n]);x=rc[0]}
+    else if(miss)sub.push('Missing');else if(x)sub.push(x.f.r.join(' • '));
+    return pRow({n:r.n,img:miss?'T':'S',sub:sub.join(' · '),act:'fmpart',cta:(x||miss)?'fault':'empty'})}).join('');
   return sbHTML()+'<div class="ck-stk"><div class="ck-hd"><button type="button" class="ck-back" data-pa="back" aria-label="Back">‹</button><p>'+BIKE.no+' <span>/ Add faults</span></p><span class="ck-more" aria-hidden="true">⌕</span></div><div class="ck-tabs">'+tabs+'</div></div><div class="ck-body">'+list+'</div>'+fmSheet(c,s)+
    '<div class="pm-stick"><button type="button" class="pm-cta" data-pa="fmconfirm">Done</button></div>';
 }
@@ -2641,7 +2678,7 @@ function fmScreen(c){
   var sh=fmShown(c,s),res=isRes(c),n=sh.length,r=sh.filter(function(x){return x.f.res}).length;
   var rows=sh.map(function(x){var f=x.f;
     var pp=pxP(pxS(c),f.n),miss=pp.miss||f.r.indexOf('Missing')>=0,done=res?(!!f.res&&f.res.act!=='Unresolved'&&!(f.res.act==='Replaced'&&!pp.recv)):true;
-    return pRow({n:f.n,i:x.i,img:pImgK(pp,miss),sub:(f.res?f.res.act+' · ':'')+f.r.join(' · ')+(f.ck?' · From checklist':''),act:'fmrow',cta:res?(f.res&&f.res.act==='Unresolved'?'unres':done?'filled':'empty'):''})/* marking screen: a marked fault just sits in the list, no status circle */}).join('');
+    return pRow({n:f.n,q:PART_QTY[f.n]?(f.q||1):null,i:x.i,img:pImgK(pp,miss),sub:(f.res?f.res.act+' · ':'')+f.r.join(' · ')+(f.ck?' · From checklist':''),act:'fmrow',cta:res?(f.res&&f.res.act==='Unresolved'?'unres':done?'filled':'empty'):''})/* marking screen: a marked fault just sits in the list, no status circle */}).join('');
   return sbHTML()+'<div class="ck-stk"><div class="ck-hd"><button type="button" class="ck-back" data-pa="back" aria-label="Back">‹</button><p>'+BIKE.no+'</p>'+moreDots()+'</div>'+
    '<div class="ck-cnt" style="border-top-width:'+(res?0:6)+'px"><b style="font:600 18px var(--font-display);color:#222">'+(res?'Resolve faults':'Mechanical faults')+'</b>'+(res?'':' <span>'+n+(n===1?' fault':' faults')+'</span>')+'</div>'+
    (res?'<div class="ck-prog" role="progressbar" aria-valuemin="0" aria-valuemax="'+n+'" aria-valuenow="'+r+'" aria-label="Faults resolved"><i style="width:'+(n?Math.round(r/n*100):0)+'%"></i></div>':'')+
@@ -2856,20 +2893,20 @@ function alBikeRow(i,a,multi,pk,det,wt){
 function alLimText(n,one,many){return n===Infinity?'any number of '+many:n===1?'one '+one:'up to '+n+' '+many}
 /* ───────── Part exchange ───────── */
 var PX_CAT={
- 'Front end':'Front wheel,Front tyre,Front tube,Front rim,Front hub,Front axle,Front axle nut,Front fork,Fork bearing set,Steering stem,Headset bearing,Handlebar,Handlebar grip left,Handlebar grip right,Handlebar clamp,Headlight,Headlight bracket,Front indicator left,Front indicator right,Front mudguard,Front reflector,Horn,Mirror left,Mirror right',
+ 'Front end':'Handlebar end cap,Front wheel,Front tyre,Front tube,Front rim,Front hub,Front axle,Front axle nut,Front fork,Fork bearing set,Steering stem,Headset bearing,Handlebar,Handlebar grip left,Handlebar grip right,Handlebar clamp,Headlight,Headlight bracket,Front indicator left,Front indicator right,Front mudguard,Front reflector,Horn,Mirror left,Mirror right',
  'Brakes':'Front brake lever,Rear brake lever,Front brake caliper,Rear brake caliper,Front brake pads,Rear brake pads,Front brake disc,Rear brake disc,Front brake cable,Rear brake cable,Brake cable housing,Brake cut-off switch left,Brake cut-off switch right,Brake light switch,Caliper bolt set,Disc bolt set,Brake lever pivot,Brake reservoir,Brake hose,Brake adjuster,Brake return spring,Brake dust cover',
  'Rear end':'Rear wheel,Rear tyre,Rear tube,Rear rim,Rear hub,Rear axle,Rear axle nut,Swing arm,Swing arm bush,Rear shock absorber left,Rear shock absorber right,Rear mudguard,Rear reflector,Tail light,Number plate,Number plate bracket,Rear indicator left,Rear indicator right,Grab rail,Carrier,Luggage hook,Rear frame cover',
- 'Drive and motor':'Hub motor,Motor cable,Motor connector,Hall sensor,Motor temperature sensor,Motor bearing set,Motor cover,Chain,Chain guard,Sprocket front,Sprocket rear,Chain tensioner,Crank set,Pedal left,Pedal right,Pedal arm bolt,Bottom bracket,Freewheel,Drive belt,Belt tensioner,Torque sensor,Cadence sensor,Gear shifter,Derailleur',
+ 'Drive and motor':'Motor caps,Hub motor,Motor cable,Motor connector,Hall sensor,Motor temperature sensor,Motor bearing set,Motor cover,Chain,Chain guard,Sprocket front,Sprocket rear,Chain tensioner,Crank set,Pedal left,Pedal right,Pedal arm bolt,Bottom bracket,Freewheel,Drive belt,Belt tensioner,Torque sensor,Cadence sensor,Gear shifter,Derailleur',
  'Electrical':'Controller (MCU),Throttle,Throttle controller,Throttle cable,Wiring harness main,Wiring harness front,Wiring harness rear,Pigtail connector,Pigtail light,IoT unit,IoT antenna,GPS module,SIM holder,Display,Display bracket,Ignition switch,Key set,Start button,Kill switch,Fuse box,Fuse 10 A,Fuse 15 A,Relay,DC-DC converter,Buzzer,USB charging port,Horn button,Indicator switch',
  'Battery and charging':'Battery pack,Battery cover,Battery lock,Battery lock cable,Battery slot rail,Battery connector,Battery latch spring,BMS board,Cell module,Battery handle,Battery indicator,Charging port,Charging port cover,Charger,Charger cable,Battery strap,Battery seal,Battery foam pad',
- 'Frame and body':'Frame,Frame bolt set,Seat,Seat latch,Seat hinge,Seat cover,Seat lock cable,Footrest left,Footrest right,Footrest rubber,Kickstand,Kickstand spring,Kickstand switch,Centre stand,Battery cover side left,Battery cover side right,Floor panel,Front panel,Rear panel,Side panel left,Side panel right,Basket,Basket bracket,Bottle holder,Phone holder,Reflector set,Name decal,Frame sticker',
- 'Suspension':'Shocker,Front shocker,Fork oil seal left,Fork oil seal right,Fork spring,Dust boot,Damper rod,Shock bush,Shock mount bolt,Shock spring,Steering damper,Fork cap',
+ 'Frame and body':'Footrest cover,Crash guard,Footboard screw caps,Footrest metal bracket,Frame,Frame bolt set,Seat,Seat latch,Seat hinge,Seat cover,Seat lock cable,Footrest left,Footrest right,Footrest rubber,Kickstand,Kickstand spring,Kickstand switch,Centre stand,Battery cover side left,Battery cover side right,Floor panel,Front panel,Rear panel,Side panel left,Side panel right,Basket,Basket bracket,Bottle holder,Phone holder,Reflector set,Name decal,Frame sticker',
+ 'Suspension':'Rear shocker,Shocker,Front shocker,Fork oil seal left,Fork oil seal right,Fork spring,Dust boot,Damper rod,Shock bush,Shock mount bolt,Shock spring,Steering damper,Fork cap',
  'Fasteners and small parts':'M6 bolt set,M8 bolt set,M10 bolt set,Nyloc nut set,Washer set,Spring washer set,Split pin,R-clip,Circlip set,Cable tie pack,Grommet set,Rubber mount set,Axle spacer,Bearing seal set,O-ring set,Clamp set,Hose clip set,Cotter pin,Dowel pin,Retaining ring,Rivet set,Screw set cover,Screw set panel,Threadlock tube,Grease sachet,Valve cap,Valve core,Tyre valve,Spoke set front,Spoke set rear'
 };/* sample catalogue: the real list is every part on the bike, about 180 to 250 */
 var PX_SERIAL=['Hub motor','Controller (MCU)','Battery pack','Display','IoT unit','GPS module','BMS board','Throttle controller','Shocker'];
 function pxFaults(){/* faulty parts and how each was resolved: from Mark / Resolve faults when they are in the flow, else the sample faults */
   var out={},found=false;
-  P.cards.forEach(function(k){if(isFm(k)){found=true;fmS(k).faults.forEach(function(f){var o=out[f.n]||(out[f.n]={n:f.n,act:null,r:f.r||[]});if(f.res)o.act=f.res.act})}});
+  P.cards.forEach(function(k){if(isFm(k)){found=true;fmS(k).faults.forEach(function(f){var o=out[f.n]||(out[f.n]={n:f.n,act:null,r:(f.r||[]).slice()});(f.r||[]).forEach(function(q){if(o.r.indexOf(q)<0)o.r.push(q)});if(f.res)o.act=f.res.act})}});
   if(!found)FM_EXIST.forEach(function(f){out[f.n]={n:f.n,act:null,r:f.r}});
   return out;
 }
@@ -3005,7 +3042,7 @@ function pxInfoBtnN(){var o=!!pxS().infoN;return '<button type="button" class="p
 function pxInfoNew(r){return (pxS().infoN&&r.p.recvAt)?'<div class="fm-ib"><span><small>Received</small><b>Today, '+esc(r.p.recvAt)+'</b></span><span><small>Received by</small><b>You</b></span></div>':''}
 function pxInfoBtn(){var o=!!pxS().info;return '<button type="button" class="px-i'+(o?' on':'')+'" data-pa="fminfo" aria-label="Part info" aria-expanded="'+o+'">i</button>'}
 function pxInfoBody(r){if(!pxS().info)return '';var f=fmFind(r.n),w=f?fmWho(r.n,f):null;return pxMetrics(r.n)+(w?'<div class="fm-ib"><span><small>Marked by</small><b>'+esc(w.by)+'</b></span><span><small>Role</small><b>'+esc(w.role)+'</b></span><span><small>When</small><b>'+esc(w.at)+'</b></span></div>':'')}
-function pxTop(r,chips,miss,editBtn,subNote){return pxPart(r,miss?'Missing':(subNote||'On bike'),r.sn?pxSn(r.n):'',miss,pxInfoBtn())+pxInfoBody(r)+'<div class="px-il"><span>Mark fault</span>'+(editBtn||'')+'</div>'+chips}
+function pxTop(r,chips,miss,editBtn,subNote){return pxPart(r,miss?'Missing':(subNote||(PART_QTY[r.n]?PART_QTY[r.n]+' on bike':'On bike')),r.sn?pxSn(r.n):'',miss,pxInfoBtn())+pxInfoBody(r)+'<div class="px-il"><span>Mark fault</span>'+(editBtn||'')+'</div>'+chips}
 function fmRo(rs){return '<div class="pm-chips">'+(rs.length?rs.map(function(q){return '<span class="px-reason">'+esc(q)+'</span>'}).join(''):'<span class="px-line">No fault marked</span>')+'</div>'}
 function pxFaultSheet(c,x,r,closeAct,extra){
   var p=r.p,N=' data-n="'+esc(r.n)+'"',st=pxStory(r,x,true,closeAct==='fmsheetx'),ed=pxCanEdit()||(!r.f&&!p.miss&&closeAct==='pxclose');/* a part with no fault can always have one marked here, to request against */
