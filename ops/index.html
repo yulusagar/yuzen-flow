@@ -331,8 +331,8 @@ main{max-width:1360px;margin:0 auto;padding-top:28px}
 .pm-tabs{display:flex;border-bottom:1px solid #E3E5F2;padding:0 10px;flex:none}
 .pm-tabs button{flex:1;background:none;border:0;border-bottom:3px solid transparent;padding:10px 0;font-weight:600;color:#5A5F8E!important}
 .pm-tabs button.on{border-bottom-color:#E9AE3C;color:#14173A!important}
-.pm-bar{height:8px;border-radius:99px;background:#E3E5F2;overflow:hidden}.pm-bars{display:flex;gap:4px}.ck-sheet.px-fs .mq-top{position:sticky;top:-12px;z-index:3;background:#fff;margin:-12px -16px 0;padding:12px 16px 0}.ck-sheet.px-fs .mq-cta{margin-top:auto;position:sticky;bottom:-14px;z-index:2;background:#fff;padding-top:10px;padding-bottom:0}.px-il.mq-h>span:first-child{display:inline-flex;align-items:center;gap:8px;font:600 16px var(--font-body);color:#222}.mq-rec{display:flex;align-items:center;gap:8px;padding:2px 0}.mq-rec b{font:600 13px var(--font-body);color:#222}.mq-step{display:inline-flex;align-items:center;gap:12px}.mq-step b{min-width:20px;text-align:center;font:700 16px var(--font-body);color:#222}.mq-step button{width:32px;height:32px;border-radius:50%;border:1.5px solid #4B2FC9;background:#fff;color:#4B2FC9;font:700 18px var(--font-body);line-height:1;cursor:pointer;padding:0}.mq-step button.mq-del{border-color:#B5432A;color:#B5432A;display:inline-flex;align-items:center;justify-content:center}.mq-step button:disabled{opacity:.35;cursor:default}
-.stg-div{margin:14px 2px;border-top:1.5px dashed #C9CCE0}.stg-stack{display:flex;flex-direction:column;gap:0}.pm-bar i{display:block;height:100%;background:#1E6B4B}
+.pm-bar{height:8px;border-radius:99px;background:#E3E5F2;overflow:hidden}.pm-bars{display:flex;gap:4px}.ck-sheet.px-fs .mq-top{position:sticky;top:-12px;z-index:3;background:#fff;margin:-12px -16px 0;padding:12px 16px 0}.ck-sheet.px-fs .mq-cta{margin-top:auto;position:sticky;bottom:-14px;z-index:2;background:#fff;padding-top:10px;padding-bottom:0}.px-il.mq-h>span:first-child{display:inline-flex;align-items:center;gap:8px;font:600 16px var(--font-body);color:#222}.mq-req{display:flex;align-items:center;gap:12px}.mq-req .pm-btn{flex:1;margin:0}.mq-rec{display:flex;align-items:center;gap:8px;padding:2px 0}.mq-rec b{font:600 13px var(--font-body);color:#222}.mq-step{display:inline-flex;align-items:center;gap:12px}.mq-step b{min-width:20px;text-align:center;font:700 16px var(--font-body);color:#222}.mq-step button{width:32px;height:32px;border-radius:50%;border:1.5px solid #4B2FC9;background:#fff;color:#4B2FC9;font:700 18px var(--font-body);line-height:1;cursor:pointer;padding:0}.mq-step button.mq-del{border-color:#B5432A;color:#B5432A;display:inline-flex;align-items:center;justify-content:center}.mq-step button:disabled{opacity:.35;cursor:default}
+.stg-div{margin:2px;border-top:1.5px dashed #C9CCE0}.stg-stack{display:flex;flex-direction:column;gap:12px}.pm-bar i{display:block;height:100%;background:#1E6B4B}
 .pm-kv{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #EEF0F8}.pm-kv:last-child{border:0}.pm-kv span:first-child{color:#5A5F8E}
 .pm-note{background:#F7E9C8;border:1px solid #E9AE3C;border-radius:12px;padding:8px 12px;font-size:13px}
 .pm-big{width:100%;padding:26px 10px;border-radius:18px;border:2px dashed #5A2DC0;background:#fff;font:700 18px var(--font-display);color:#3B1B8A!important}
@@ -1871,7 +1871,7 @@ var PARTS_Q=['Front brake','Rear brake','Chain','Front tyre','Rear tyre','Handle
 var PEN_Q=['Front brake pad','Chain','Rear tyre'];
 var EL_CRIT={0:1,1:1};/* faults flagged critical in the sample data */
 function elTag(i){return EL_CRIT[i]?' <span class="el-crit">Critical</span>':''}
-var ELEC=[['IoT voltage low','IoT unit','IOT-014','2h ago'],['Motor temperature high','Motor','MTR-007','5h ago'],['Cell imbalance','Battery','BMS-022','1d ago']];
+var ELEC=[['IoT voltage low','IoT unit','IOT-014','2h ago'],['Motor temperature high','Motor','MTR-007','5h ago'],['Cell imbalance','Battery','BMS-022','1d ago'],['IoT device mismatch','IoT unit','IOT-MM-031','3h ago'],['MCU device mismatch','Motor controller','MCU-MM-018','3h ago']];/* the last two: the part mapped to this bike in the system is not the one fitted on it */
 var FAULT_POOL=['Brake pad worn','Chain loose','Tyre puncture','Mirror broken','Headlight dim'];
 var ADDABLE=['Mirror','Brake lever','Side stand'];var TAGGED=['Brake pad set','Chain 420','Rear tyre','Headlight unit'];var EXCH_OUT=['Brake pad set','Chain 420'],EXCH_IN=['Brake pad set'];
 var RES_Q=[['Brake pad worn',1],['Chain loose',1],['Rear tyre puncture',0]];var DEV=[['lock','Lock'],['beep','Beep'],['locate','Locate']];
@@ -2324,7 +2324,7 @@ document.addEventListener('click',function(e){
    case 'elmn':{var es3=pst(c.id);es3.mn=es3.mn||{};var emi=+el.dataset.i;es3.mn[emi]=!es3.mn[emi];break}
    case 'elrerun':{var sr=pst(c.id);if(sr.run)break;sr.run=1;var tk=function(){if(!P)return;sr.run++;if(sr.run>=10){sr.run=0;sr.again=true}phoneRender();if(sr.run)setTimeout(tk,250)};setTimeout(tk,250);break}
    case 'depzone':pst(c.id).zone=+el.dataset.i;break;
-   case 'pxopen':case 'pxrchk':case 'pxrcv':case 'pxrview':case 'pxmreq':case 'pxrsend':case 'pxrsel':case 'pxrupd':case 'pxrecv':case 'pxrecvx':case 'pxallp':case 'pxallx':case 'pxtab':case 'pxedit':case 'pxrs':case 'pxall':case 'pxarea':case 'pxclose':case 'pxact':case 'pxreq':case 'pxscan':case 'pxacc':case 'pxmiss':case 'pxtag':case 'pxret':case 'pxret2':case 'pxreq2':case 'pxdone':pxAct(a,el,c);break;
+   case 'pxopen':case 'pxrchk':case 'pxrcv':case 'pxrview':case 'pxmreq':case 'pxrsend':case 'pxrsel':case 'pxrupd':case 'pxrecv':case 'pxrecvx':case 'pxallp':case 'pxallx':case 'pxtab':case 'pxedit':case 'pxrs':case 'pxall':case 'pxarea':case 'pxclose':case 'pxact':case 'pxreq':case 'pxrqm':case 'pxrqp':case 'pxscan':case 'pxacc':case 'pxmiss':case 'pxtag':case 'pxret':case 'pxret2':case 'pxreq2':case 'pxdone':pxAct(a,el,c);break;
    case 'altab':case 'algrp':case 'almpeek':case 'alpeek':case 'alf':case 'albike':case 'alall':case 'alacc':case 'aldet':case 'alselect':case 'almech':case 'alassign':case 'alagain':case 'alback':alAct(a,el,c);break;
    case 'depphoto':pst(c.id).photo=!pst(c.id).photo;break;
    case 'batinsundo':{var bs4=pst(c.id);bs4.ins=null;bs4.last=null;break}
@@ -2351,8 +2351,8 @@ document.addEventListener('click',function(e){
    case 'fmqmore':{var dmo=pxS(c).draft;if(dmo&&dmo.mq&&mqLeft(c,dmo)>0&&dmo.secs.every(function(g){return g.r.length}))dmo.secs.push({q:1,r:[]});break}
    case 'fmqun':{var du=pxS(c).draft;if(du&&du.mq)du.secs.splice(+el.dataset.s,1);break}
    case 'fmqr':{var dq=pxS(c).draft,gq=dq&&dq.mq&&dq.secs[+el.dataset.s];if(gq){var dv=el.dataset.v;if(dv==='Missing')gq.r=gq.r[0]==='Missing'?[]:['Missing'];else if(gq.r[0]==='Missing')gq.r=[dv];else{var di2=gq.r.indexOf(dv);if(di2>=0)gq.r.splice(di2,1);else gq.r.push(dv)}}break}
-   case 'fmqrm':{var fsr=fmS(c),rf=fsr.faults[+el.dataset.i];if(rf){var rn=rf.n;fsr.faults.splice(+el.dataset.i,1);mqSync(c,rn)}break}
-   case 'fmqdone':{var dd=pxS(c).draft;if(dd&&dd.mq){var all=dd.secs.filter(function(g){return g.r.length});if(all.length){var fsd=fmS(c);all.forEach(function(g){fsd.faults.push({n:dd.n,r:g.r.slice(),q:g.q,added:1})});mqSync(c,dd.n);pxS(c).draft=null;pxS(c).info=false;pxS(c).infoN=false;fsd.sheet=null}}break}
+   case 'fmqrm':{var fsr=fmS(c),rf=fsr.faults[+el.dataset.i];if(rf){var rn=rf.n,rp=pxP(pxS(c),rn);fsr.faults.splice(+el.dataset.i,1);rp.miss=false;rp.rs=[];rp.req=false;rp.act=null;rp.recv=0}break}
+   case 'fmqdone':{var dd=pxS(c).draft;if(dd&&dd.mq){var all=dd.secs.filter(function(g){return g.r.length});if(all.length){var fsd=fmS(c),bs=dd.n;all.forEach(function(g){var k0=0,nm;do{nm=bs+new Array(k0+1).join('\u200B');k0++}while(fsd.faults.some(function(f){return f.n===nm}));fsd.faults.push({n:nm,r:g.r.slice(),q:g.q,added:1});var pp=pxP(pxS(c),nm);pp.miss=g.r[0]==='Missing';pp.rs=g.r.slice()});pxS(c).draft=null;pxS(c).info=false;pxS(c).infoN=false;fsd.sheet=null}}break}
    case 'fmadd1':{var ad=pxS(c).draft;if(ad&&ad.fresh&&ad.add&&ad.r.length){var an=ad.n,ap=pxP(pxS(c),an);fmS(c).faults.push({n:an,r:ad.r.slice(),added:1});ap.miss=ad.r[0]==='Missing';ap.rs=ad.r.slice();pxS(c).draft=null;pxS(c).info=false;pxS(c).infoN=false;fmS(c).sheet=null}break}/* adding the fault closes its dialog */
    case 'fmed':{var ed0=pxS(c).draft;if(ed0)ed0.edit=true;break}
    case 'fmcancel':{var cx=pxS(c),cd=cx.draft;if(cd){var cf=fmFind(cd.n);cd.r=cf?cf.r.slice():cd.r;cd.edit=false}break}
@@ -2619,7 +2619,9 @@ function pCta(o){var N=' data-n="'+esc(o.n)+'"'+(o.i!=null?' data-i="'+o.i+'"':'
   return o.cta||''}
 /* parts fitted more than once on a bike (from the servicing BOM): shown as "Part name x2" in lists */
 var PART_QTY={'Footrest cover':2,'Crash guard':2,'Footboard screw caps':4,'Rear shocker':2,'Motor caps':2,'Handlebar end cap':2,'Footrest metal bracket':2};
-function pnm(n,q){var k=q!=null?q:PART_QTY[n];return esc(n)+(k>1?' x'+k:'')}
+/* two faults on the same part (a multi-quantity part): each fault is its own record with its own resolution and part request, so each gets its own key. The second one onward carries invisible zero-width marks after the name; pbase() gives the plain name back for lookups. */
+function pbase(n){return String(n).replace(/\u200B/g,'')}
+function pnm(n,q){var k=q;if(k==null){var f=fmFind(n);k=(f&&f.q)?f.q:PART_QTY[pbase(n)]}return esc(n)+(k>1?' x'+k:'')}
 function pRow(o){var inner=pImg(o.n,o.img||'S')+'<span class="grow"><b>'+pnm(o.n,o.q)+'</b>'+(o.sub?'<small>'+esc(o.sub)+'</small>':'')+'</span>';
   return '<div class="pr'+(o.grey?' gr':'')+'">'+(o.act?'<button type="button" class="pr-m" data-pa="'+o.act+'" data-n="'+esc(o.n)+'"'+(o.i!=null?' data-i="'+o.i+'"':'')+'>'+inner+'</button>':'<div class="pr-m">'+inner+'</div>')+pCta(o)+'</div>'}
 /* who marked a fault and when: placeholder people and times until the fault log is connected */
@@ -2629,14 +2631,14 @@ function fmWho(n,f){f=f||fmFind(n)||{};if(f.added)return {by:'You',role:'Marked 
 function fmInfo(c,n,f){var o=pxS(c).info,w=fmWho(n,f);
   return '<div class="px-sec fm-info"><button type="button" class="fm-ih" data-pa="fminfo" aria-expanded="'+!!o+'"><span>Marked by '+esc(w.by)+' · '+esc(w.at)+'</span><i aria-hidden="true">'+(o?'⌃':'⌄')+'</i></button>'+(o?'<div class="fm-ib"><span><small>Marked by</small><b>'+esc(w.by)+'</b></span><span><small>Role</small><b>'+esc(w.role)+'</b></span><span><small>When</small><b>'+esc(w.at)+'</b></span></div>':'')+'</div>'}
 /* a part fitted more than once: choose how many units, tick the faults, add more groups of units until all are marked, then one button marks them */
-function mqRecs(c,n){var out=[];fmS(c).faults.forEach(function(f,i){if(f.n===n)out.push({f:f,i:i})});return out}
+function mqRecs(c,n){var out=[];fmS(c).faults.forEach(function(f,i){if(pbase(f.n)===n)out.push({f:f,i:i})});return out}
 function mqUsed(c,n){return mqRecs(c,n).reduce(function(t,x){return t+(x.f.q||1)},0)}
 function mqSum(d){return d.secs.reduce(function(t,g){return t+g.q},0)}
 function mqLeft(c,d){return PART_QTY[d.n]-mqUsed(c,d.n)-mqSum(d)}/* units not given to any section yet */
-function mqSync(c,n){var p=pxP(pxS(c),n),rc=mqRecs(c,n),un=[];rc.forEach(function(z){z.f.r.forEach(function(q){if(un.indexOf(q)<0)un.push(q)})});p.miss=rc.length>0&&rc.every(function(z){return z.f.r[0]==='Missing'});p.rs=un}
+function mqSync(c,n){mqRecs(c,n).forEach(function(z){var p=pxP(pxS(c),z.f.n);p.miss=z.f.r[0]==='Missing';p.rs=z.f.r.slice()})}
 function mqNew(n,c){var left=PART_QTY[n]-(c?mqUsed(c,n):0);return {n:n,mq:true,secs:left>0?[{q:1,r:[]}]:[]}}
 function mqSheet(c,s,r){
-  var x=pxS(c),n=r.n,tot=PART_QTY[n],d=(x.draft&&x.draft.mq&&x.draft.n===n&&x.draft.secs)?x.draft:(x.draft=mqNew(n,c)),used=mqUsed(c,n),rc=mqRecs(c,n),left=mqLeft(c,d);
+  var x=pxS(c),n=pbase(r.n),tot=PART_QTY[n],d=(x.draft&&x.draft.mq&&x.draft.n===n&&x.draft.secs)?x.draft:(x.draft=mqNew(n,c)),used=mqUsed(c,n),rc=mqRecs(c,n),left=mqLeft(c,d);
   var rec=function(rs,q,idx){return '<div class="mq-rec"><span class="grow"><b>'+(q>1?'x'+q+' · ':'')+esc(rs.join(' · '))+'</b></span><button type="button" class="px-edit" data-pa="fmqrm" data-i="'+idx+'">Remove</button></div>'};
   var done=rc.length?'<div class="px-sec"><div class="px-il"><span>Marked · '+used+' of '+tot+'</span></div>'+rc.map(function(z){return rec(z.f.r,z.f.q||1,z.i)}).join('')+'</div>':'';
   var form='';
@@ -2648,11 +2650,11 @@ function mqSheet(c,s,r){
     form+=(left>0?'<div class="px-sec"><button type="button" class="pm-btn" data-pa="fmqmore"'+(allR?'':' disabled')+'>+ Add more faults</button></div>':'')+
       '<div class="px-sec mq-cta"><button type="button" class="pm-btn p" data-pa="fmqdone"'+(N?'':' disabled')+'>Mark fault on '+N+'</button></div>';
   }
-  return '<div class="px-bd" data-pa="fmsheetx"></div><div class="ck-sheet px-fs"><div class="mq-top">'+pxX('fmsheetx')+'<div class="px-sec px-first">'+pxPart(r,tot+' on bike',r.sn?pxSn(n):'',false,'')+'</div></div>'+done+form+'</div>';
+  return '<div class="px-bd" data-pa="fmsheetx"></div><div class="ck-sheet px-fs"><div class="mq-top">'+pxX('fmsheetx')+'<div class="px-sec px-first">'+pxPart(Object.assign({},r,{mqn:used+d.secs.filter(function(g){return g.r.length}).reduce(function(t,g){return t+g.q},0)}),tot+' on bike',r.sn?pxSn(n):'',false,'')+'</div></div>'+done+form+'</div>';
 }
 function fmPartSheet(c,s,extra,view){
   var x=pxS(c),n=s.sheet.n,r=pxList(c).filter(function(q){return q.n===n})[0];if(!r)return '';
-  if(PART_QTY[n]&&!view)return mqSheet(c,s,r);
+  if(PART_QTY[pbase(n)]&&!view)return mqSheet(c,s,r);
   var D=(!view&&x.draft&&x.draft.n===n)?x.draft:null,dr=(D&&D.edit)?D.r:null;
   var p=r.p,chips=view?fmRo((r.f&&r.f.r)||[]):D?(D.edit?pxIssueChips(r,'fmdr',D.r):fmRo(p.miss?['Missing']:(r.f&&r.f.r)||[])):pxIssueChips(r,'fmrs'),body;
   /* Add issues only marks the issue: resolution and part requests happen in Resolve faults / Part exchange */
@@ -2678,7 +2680,7 @@ function fmScreen(c){
   var sh=fmShown(c,s),res=isRes(c),n=sh.length,r=sh.filter(function(x){return x.f.res}).length;
   var rows=sh.map(function(x){var f=x.f;
     var pp=pxP(pxS(c),f.n),miss=pp.miss||f.r.indexOf('Missing')>=0,done=res?(!!f.res&&f.res.act!=='Unresolved'&&!(f.res.act==='Replaced'&&!pp.recv)):true;
-    return pRow({n:f.n,q:PART_QTY[f.n]?(f.q||1):null,i:x.i,img:pImgK(pp,miss),sub:(f.res?f.res.act+' · ':'')+f.r.join(' · ')+(f.ck?' · From checklist':''),act:'fmrow',cta:res?(f.res&&f.res.act==='Unresolved'?'unres':done?'filled':'empty'):''})/* marking screen: a marked fault just sits in the list, no status circle */}).join('');
+    return pRow({n:f.n,q:PART_QTY[pbase(f.n)]?(f.q||1):null,i:x.i,img:pImgK(pp,miss),sub:(f.res?f.res.act+' · ':'')+f.r.join(' · ')+(f.ck?' · From checklist':''),act:'fmrow',cta:res?(f.res&&f.res.act==='Unresolved'?'unres':done?'filled':'empty'):''})/* marking screen: a marked fault just sits in the list, no status circle */}).join('');
   return sbHTML()+'<div class="ck-stk"><div class="ck-hd"><button type="button" class="ck-back" data-pa="back" aria-label="Back">‹</button><p>'+BIKE.no+'</p>'+moreDots()+'</div>'+
    '<div class="ck-cnt" style="border-top-width:'+(res?0:6)+'px"><b style="font:600 18px var(--font-display);color:#222">'+(res?'Resolve faults':'Mechanical faults')+'</b>'+(res?'':' <span>'+n+(n===1?' fault':' faults')+'</span>')+'</div>'+
    (res?'<div class="ck-prog" role="progressbar" aria-valuemin="0" aria-valuemax="'+n+'" aria-valuenow="'+r+'" aria-label="Faults resolved"><i style="width:'+(n?Math.round(r/n*100):0)+'%"></i></div>':'')+
@@ -2762,9 +2764,11 @@ function gStart(c){var d=!!pst(c.id).done,nm=c.module==='batrem'?'Remove battery
 var EL_DBG=[
   ['Restart the IoT unit','Check the connector seating','Check the 12 V supply to the unit','Update the IoT firmware'],
   ['Let the motor cool for 10 minutes','Check the motor cooling vents','Inspect the motor wiring','Test ride at low load'],
-  ['Check the battery connector','Reseat the battery pack','Let the BMS rebalance for 5 minutes','Swap the pack']];
+  ['Check the battery connector','Reseat the battery pack','Let the BMS rebalance for 5 minutes','Swap the pack'],
+  ['Read the ID printed on the IoT unit on the bike','Compare it with the IoT ID mapped to this bike','If the unit on the bike is right, correct the mapping in the system','If the unit is the wrong one, replace it with the mapped one'],
+  ['Read the ID printed on the motor controller on the bike','Compare it with the controller ID mapped to this bike','If the controller on the bike is right, correct the mapping in the system','If the controller is the wrong one, replace it with the mapped one']];
 var EL_CONSULT={1:1};/* faults with no debug steps of their own: the person is sent to the Sr. Mechanic and then checks the bike */
-var EL_CLEAR=[3,-1,2];/* the step after which the bike check stops seeing each sample code; -1 = never */
+var EL_CLEAR=[3,-1,2,3,3];/* the step after which the bike check stops seeing each sample code; -1 = never */
 /* the same three buttons on every electrical fault screen: check, mark resolved, and (once it is still raised) leave it open */
 function elCta(title,prim,label,leave){var b=function(a,t,p){return '<button type="button" class="pm-btn'+(p?' p':'')+'" style="width:100%;margin-top:'+(p?0:8)+'px" data-pa="'+a+'">'+t+'</button>'};return '<div class="ck-card"><div class="ck-ch"><b>'+title+'</b></div>'+b(prim,label,1)+b('elmanual','Mark as resolved')+(leave?b('elleave','Leave it open'):'')+'</div>'}
 /* a resolved fault keeps its debug page: check again on the bike, then Done */
@@ -2906,20 +2910,20 @@ var PX_CAT={
 var PX_SERIAL=['Hub motor','Controller (MCU)','Battery pack','Display','IoT unit','GPS module','BMS board','Throttle controller','Shocker'];
 function pxFaults(){/* faulty parts and how each was resolved: from Mark / Resolve faults when they are in the flow, else the sample faults */
   var out={},found=false;
-  P.cards.forEach(function(k){if(isFm(k)){found=true;fmS(k).faults.forEach(function(f){var o=out[f.n]||(out[f.n]={n:f.n,act:null,r:(f.r||[]).slice()});(f.r||[]).forEach(function(q){if(o.r.indexOf(q)<0)o.r.push(q)});if(f.res)o.act=f.res.act})}});
+  P.cards.forEach(function(k){if(isFm(k)){found=true;fmS(k).faults.forEach(function(f){var o=out[f.n]||(out[f.n]={n:f.n,act:null,r:(f.r||[]).slice(),q:f.q||1});(f.r||[]).forEach(function(q){if(o.r.indexOf(q)<0)o.r.push(q)});if(f.res)o.act=f.res.act})}});
   if(!found)FM_EXIST.forEach(function(f){out[f.n]={n:f.n,act:null,r:f.r}});
   return out;
 }
 function pxS(c){return P.pxs||(P.pxs={p:{},sheet:null,edit:false})}/* one store per run, so the Resolve faults dialog and the Part exchange screen agree */
 function pxKon(id){var k=P.cards.filter(function(q){return q.module==='partex'})[0];return k?kon(k,id):!!(S.gc.partex||{})[id]}
-function pxP(x,n){return x.p[n]||(x.p[n]={miss:false,req:false,sc:false,recv:0,oldRet:false,tag:false,spareRet:false,act:null})}
+function pxP(x,n){return x.p[n]||(x.p[n]={nm:n,miss:false,req:false,sc:false,recv:0,oldRet:false,tag:false,spareRet:false,act:null})}
 function pxList(c){
   var x=pxS(c),fl=pxFaults(),seen={},out=[];
   var mk=function(n,area){
     var p=pxP(x,n),f=fl[n]||null,act=f?(f.act||p.act):null,ret=null;
-    if(f){if(p.miss){if(act&&act!=='Replaced'&&p.recv>0&&!p.spareRet)ret='spare'}else if(p.recv>0&&!p.oldRet&&!p.spareRet)ret=act==='Replaced'?'faulty':(act&&act!=='Unresolved')?'spare':'either'}
+    if(f){if(p.miss){if(act&&act!=='Replaced'&&p.recv>0&&!p.spareRet)ret='spare'}else if(p.recv>0&&!p.oldRet&&!p.spareRet)ret=act==='Replaced'?'faulty':act?'spare':'either'/* replaced: the old part goes back; repaired, false issue or unresolved: the new part goes back; no resolution yet: either */}
     var q=(p.miss?0:1)+p.recv-(p.oldRet?1:0)-(p.spareRet?1:0);
-    return {n:n,area:area,sn:PX_SERIAL.indexOf(n)>=0,p:p,f:f,act:act,ret:ret,q:q};
+    return {n:n,area:area,sn:PX_SERIAL.indexOf(pbase(n))>=0,p:p,f:f,act:act,ret:ret,q:q};
   };
   Object.keys(PX_CAT).forEach(function(a){PX_CAT[a].split(',').forEach(function(n){if(!seen[n]){seen[n]=1;out.push(mk(n,a))}})});
   Object.keys(fl).forEach(function(n){if(!seen[n]){seen[n]=1;out.push(mk(n,'Other'))}});
@@ -2936,16 +2940,19 @@ function pxAllPage(c,x,L){
   var list=rows.map(function(r){var p=r.p,miss=r.q<=0||!!p.miss,sub=[];
     if(r.sn)sub.push('S/N '+pxSn(r.n));if(miss)sub.push('Missing');else if(r.f)sub.push((r.f.r||[]).join(' · '));
     var got=p.recv>0&&!p.oldRet&&!p.spareRet;if(p.req)sub.push('Requested');else if(got)sub.push('New received');
-    return pRow({n:r.n,img:pImgK(p,miss),sub:sub.join(' · '),act:'pxopen',cta:got?'':p.req?'reqsent':(r.f||miss)?'reqnew':'',reqAct:'pxreq'})}).join('');/* only parts with a fault marked can be requested from the list; the rest open their dialog to mark one first */
+    return pRow({n:r.n,img:pImgK(p,miss),sub:sub.join(' · '),act:'pxopen',cta:got?'':p.req?'reqsent':((r.f||miss)&&!r.act)?'reqnew':'',reqAct:'pxreq'})}).join('');/* only parts with a fault marked can be requested from the list; the rest open their dialog to mark one first */
   var nReq=L.filter(function(r){return r.p.req}).length;
   return sbHTML()+'<div class="ck-stk"><div class="ck-hd"><button type="button" class="ck-back" data-pa="pxallx" aria-label="Back">‹</button><p>'+BIKE.no+' <span>/ All parts</span></p><span class="ck-more" aria-hidden="true">⌕</span></div><div class="ck-tabs">'+tabs+'</div></div><div class="ck-body">'+list+'</div>'+(x.sheet?pxSheet(c,x,L):'')+
    '<div class="pm-stick"><button type="button" class="pm-cta" data-pa="pxallx">Done'+(nReq?' · '+nReq+' requested':'')+'</button></div>';
 }
 /* every requested part (waiting first) and every received one, as a full page */
+/* a fault marked on 2 or more units at once: how many new parts to request (default all of them) */
+function pxFq(r){return Math.max(1,(r.f&&r.f.q)||1)}
+function pxRq(r){var p=r.p,m=pxFq(r);return Math.min(m,Math.max(1,p.rq||m))}
 function pxRecvPage(c,x,L){
   var wait=L.filter(function(r){return r.p.req&&!(r.p.recv>0||r.p.prevRet)}),got=L.filter(function(r){return r.p.recv>0||r.p.prevRet});
-  var st=function(r){var p=r.p;return p.req?'Requested · '+(p.acc?'accepted by IA':'waiting for IA'):'Received'+(r.sn?' · S/N '+(p.nsn||pxSn(r.n+'#1')):'')};
-  var row=function(r){var p=r.p,N=' data-n="'+esc(r.n)+'"';return pRow({n:r.n,img:(p.recv>0||p.prevRet)?'S':'T',sub:st(r),act:'pxrcv',cta:p.req?'<button type="button" class="pc-req" data-pa="'+(r.sn?'pxscan':'pxacc')+'"'+N+(p.acc?'':' disabled')+'>'+(r.sn?'Scan to receive':'Mark as received')+'</button>':'chev'})};
+  var st=function(r){var p=r.p;return p.req?'Requested'+(p.reqQ>1?' x'+p.reqQ:'')+' · '+(p.acc?'accepted by IA':'waiting for IA'):'Received'+(p.reqQ>1?' x'+p.reqQ:'')+(r.sn?' · S/N '+(p.nsn||pxSn(r.n+'#1')):'')};
+  var row=function(r){var p=r.p,N=' data-n="'+esc(r.n)+'"';return pRow({n:r.n,img:(p.recv>0||p.prevRet)?'S':'T',sub:st(r),act:'pxrcv',cta:p.req?(r.sn?'<button type="button" class="pc-req" data-pa="pxscan"'+N+(p.acc?'':' disabled')+'>Scan to receive</button>':'<span class="pc-sent">Request sent</span>'):'chev'})};
   var sec=function(t,rs){return rs.length?'<div class="px2-hd" style="margin-top:12px">'+'<span class="px2-n mute">'+rs.length+'</span><b>'+t+'</b></div>'+rs.map(row).join(''):''};
   return sbHTML()+'<div class="ck-stk"><div class="ck-hd"><button type="button" class="ck-back" data-pa="pxrecvx" aria-label="Back">‹</button><p>'+BIKE.no+' <span>/ Received</span></p>'+moreDots()+'</div></div><div class="ck-body">'+(wait.length||got.length?sec('Requested',wait)+sec('Received',got):'<p class="pq-none">Nothing requested yet.</p>')+'</div>'+(x.sheet?pxSheet(c,x,L):'');
 }
@@ -2974,7 +2981,7 @@ function pxScreen(c){
     (ret.length?ret.filter(function(r){return r.ret==='either'}).concat(ret.filter(function(r){return r.ret!=='either'})).map(retRow).join(''):'<p class="px2-empty">Nothing to return</p>')+'</section>';
   var areas=[];oth.forEach(function(r){if(areas.indexOf(r.area)<0)areas.push(r.area)});
   var cat='<button type="button" class="pm-btn px2-allbtn" data-pa="pxallp">Request another part</button>';
-  var reqRow=function(r){var miss=r.q<=0||!!r.p.miss;return pRow({n:r.n,img:pImgK(r.p,miss),sub:[miss?'Missing':r.f?'Faulty':'',r.p.req?'Requested':''].filter(Boolean).join(' · '),act:'pxopen',cta:r.p.req?'reqsent':'reqnew',reqAct:'pxreq'})};
+  var reqRow=function(r){var miss=r.q<=0||!!r.p.miss;return pRow({n:r.n,img:pImgK(r.p,miss),sub:[miss?'Missing':r.f?'Faulty':'',r.p.req?'Requested':''].filter(Boolean).join(' · '),act:'pxopen',cta:r.p.req?'reqsent':r.act?'':'reqnew',reqAct:'pxreq'})};
   /* request: one CTA; recommendations live a layer deeper. Only parts already on their way stay here. */
   var onWay=L.filter(function(r){return r.p.req});
   var canReq='<section class="px2-sec"><button type="button" class="pm-btn px2-allbtn" data-pa="pxallp">+ Request new part</button></section>';
@@ -2993,7 +3000,7 @@ function pxDraft(L,n,force,fresh){var r=L.filter(function(q){return q.n===n})[0]
 /* sending a request closes the dialog it was sent from */
 function pxShut(c,x){x.sheet=null;x.rv=false;x.rcv=false;x.draft=null;x.info=false;if(isFm(c))fmS(c).sheet=null}
 function pxClock(){return new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}).toLowerCase()}
-function pxAsk(p){p.acc=false;p.reqAt=pxClock();setTimeout(function(){if(p.req){p.acc=true;if(typeof P!=='undefined'&&P&&typeof phoneRender==='function')phoneRender()}},4000)}
+function pxAsk(p){p.acc=false;p.reqAt=pxClock();setTimeout(function(){if(p.req){p.acc=true;if(p.nm&&PX_SERIAL.indexOf(pbase(p.nm))<0){p.recvAt=pxClock();p.req=false;p.sc=false;p.recv+=(p.reqQ||1);p.nsn=''}/* not serialised: once IA accepts, the part is received, nothing to mark */if(typeof P!=='undefined'&&P&&typeof phoneRender==='function')phoneRender()}},4000)}
 function pxSec(t,right,body){return body?'<div class="px-sec"><div class="px-sh"><span>'+t+'</span>'+(right||'')+'</div>'+body+'</div>':''}
 /* noRet: the fault dialogs of Mark / Resolve faults leave out returns; the resolution comes after the new part is requested and received */
 function pxStory(r,x,noRet,sec){
@@ -3011,19 +3018,20 @@ function pxStory(r,x,noRet,sec){
   /* new part: request, then scan to accept (serialised parts must scan) or mark received; return it if the old part was kept */
   var nw='',nwHead=false;
   if(p.recv>0){nwHead=true;nw=''}
-  else if(p.req){nwHead=true;nw=r.sn?'<button type="button" class="pm-btn p" data-pa="pxscan"'+N+(p.acc?'':' disabled')+'>Scan to receive</button>':'<button type="button" class="pm-btn p" data-pa="pxacc"'+N+(p.acc?'':' disabled')+'>Mark as received</button>'}/* serialised parts are scanned in; the rest are just marked received */
-  else if(r.f||p.miss)nw='<button type="button" class="pm-btn'+(sec?'':' p')+'" data-pa="pxreq"'+N+'>Request new part</button>';/* in Resolve faults the request is a secondary action next to the resolution */
+  else if(p.req){nwHead=true;nw=r.sn?'<button type="button" class="pm-btn p" data-pa="pxscan"'+N+(p.acc?'':' disabled')+'>Scan to receive</button>':''}/* serialised parts are scanned in; the rest are received on their own once IA accepts */
+  else if(r.f||p.miss){var rqb='<button type="button" class="pm-btn'+(sec?'':' p')+'" data-pa="pxreq"'+N+'>Request new part</button>';
+    nw=pxFq(r)>1?'<div class="mq-req"><span class="mq-step"><button type="button" data-pa="pxrqm"'+N+' aria-label="Request one fewer"'+(pxRq(r)<=1?' disabled':'')+'>–</button><b>'+pxRq(r)+'</b><button type="button" data-pa="pxrqp"'+N+' aria-label="Request one more"'+(pxRq(r)>=pxFq(r)?' disabled':'')+'>+</button></span>'+rqb+'</div>':rqb}/* in Resolve faults the request is a secondary action next to the resolution */
   else{var dd=x&&x.draft&&x.draft.n===r.n&&x.draft.fresh?x.draft:null,ok=!!(dd&&dd.r.length);nw='<button type="button" class="pm-btn'+(ok?' p':'')+'" data-pa="pxmreq"'+N+(ok?'':' disabled')+'>Request new part</button>'}/* with no fault yet this one button marks the selected faults and sends the request */
   if(noRet);
   else if(p.spareRet)nw+='<div class="px-line ok">Returned to IA ✓</div><button type="button" class="pm-btn" data-pa="pxreq2"'+N+'>Request another new part</button>';
   else if(r.ret==='spare')nw+='<button type="button" class="pm-btn p" data-pa="pxret"'+N+'>Return to IA</button>';
   else if(r.ret==='either')nw+='<button type="button" class="pm-btn" data-pa="pxret2" data-w="new"'+N+'>Return new part</button>';
-  if(nwHead)nw=pxPart(r,'New part · '+(p.recv>0?(sec&&r.act?(r.act==='Replaced'?'On bike':'Received · return to IA'):'Received'):p.acc?'Requested · accepted by IA':'Requested · waiting for IA'),r.sn&&p.recv>0?(p.nsn||pxSn(r.n+'#1')):'',false,(p.recv>0&&p.recvAt)?pxInfoBtnN():'')+pxInfoNew(r)+nw;
+  if(nwHead)nw=pxPart(Object.assign({},r,{hq:p.recv>0?p.recv:(p.reqQ||1)}),'New part · '+(p.recv>0?(sec&&r.act?(r.act==='Replaced'?'On bike':'Received · return to IA'):'Received'):(p.acc?'Requested · accepted by IA':'Requested · waiting for IA')+(p.reqQ>1?' · x'+p.reqQ:'')),r.sn&&p.recv>0?(p.nsn||pxSn(r.n+'#1')):'',false,(p.recv>0&&p.recvAt)?pxInfoBtnN():'')+pxInfoNew(r)+nw;
   /* resolved, nothing waiting to arrive or to go back: guide the person out */
   var done=!!r.act&&!p.req&&(noRet||!r.ret);
   return {acts:acts,old:old,nw:nw,done:done};
 }
-function pxPart(r,sub,sn,miss,extra){return '<div class="px-pt"><span class="ck-th'+(miss?' px-miss':'')+'">'+fmThumb(r.n)+'</span><span class="grow"><b>'+esc(r.n)+'</b><small class="px-sub">'+sub+(sn?' · S/N '+sn:'')+'</small></span>'+(extra||'')+'</div>'}
+function pxPart(r,sub,sn,miss,extra){return '<div class="px-pt"><span class="ck-th'+(miss?' px-miss':'')+'">'+fmThumb(r.n)+'</span><span class="grow"><b>'+pnm(r.n,r.hq!=null?r.hq:((r.f&&r.f.q>1)?r.f.q:(r.mqn||1)))+'</b><small class="px-sub">'+sub+(sn?' · S/N '+sn:'')+'</small></span>'+(extra||'')+'</div>'}
 function pxDone(st,closeAct){return st.done?'<button type="button" class="pm-cta px-done" data-pa="'+closeAct+'">Done</button>':''}
 function pxX(closeAct){return '<span class="px-grab" aria-hidden="true"></span><button type="button" class="px-x px-xa" data-pa="'+closeAct+'" aria-label="Close">✕</button>'}
 function pxMetrics(n){var ag=pxAge(n);return '<div class="px-info"><span><b>'+ag.age+'</b><small>On the bike</small></span><span><b>'+ag.km+'</b><small>Ridden since fitted</small></span></div>'}
@@ -3042,7 +3050,7 @@ function pxInfoBtnN(){var o=!!pxS().infoN;return '<button type="button" class="p
 function pxInfoNew(r){return (pxS().infoN&&r.p.recvAt)?'<div class="fm-ib"><span><small>Received</small><b>Today, '+esc(r.p.recvAt)+'</b></span><span><small>Received by</small><b>You</b></span></div>':''}
 function pxInfoBtn(){var o=!!pxS().info;return '<button type="button" class="px-i'+(o?' on':'')+'" data-pa="fminfo" aria-label="Part info" aria-expanded="'+o+'">i</button>'}
 function pxInfoBody(r){if(!pxS().info)return '';var f=fmFind(r.n),w=f?fmWho(r.n,f):null;return pxMetrics(r.n)+(w?'<div class="fm-ib"><span><small>Marked by</small><b>'+esc(w.by)+'</b></span><span><small>Role</small><b>'+esc(w.role)+'</b></span><span><small>When</small><b>'+esc(w.at)+'</b></span></div>':'')}
-function pxTop(r,chips,miss,editBtn,subNote){return pxPart(r,miss?'Missing':(subNote||(PART_QTY[r.n]?PART_QTY[r.n]+' on bike':'On bike')),r.sn?pxSn(r.n):'',miss,pxInfoBtn())+pxInfoBody(r)+'<div class="px-il"><span>Mark fault</span>'+(editBtn||'')+'</div>'+chips}
+function pxTop(r,chips,miss,editBtn,subNote){return pxPart(r,miss?'Missing':(subNote||(PART_QTY[pbase(r.n)]?PART_QTY[pbase(r.n)]+' on bike':'On bike')),r.sn?pxSn(r.n):'',miss,pxInfoBtn())+pxInfoBody(r)+'<div class="px-il"><span>'+((r.f||r.p.miss)?'Marked faults':'Mark fault')+'</span>'+(editBtn||'')+'</div>'+chips}
 function fmRo(rs){return '<div class="pm-chips">'+(rs.length?rs.map(function(q){return '<span class="px-reason">'+esc(q)+'</span>'}).join(''):'<span class="px-line">No fault marked</span>')+'</div>'}
 function pxFaultSheet(c,x,r,closeAct,extra){
   var p=r.p,N=' data-n="'+esc(r.n)+'"',st=pxStory(r,x,true,closeAct==='fmsheetx'),ed=pxCanEdit()||(!r.f&&!p.miss&&closeAct==='pxclose');/* a part with no fault can always have one marked here, to request against */
@@ -3091,11 +3099,12 @@ function pxRcvSheet(c,x,r){
     body='<div class="fm-ib"><span><small>Requested</small><b>'+(p.reqAt?'Today, '+esc(p.reqAt):'Today')+'</b></span><span><small>IA</small><b>'+(p.acc?'Accepted':'Waiting')+'</b></span></div>'+
       (r.sn?'<button type="button" class="pm-btn p" data-pa="pxscan"'+N+(p.acc?'':' disabled')+'>Scan to receive</button>':'')
   }else body=pxInfoNew(r);
-  return '<div class="px-bd" data-pa="pxclose"></div><div class="ck-sheet px-fs px-fit">'+pxX('pxclose')+'<div class="px-sec px-first">'+pxPart(r,sub,sn,false,got?pxInfoBtnN():'')+body+'</div></div>';
+  return '<div class="px-bd" data-pa="pxclose"></div><div class="ck-sheet px-fs px-fit">'+pxX('pxclose')+'<div class="px-sec px-first">'+pxPart(Object.assign({},r,{hq:got?p.recv:(p.reqQ||1)}),sub,sn,false,got?pxInfoBtnN():'')+body+'</div></div>';
 }
 function pxSheet(c,x,L){
   var r=L.filter(function(q){return q.n===x.sheet})[0];if(!r)return '';
   if(x.rcv)return pxRcvSheet(c,x,r);/* from the Received list: new part only, never the return flow */
+  if(x.view==='all'&&(r.p.req||r.p.recv>0||r.p.prevRet))return pxRcvSheet(c,x,r);/* Request new part page: just that the part was requested or received, no return options */
   if(r.ret)return pxRetSheet(c,x,r);
   if(x.rv)return pxRetDone(c,x,r);
   var p=r.p,head='<div style="display:flex;align-items:center;gap:12px"><span class="ck-th" style="width:'+(r.f?44:56)+'px;height:'+(r.f?44:56)+'px">'+fmThumb(r.n)+'</span><span class="grow"><b>'+esc(r.n)+'</b>'+(r.f?'<small class="px-sub">Old part</small>':'')+'</span>'+(r.f&&pxCanEdit()?'<button type="button" class="px-edit" data-pa="pxedit">'+(x.edit?'Done':'Edit')+'</button>':'')+(r.f?'<button type="button" class="px-x" data-pa="pxclose" aria-label="Close">✕</button>':'')+'</div>';
@@ -3132,8 +3141,10 @@ function pxAct(a,el,c){
    case 'pxedit':x.edit=!x.edit;break;
    case 'pxrs':if(p&&p.miss){var vm=el.dataset.v;p.miss=false;p.rs=[vm];if(P.cards.some(isFm))P.cards.forEach(function(k){if(isFm(k))fmS(k).faults.forEach(function(f){if(f.n===n&&f.r[0]==='Missing')f.r=[vm]})});else FM_EXIST.forEach(function(f){if(f.n===n&&f.r[0]==='Missing')f.r=[vm]});break}
    if(p){var v9=el.dataset.v,tg=function(cur){var ix=cur.indexOf(v9);if(ix>=0){if(cur.length>1)cur.splice(ix,1)}else cur.push(v9);return cur};p.rs=tg(((r&&r.f&&r.f.r)||p.rs||[]).slice());if(r&&!r.f){var fk=P.cards.filter(isFm)[0];if(fk)fmS(fk).faults.push({n:n,r:[v9],added:1});else FM_EXIST.push({n:n,r:[v9]})}else if(P.cards.some(isFm))P.cards.forEach(function(k){if(isFm(k))fmS(k).faults.forEach(function(f){if(f.n===n)tg(f.r)})});else FM_EXIST.forEach(function(f){if(f.n===n)tg(f.r)})}break;
-   case 'pxreq':if(p){p.req=true;pxAsk(p);if(!(isFm(c)&&fmS(c).sheet))pxShut(c,x)}break;/* from a fault dialog the request leaves the dialog open */
-   case 'pxscan':if(p&&p.acc){p.recvAt=pxClock();p.sc=false;p.req=false;p.recv++;p.nsn=r&&r.sn?pxSn(n+'#'+(p.recv+(p.prevRet||0))):'';if(!(r&&r.f)||x.rcv){x.sheet=null;x.rcv=false}}break;
+   case 'pxrqm':if(p&&r)p.rq=Math.max(1,pxRq(r)-1);break
+   case 'pxrqp':if(p&&r)p.rq=Math.min(pxFq(r),pxRq(r)+1);break
+   case 'pxreq':if(p){p.reqQ=r?pxRq(r):1;p.req=true;pxAsk(p);if(!(isFm(c)&&fmS(c).sheet))pxShut(c,x)}break;/* from a fault dialog the request leaves the dialog open */
+   case 'pxscan':if(p&&p.acc){p.recvAt=pxClock();p.sc=false;p.req=false;p.recv+=(p.reqQ||1);p.nsn=r&&r.sn?pxSn(n+'#'+(p.recv+(p.prevRet||0))):'';if(!(r&&r.f)||x.rcv){x.sheet=null;x.rcv=false}}break;
    case 'pxacc':if(p&&p.acc){p.recvAt=pxClock();p.req=false;p.sc=false;p.recv++;if(!(r&&r.f)||x.rcv){x.sheet=null;x.rcv=false}}break;
    case 'pxmiss':if(p)p.miss=true;break;
    case 'pxrchk':x.retSel=(x.retSel===el.dataset.u)?null:el.dataset.u;break
