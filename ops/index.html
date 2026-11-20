@@ -1386,7 +1386,7 @@ function groupMeta(g){
 /* ───────── profile chips: who is responsible for a group of cards ───────── */
 var PROFILES=[
  {id:'sa',n:'Service advisor',c:'#E5484D',ic:'M4 14v-2a8 8 0 0116 0v2M4 14a2 2 0 012-2h1v6H6a2 2 0 01-2-2zM20 14a2 2 0 00-2-2h-1v6h1a2 2 0 002-2zM18 18v1a2 2 0 01-2 2h-3'},
- {id:'si',n:'Shift incharge',c:'#8B5CF6',ic:'M12 3l2.7 5.5 6 .9-4.4 4.2 1 6-5.3-2.8-5.3 2.8 1-6L3.3 9.4l6-.9z'},
+ {id:'si',n:'Sr. Mechanic',c:'#8B5CF6',ic:'M12 3l2.7 5.5 6 .9-4.4 4.2 1 6-5.3-2.8-5.3 2.8 1-6L3.3 9.4l6-.9z'},
  {id:'mc',n:'Mechanic',c:'#F59E0B',ic:'M14.7 6.3a4 4 0 01-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 005.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z'},
  {id:'bc',n:'Captain',c:'#2F7BFF',ic:'M2 17a3 3 0 106 0 3 3 0 10-6 0M16 17a3 3 0 106 0 3 3 0 10-6 0M5 17l4-8h6l3 8M9 9l3 8M15 9l-1.5-3H11'},
  {id:'qa',n:'QA',c:'#1FB58F',ic:'M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6zM8.5 12l2.5 2.5 4.5-5'}
@@ -3050,7 +3050,7 @@ function pxInfoBtnN(){var o=!!pxS().infoN;return '<button type="button" class="p
 function pxInfoNew(r){return (pxS().infoN&&r.p.recvAt)?'<div class="fm-ib"><span><small>Received</small><b>Today, '+esc(r.p.recvAt)+'</b></span><span><small>Received by</small><b>You</b></span></div>':''}
 function pxInfoBtn(){var o=!!pxS().info;return '<button type="button" class="px-i'+(o?' on':'')+'" data-pa="fminfo" aria-label="Part info" aria-expanded="'+o+'">i</button>'}
 function pxInfoBody(r){if(!pxS().info)return '';var f=fmFind(r.n),w=f?fmWho(r.n,f):null;return pxMetrics(r.n)+(w?'<div class="fm-ib"><span><small>Marked by</small><b>'+esc(w.by)+'</b></span><span><small>Role</small><b>'+esc(w.role)+'</b></span><span><small>When</small><b>'+esc(w.at)+'</b></span></div>':'')}
-function pxTop(r,chips,miss,editBtn,subNote){return pxPart(r,miss?'Missing':(subNote||(PART_QTY[pbase(r.n)]?PART_QTY[pbase(r.n)]+' on bike':'On bike')),r.sn?pxSn(r.n):'',miss,pxInfoBtn())+pxInfoBody(r)+'<div class="px-il"><span>'+((r.f||r.p.miss)?'Marked faults':'Mark fault')+'</span>'+(editBtn||'')+'</div>'+chips}
+function pxTop(r,chips,miss,editBtn,subNote){return pxPart(r,miss?'Missing':(subNote||(PART_QTY[pbase(r.n)]?PART_QTY[pbase(r.n)]+' on bike':'On bike')),r.sn?pxSn(r.n):'',miss,pxInfoBtn())+pxInfoBody(r)+'<div class="px-il"><span>'+((r.f||(r.p&&r.p.miss))?'Marked faults':'Mark fault')+'</span>'+(editBtn||'')+'</div>'+chips}
 function fmRo(rs){return '<div class="pm-chips">'+(rs.length?rs.map(function(q){return '<span class="px-reason">'+esc(q)+'</span>'}).join(''):'<span class="px-line">No fault marked</span>')+'</div>'}
 function pxFaultSheet(c,x,r,closeAct,extra){
   var p=r.p,N=' data-n="'+esc(r.n)+'"',st=pxStory(r,x,true,closeAct==='fmsheetx'),ed=pxCanEdit()||(!r.f&&!p.miss&&closeAct==='pxclose');/* a part with no fault can always have one marked here, to request against */
