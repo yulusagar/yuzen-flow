@@ -1119,7 +1119,9 @@ function migrateWf(wf0){
   if(!wf.ess){wf.groups.forEach(ensureEss);wf.ess=1}
   return wf;
 }
-function ycSaved(id){return migrateWf((S.remote[id]&&S.remote[id].workflow)||S.local[id]||ycDef(id))}
+var YC_DEFC={};/* a YC on the Default flow keeps the same group/card ids until the Default itself changes, so buttons can find their group again */
+function ycDefCached(id){var d=S.bdr&&S.bdr[S.bdef],sig=d?JSON.stringify(d):'t',k=YC_DEFC[id];if(!k||k.sig!==sig)k=YC_DEFC[id]={sig:sig,wf:ycDef(id)};return k.wf}
+function ycSaved(id){return migrateWf((S.remote[id]&&S.remote[id].workflow)||S.local[id]||ycDefCached(id))}
 S.routeFor=null;S.ycWork=null;S.ycEdit=false;S.ycMore=false;S.ycCity=null;S.ycCluster=null;S.ycMenu=null;S.diffOn=false;
 function ycWf(id){return (S.ycWork&&S.ycWork.id===id)?S.ycWork.wf:ycSaved(id)}
 function sigWf(wf){return JSON.stringify([wf.next||'',(wf.groups||[]).map(function(g){return [g.title||'',!!g.demand,(g.chips||[]).slice().sort(),(g.routes||[]).map(function(r){return [(r.when||[]).slice().sort(),r.mode||'',r.to]}),g.cards.map(function(c){return [c.module,!!c.brk,MOD[c.module]?MOD[c.module].knobs.map(function(k){return knobOn(c,k)}):[]]})]})])}
@@ -3407,6 +3409,7 @@ function lsGet(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 function applyCfg(c){
   cfg=c;cfgVer=c.version||'';
+  if(c.builder&&c.builder.drafts&&c.builder.drafts[c.builder.def]){S.bdr=c.builder.drafts;S.bdef=c.builder.def;S.bkey=c.builder.def;S.draft=S.bdr[S.bdef]}/* the default flow: used by every YC with no saved flow of its own */
   var r={};Object.keys(c.yc||{}).forEach(function(id){r[id]={workflow:c.yc[id]}});S.remote=r;
   Object.keys(c.defaults||{}).forEach(function(id){if(DEF0[id]){S.defs[id]=c.defaults[id];applyDef(id,c.defaults[id])}});
 }
