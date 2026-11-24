@@ -917,8 +917,8 @@ html.mirror .ck-stk{top:0!important}
 .fr-th{position:relative;width:80px;height:80px;flex:none;box-sizing:border-box;border-radius:8px;background:#f7f7f7;border:1px solid #e8e8e8}
 .fr-th img{width:100%;height:100%;object-fit:cover;display:block;border-radius:7px;pointer-events:none}
 .fr-ini{position:absolute;inset:0;display:grid;place-items:center;font:700 26px var(--font-display);color:#919191}
-.fr-th.d{border:2px dashed #b0b0b0;background:#f7f7f7}.fr-th.d img,.fr-th.d .fr-ini{opacity:.4}
-.fr-bd{position:absolute;right:4px;bottom:4px;width:24px;height:24px;display:block}
+.fr-th.d{border:2px dashed #b0b0b0;background:#f7f7f7}.fr-th.d .fr-bd{right:2px;bottom:2px}.fr-th.d img,.fr-th.d .fr-ini{opacity:.4}
+.fr-bd{position:absolute;right:3px;bottom:3px;width:24px;height:24px;display:block}
 .fr-tx{flex:1;min-width:0}.fr-tx b{display:block;font:500 16px/24px var(--font-body);color:#222}.fr-tx small{display:block;font:500 14px/20px var(--font-body);color:#919191}
 .fr-ra{position:absolute;left:0;right:0;top:0;bottom:0;display:none;align-items:center;gap:16px;padding-left:16px;box-sizing:border-box;background:#f7f7f7;font:700 16px/24px var(--font-body);color:#222}
 .fr-ra svg{width:24px;height:24px;flex:none}
@@ -938,7 +938,7 @@ html.mirror .ck-stk{top:0!important}
 .sc-inv i{position:absolute;top:0;right:-2px;min-width:16px;height:16px;border-radius:8px;background:#003ce6;color:#fff;font:700 10px/16px var(--font-body);text-align:center;padding:0 4px;box-sizing:border-box;font-style:normal}
 .sc-empty{padding:48px 32px;text-align:center}.sc-empty b{display:block;font:700 16px/24px var(--font-display);color:#222}.sc-empty small{display:block;font:500 14px/20px var(--font-body);color:#919191;margin-top:4px}
 .fr.c{align-items:center}.sc-act{margin-left:auto;align-self:center;flex:none}
-.sc-btn.alt{background:#fff;color:#003ce6!important;box-shadow:inset 0 0 0 1.5px #003ce6}.sc-btn.ic{display:inline-flex;align-items:center;gap:8px}.sc-btn{height:40px;padding:0 16px;border-radius:20px;border:0;background:#003ce6;color:#fff!important;font:700 14px/20px var(--font-body);cursor:pointer;white-space:nowrap}
+.sc-pick{display:flex;align-items:center;gap:12px;width:100%;padding:8px 0;border:0;background:none;text-align:left;cursor:pointer;color:#222}.sc-pick .fr-th{width:64px;height:64px}.sc-pick .fr-bd{width:20px;height:20px}.sc-rad{margin-left:auto;flex:none;width:24px;height:24px;border-radius:50%;border:2px solid #b0b0b0;box-sizing:border-box;position:relative}.sc-pick.on .sc-rad{border-color:#003ce6}.sc-pick.on .sc-rad::after{content:"";position:absolute;inset:4px;border-radius:50%;background:#003ce6}.sc-sheet-t{font:700 18px/26px var(--font-display);color:#222;margin:0 0 4px}.sc-btn.alt{background:#fff;color:#003ce6!important;box-shadow:inset 0 0 0 1.5px #003ce6}.sc-btn.ic{display:inline-flex;align-items:center;gap:8px}.sc-btn{height:40px;padding:0 16px;border-radius:20px;border:0;background:#003ce6;color:#fff!important;font:700 14px/20px var(--font-body);cursor:pointer;white-space:nowrap}
 .sc-pill{display:inline-block;height:32px;padding:0 12px;border-radius:16px;background:#eceef6;color:#646a85;font:700 14px/32px var(--font-body);white-space:nowrap}
 .sc-sub{padding:12px 16px 4px;font:500 14px/20px var(--font-body);color:#919191}
 .sc-scan{min-height:100%;box-sizing:border-box;background:#111;color:#fff;display:flex;flex-direction:column;align-items:center;gap:12px;padding:56px 24px 24px;text-align:center}
@@ -950,7 +950,60 @@ html.mirror .ck-stk{top:0!important}
 .sc-err{margin:0;color:#ff8a70;font:600 14px/20px var(--font-body);min-height:20px}
 .sc-scan .pm-cta{margin:8px 0 0;width:100%}
 .sc-alt{width:100%;padding:13px;border-radius:14px;border:1px solid #555;background:none;color:#fff!important;font:600 15px var(--font-body);cursor:pointer}
-</style><style>/* installed-app overrides: the deck's phone fills the real screen */
+/* Request part page */
+.rq-wrap{display:flex;flex:1;min-height:0;background:#fff}
+.rq-rail{flex:none;width:72px;border-right:1px solid #e8e8e8;overflow-y:auto;scrollbar-width:none;background:#fff}.rq-rail::-webkit-scrollbar{display:none}
+.rq-tab{display:flex;flex-direction:column;align-items:center;gap:4px;width:72px;padding:16px 4px 12px;border:0;background:none;cursor:pointer}
+.rq-sq{display:block;width:56px;height:56px;border-radius:16px;background:#f7f7f7;border:2px solid transparent;box-sizing:border-box}
+.rq-tab.on .rq-sq{background:#fff;border-color:#003ce6}
+.rq-lb{display:block;width:64px;text-align:center;font:500 12px/16px var(--font-body);color:#717171;word-break:break-word}
+.rq-tab.on .rq-lb{font-weight:700;color:#222}
+.rq-list{flex:1;min-width:0;overflow-y:auto;scrollbar-width:none}.rq-list::-webkit-scrollbar{display:none}
+.rq-list .fr{padding:16px 16px 16px 16px;align-items:flex-start}
+.rq-list .fr::after{left:16px;right:16px}
+.rq-cart{flex:none;align-self:center;width:40px;height:40px;border-radius:8px;border:2px solid #003ce6;background:#fff;display:grid;place-items:center;padding:0;box-sizing:border-box;cursor:pointer}
+.rq-cart svg{width:24px;height:24px;display:block}
+.rq-cart.off{border-color:#ddd;cursor:default}
+.rq-sr{padding:8px 16px;border-bottom:1px solid #e8e8e8;background:#fff}
+.rq-sr input{width:100%;box-sizing:border-box;height:44px;border-radius:12px;border:1px solid #d5d8e2;background:#f7f7f7;padding:0 14px;font:500 15px var(--font-body);color:#222;outline:none}
+.rq-ph{display:flex;align-items:center;gap:12px;margin:4px 0 8px}.rq-ph .fr-th{width:56px;height:56px}.rq-ph .fr-bd{width:20px;height:20px}
+.rq-ph b{display:block;font:500 16px/24px var(--font-body);color:#222}.rq-ph small{display:block;font:500 14px/20px var(--font-body);color:#919191}
+/* bottom sheets: as tall as their content, spacing per the Figma reference (view 286, mark / edit 348 at 390 wide) */
+.ck-sheet.px-fs{min-height:0!important;padding-bottom:24px}
+.ck-sheet.px-fs.px-fit{padding-bottom:24px}
+.ck-sheet.af{padding:0!important;gap:0!important;overflow:hidden;border-radius:24px 24px 0 0}
+.ck-sheet.af .px-grab::after{top:8px;width:44px;margin-left:-22px;border-radius:2px;background:#e8e8e8}
+.af-hd{display:flex;align-items:flex-start;gap:16px;padding:24px 24px 16px}
+.af-hd.v{padding-bottom:36px}
+.af-hd .fr-tx b{font:500 16px/24px var(--font-body)}
+.af-act{display:flex;align-items:center;gap:8px;width:100%;padding:0;border:0;background:none;font:700 16px/24px var(--font-body);color:#222!important;cursor:pointer;text-align:left}
+.af-act svg{width:24px;height:24px;flex:none}.af-act.neg{color:#c13515!important}
+.af-list{border-top:1px solid #e8e8e8;padding:0 24px}
+.af-list .af-row:first-child{align-items:flex-start;padding-top:23px}.af-list .af-row{height:71px;box-sizing:border-box;display:flex;align-items:center}.af-list .af-row+.af-row{height:73px;border-top:1px solid #e8e8e8}
+.af-body{padding:0 24px 24px}
+.af-lbl{font:700 14px/20px var(--font-body);color:#222;margin:0 0 8px}
+.af-chips{display:flex;flex-wrap:wrap;gap:8px}
+.af-chip{min-width:48px;height:40px;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;border-radius:100px;border:1px solid #e8e8e8;background:#fff;font:500 16px/24px var(--font-body);color:#222!important;cursor:pointer;box-sizing:border-box}
+.af-chip.on{background:#f7f7f7;border:2px solid #003ce6}
+.af-bar{display:flex;gap:16px;height:88px;box-sizing:border-box;padding:15px 24px 16px;border-top:1px solid #e8e8e8;background:#fff}
+.af-bar button{flex:1 1 0;min-width:0;padding:0;height:56px;border-radius:16px;font:700 16px/24px var(--font-body);cursor:pointer;box-sizing:border-box}
+.af-bar .ca{background:#fff;border:2px dashed #b0b0b0;color:#222!important}
+.af-bar .go{background:#003ce6;border:2px solid #003ce6;color:#fff!important}.af-bar .go:disabled{opacity:.4;cursor:default}
+/* Resolve: faulty part sheet */
+.rs-req{display:flex;align-items:center;gap:8px;width:100%;height:56px;box-sizing:border-box;padding:0 16px;border:0;border-top:1px solid #e8e8e8;background:#f7f7f7;font:700 16px/24px var(--font-body);color:#222!important;text-align:left;cursor:pointer}
+.rs-req svg{width:24px;height:24px;flex:none}.rs-req:disabled{cursor:default}
+.af-bar.one .go{display:flex;align-items:center;justify-content:center;gap:8px}.af-bar.one .go svg{width:24px;height:24px;flex:none}
+.af-act.w{gap:18px}.af-act .af-tk{margin-left:auto;display:flex}.af-act .af-tk svg{width:24px;height:24px}
+.af-list.sec{border-top:1px solid #e8e8e8}
+/* Resolve faults: three-dot sheet */
+.af-list.mn{border-top:0;padding-top:12px}
+.mn-r{display:flex;align-items:center;gap:8px;width:100%;padding:0;border:0;background:none;text-align:left;cursor:pointer;color:#222!important}
+.mn-r svg{width:24px;height:24px;flex:none}
+.mn-r b{display:block;font:700 16px/24px var(--font-body)}.mn-r small{display:block;font:500 14px/20px var(--font-body);color:#919191}
+.mn-r.neg b{color:#c13515}
+.af-list.mn .af-row{height:auto;min-height:72px;padding:14px 0}.af-list.mn .af-row+.af-row{height:auto;border-top:1px solid #e8e8e8}
+.af-act:disabled{opacity:.4;cursor:default}.fr-ra.dis{opacity:.4}.fr-rb{position:absolute;left:0;right:0;top:0;bottom:0;display:none;align-items:center;justify-content:flex-end;gap:16px;padding-right:16px;box-sizing:border-box;background:#f7f7f7;font:700 16px/24px var(--font-body);color:#222;text-align:right}.fr-rb svg{width:24px;height:24px;flex:none}.fr-w.l-on .fr-rb{display:flex}
+.fr-rb.dis{opacity:.4}.af-act.g16{gap:16px}.fr-tx.rt{align-self:stretch;display:flex;flex-direction:column;justify-content:space-between}.fr-ret{display:block;font:500 14px/20px var(--font-body);color:#919191}</style><style>/* installed-app overrides: the deck's phone fills the real screen */
 html.ops,html.ops body{margin:0;height:100%;background:#fff;overflow:hidden;padding:0!important}
 html.ops body>*:not(#phone):not(#opspick):not(#toast):not(script):not(style){display:none!important}
 html.ops #phone{position:fixed;inset:0;z-index:1}
@@ -2238,7 +2291,7 @@ function phoneScreen(){
       body=cmdContent(suppCard('device')||CMD_DEF);
     }
     return sbHTML()+hdHTML(BIKE.no,BIKE.model+' · IoT online · '+BIKE.net,!(P.mode==='module'&&supportFlow(P.cards[0])),!(P.mode==='module'&&supportFlow(P.cards[0]))||dashTabs().length>1)+'<div class="pm-tabs">'+dashTabs().map(function(t){return '<button type="button" class="'+(P.tab===t[0]?'on':'')+'" data-pa="tab" data-v="'+t[0]+'">'+t[1]+'</button>'}).join('')+'</div><div class="pm-body">'+body+'</div>'+(P.tab==='ess'?cmSheet(suppCard('device')||CMD_DEF):'')+
-      (P.tab==='work'&&P.mode!=='module'?'<button type="button" class="pm-cta" data-pa="finishjob"'+(all?'':' disabled')+'>'+(all?'Finish job':(done===tot-pxc.filter(function(k){return !pst(k.id).done}).length&&pxn?'Return '+pxn+(pxn===1?' part':' parts')+' to finish':'Finish all tasks to continue'))+'</button>':'');
+      (P.tab==='work'&&P.mode!=='module'?'<button type="button" class="pm-cta" data-pa="finishjob"'+(all?'':' disabled')+'>'+(all?'Finish job':(done===tot-pxc.filter(function(k){return !pst(k.id).done}).length&&pxn?'Return '+pxn+(pxn===1?' part':' parts')+' to finish':'Finish all tasks to continue'))+'</button>':'')+frToastHTML(false);
   }
   if(P.scr==='job'&&c.module==='checklist')return ckScreen(c);
   if(P.scr==='job'&&c.module==='penalty')return penScreen(c);
@@ -2302,8 +2355,12 @@ function finishTask(c){
 /* swipe a part dialog down to close it, like tapping ✕ */
 (function(){var sh=null,y0=0,dy=0;
   document.addEventListener('pointerdown',function(e){var f=e.target.closest&&e.target.closest('.px-fs');if(!f)return;sh=f;y0=e.clientY;dy=0});
-  document.addEventListener('pointermove',function(e){if(!sh)return;dy=e.clientY-y0;if(dy>0&&sh.scrollTop<=0){sh.style.transition='none';sh.style.transform='translateY('+dy+'px)'}});
-  var end=function(){if(!sh)return;var f=sh;sh=null;if(dy>90){var x=f.querySelector('.px-xa');if(x){x.click();return}}f.style.transition='transform .2s';f.style.transform=''};
+  document.addEventListener('pointermove',function(e){if(!sh)return;dy=e.clientY-y0;var col=+sh.dataset.col||0;if(col&&dy<0&&sh.dataset.exp==='0'){sh.style.transition='none';sh.style.maxHeight=Math.min(sh.scrollHeight,col-dy)+'px';return}if(dy>0&&sh.scrollTop<=0){sh.style.transition='none';sh.style.transform='translateY('+dy+'px)'}});
+  var snap=function(v,f){var c=(typeof P!=='undefined'&&P&&P.cur)?pcard():null;if(!c)return;var fc=P.cards.filter(isRes)[0];if(f&&f.dataset.sk==='np')scS(c).npExp=v;else if(f&&f.dataset.sk==='fn')scS(c).fnExp=v;else if(f&&f.dataset.sk==='nb')fmS(fc||c).nbExp=v;else fmS(fc||c).resExp=v};
+  var end=function(){if(!sh)return;var f=sh;sh=null;var col=+f.dataset.col||0;
+    if(col&&f.dataset.exp==='0'&&dy<0){f.style.transition='max-height .22s';if(-dy>40){f.style.maxHeight=f.scrollHeight+'px';f.dataset.exp='1';snap(true,f)}else f.style.maxHeight=col+'px';return}
+    if(col&&f.dataset.exp==='1'&&dy>90){f.style.transition='max-height .22s,transform .2s';f.style.transform='';f.style.maxHeight=col+'px';f.dataset.exp='0';snap(false,f);return}
+    if(dy>90){var pb=f.previousElementSibling,x=f.querySelector('.px-xa')||(pb&&pb.classList&&pb.classList.contains('px-bd')?pb:null);if(x){x.click();return}}f.style.transition='transform .2s';f.style.transform=''};
   document.addEventListener('pointerup',end);document.addEventListener('pointercancel',end);
 })();
 document.addEventListener('click',function(e){if(S.ycMore&&!(e.target.closest&&e.target.closest('.ycmore'))){S.ycMore=false;render()}});
@@ -2314,6 +2371,7 @@ document.addEventListener('click',function(e){if(P&&P.moreOpen&&!(e.target.close
 document.addEventListener('click',function(e){
   var el=e.target.closest('[data-pa]');if(!el||!P)return;
   var a=el.dataset.pa,c=P.cur?pcard():null,s=c?pst(c.id):null,i=+el.dataset.i,v=el.dataset.v;
+  if(c&&c.module==='partex'&&/^(fm|px|rs|af)/.test(a)&&a!=='pxdone'&&a!=='rsscan'){var fc0=P.cards.filter(isRes)[0];if(fc0){c=fc0;s=pst(c.id)}}/* a dialog opened from the sparecard works on the Resolve faults card */
   if(P.moreOpen&&a!=='dashmore'&&a!=='terminate')P.moreOpen=false;
   switch(a){
    case 'close':pLeave('close');return;
@@ -2405,21 +2463,54 @@ document.addEventListener('click',function(e){
    case 'iarecv':{var pp6=pst(c.id);pp6.req[IA[i][0]]='received';break}
    case 'iafit':{var pp7=pst(c.id);pp7.req[IA[i][0]]='fitted';break}
    case 'gknob':{var gk=P.cards[0];gk.knobs[el.dataset.k]=!kon(gk,el.dataset.k);break}
-   case 'frrm':{var fr1=fmS(c).faults[i];if(fr1){var fp1=pxP(pxS(c),fr1.n),st1=frState(fr1,fp1);P.frT={msg:pbase(fr1.n)+' moved to sparecard',ic:'out',i:i,prev:{off:!!fp1.off,inst:!!fp1.inst,sOld:!!fp1.sOld}};if(st1.k==='fault')fp1.sOld=true;fp1.off=true;fp1.inst=false;P.frAnim={i:i,k:'fd'};frToastTimer()}break}
-   case 'frin':{var fr2=fmS(c).faults[i];if(fr2){var fp2=pxP(pxS(c),fr2.n);if(fp2.recv>0){P.frT={msg:pbase(fr2.n)+' installed on bike',ic:'ok',i:i,prev:{off:!!fp2.off,inst:!!fp2.inst,sOld:!!fp2.sOld}};frToastTimer();fp2.off=false;fp2.inst=true;P.frAnim=null}}break}
+   case 'frrm':{var fr1=fmS(c).faults[i];if(fr1){var fp1=pxP(pxS(c),fr1.n),st1=frState(fr1,fp1),auto=st1.k==='fault'&&frWant(c,fp1)&&!fp1.req&&!(fp1.recv>0);P.frT={msg:pbase(fr1.n)+' moved to sparecard',ic:'out',i:i,prev:{off:!!fp1.off,inst:!!fp1.inst,sOld:!!fp1.sOld,autoReq:auto}};if(st1.k==='fault')fp1.sOld=true;fp1.off=true;fp1.inst=false;if(auto)scFire('pxreq',{n:fr1.n});P.frAnim={i:i,k:'fd'};frToastTimer()}break}
+   case 'frin':{var fr2=fmS(c).faults[i];if(fr2){var fp2=pxP(pxS(c),fr2.n),cd2=frCands(fr2,fp2);if(cd2.length>1)P.frPick={i:i,sel:null};else if(cd2.length)frInstall(c,i,cd2[0])}break}
+   case 'frps':{if(P.frPick)P.frPick.sel=v;break}
+   case 'frpx':{P.frPick=null;break}
+   case 'frpgo':{var pk=P.frPick;if(pk&&pk.sel){frInstall(c,pk.i,pk.sel);P.frPick=null}break}
+   case 'scopen':{var it3=scParts(c)[i];if(!it3)break;
+     if(it3.k==='old'&&it3.v==='fnew'){var sfn=scS(c);sfn.fn={n:it3.n,mode:'view',r:[]};sfn.fnExp=false;break}
+     if(it3.k==='old'){var fcx=P.cards.filter(isRes)[0];if(fcx){var ix=fmS(fcx).faults.map(function(f){return f.n}).indexOf(it3.n);if(ix>=0)scFire('fmrow',{i:ix})}}
+     else{var sq=scS(c);sq.np={n:it3.n,mode:'view',r:[]};sq.npExp=false}
+     break}
+   case 'rqtab':{var rq1=scS(c);rq1.rt=v;rq1.q='';break}
+   case 'rqsearch':{var rq2=scS(c);rq2.rsOpen=!rq2.rsOpen;if(!rq2.rsOpen)rq2.q='';break}
+   case 'rqpick':{scS(c).pick={n:el.dataset.n,r:[]};break}
+   case 'rqr':{var pk1=scS(c).pick;if(!pk1)break;if(v==='Missing')pk1.r=pk1.r.indexOf('Missing')>=0?[]:['Missing'];else{pk1.r=pk1.r.filter(function(r){return r!=='Missing'});var ix1=pk1.r.indexOf(v);if(ix1>=0)pk1.r.splice(ix1,1);else pk1.r.push(v)}break}
+   case 'rqx':{scS(c).pick=null;break}
+   case 'rqgo':{var rq3=scS(c),pk2=rq3.pick;if(!pk2||!pk2.r.length)break;
+     var fcg=P.cards.filter(isRes)[0]||P.cards.filter(isFm)[0];if(fcg)fmS(fcg).faults.push({n:pk2.n,r:pk2.r.slice(),added:1});
+     var pg=pxP(pxS(c),pk2.n);pg.miss=pk2.r[0]==='Missing';pg.rs=pk2.r.slice();pg.reqQ=1;pg.req=true;pxAsk(pg);
+     P.frT={msg:pbase(pk2.n)+' marked faulty & requested',ic:'ok',nu:1};frToastTimer();rq3.pick=null;break}
+   case 'fnx':{scS(c).fn=null;break}
+   case 'fnedit':{var se=scS(c),ne=se.fn;if(!ne)break;var pe=pxP(pxS(c),ne.n);ne.mode='edit';ne.r=pe.fnew?pe.fnew.r.slice():[];break}
+   case 'fnr':{var nr=scS(c).fn;if(!nr)break;var ir=nr.r.indexOf(v);if(ir>=0)nr.r.splice(ir,1);else nr.r.push(v);break}
+   case 'fncancel':{var nc=scS(c).fn;if(nc)nc.mode='view';break}
+   case 'fngo':{var ng2=scS(c).fn;if(!ng2||!ng2.r.length)break;var pg2=pxP(pxS(c),ng2.n);if(pg2.fnew)pg2.fnew.r=ng2.r.slice();ng2.mode='view';break}
+   case 'fnfix':case 'fnfalse':{var nf2=scS(c).fn;if(!nf2)break;var pf2=pxP(pxS(c),nf2.n);if(!pf2.fnew)break;var wnt=a==='fnfix'?'Repaired':'False issue';pf2.fnew.res=(pf2.fnew.res===wnt)?null:wnt;if(!pf2.fnew.res)delete pf2.fnew.res;break}
+   case 'fndel':{var sd=scS(c),nd=sd.fn;if(!nd)break;var pd2=pxP(pxS(c),nd.n);if(!pd2.fnew)break;P.frT={msg:'Fault deleted',ic:'del',ua:'fnundo',n:nd.n,saved:pd2.fnew};frToastTimer();pd2.fnew=null;pd2.recv+=1;sd.fn=null;break}
+   case 'fnundo':{var ud=P.frT;if(ud&&ud.saved){var pu2=pxP(pxS(c),ud.n);pu2.fnew=ud.saved;pu2.recv=Math.max(0,pu2.recv-1)}P.frT=null;break}
+   case 'fnscan':{var sf=scS(c),nf=sf.fn;if(!nf)break;sf.fn=null;var ixf=-1;scParts(c).forEach(function(r,q){if(r.n===nf.n&&r.v==='fnew'&&ixf<0)ixf=q});if(ixf>=0)scFire('scret',{i:ixf});break}
+   case 'spx':{scS(c).np=null;break}
+   case 'spcancel':{var sc9=scS(c);if(sc9.np&&sc9.np.mode==='mark'){sc9.np.mode='view';sc9.np.r=[]}else sc9.np=null;break}
+   case 'spmark':{var sc8=scS(c);if(sc8.np){sc8.np.mode='mark';sc8.np.r=[]}break}
+   case 'spr':{var np7=scS(c).np;if(!np7)break;var i7=np7.r.indexOf(v);if(i7>=0)np7.r.splice(i7,1);else np7.r.push(v);break}
+   case 'spinst':{var sc6=scS(c),np6=sc6.np;if(!np6||!scSlotEmpty(np6.n))break;var ix6=-1;scParts(c).forEach(function(r,q){if(r.n===np6.n&&r.k==='new'&&ix6<0)ix6=q});sc6.np=null;if(ix6>=0)scFire('scinst',{i:ix6});break}
+   case 'spret':{var sc5=scS(c),np5=sc5.np;if(!np5)break;sc5.np=null;scDoReturn(c,np5.n,'new');break}
+   case 'spgo':{var sc4=scS(c),np4=sc4.np;if(!np4||!np4.r.length)break;sc4.np=null;if(pxKon('tag')){sc4.scan={m:'ret',n:np4.n,v:'newfault',r:np4.r.slice(),bad:false};break}scDoReturn(c,np4.n,'new');var rl4=pxP(pxS(c),np4.n).rl;if(rl4&&rl4.length){var rc4=rl4[rl4.length-1];rc4.bk='fault';rc4.fr=np4.r.slice()}break}
    case 'scinv':{scS(c).v='inv';break}
    case 'screq':{scS(c).v='req';break}
-   case 'scback':{var sb=scS(c);if(sb.scan){sb.scan=null;break}if(sb.v!=='main'){sb.v='main';break}var hb=document.createElement('button');hb.type='button';hb.hidden=true;hb.dataset.pa='back';document.body.appendChild(hb);hb.click();hb.parentNode.removeChild(hb);return}
-   case 'scret':{var sc1=scS(c),it1=scParts(c)[i];if(!it1)break;if(it1.k==='old'&&pxKon('tag')){sc1.scan={m:'ret',n:it1.n,bad:false};break}scDoReturn(c,it1.n,it1.k);break}
+   case 'scback':{var sb=scS(c);if(sb.fn){sb.fn=null;break}if(sb.np){sb.np=null;break}if(sb.pick){sb.pick=null;break}var fc1=P.cards.filter(isRes)[0];if(fc1&&fmS(fc1).sheet){fmS(fc1).sheet=null;pxS(c).draft=null;break}if(pxS(c).sheet){pxShut(c,pxS(c));break}if(sb.scan){sb.scan=null;break}if(sb.v!=='main'){sb.v='main';sb.rsOpen=false;sb.q='';break}var hb=document.createElement('button');hb.type='button';hb.hidden=true;hb.dataset.pa='back';document.body.appendChild(hb);hb.click();hb.parentNode.removeChild(hb);return}
+   case 'scret':{var sc1=scS(c),it1=scParts(c)[i];if(!it1)break;if(it1.k==='new'&&it1.rec)break;if(it1.k==='old'&&pxKon('tag')){sc1.scan={m:'ret',n:it1.n,v:it1.v||'',bad:false};break}scDoReturn(c,it1.n,it1.v==='fnew'?'fnew':it1.k);break}
    case 'scrcv':{scS(c).scan={m:'recv',n:el.dataset.n,bad:false};break}
    case 'scscanx':{scS(c).scan=null;break}
    case 'scscan':{var sc2=scS(c),a2=sc2.scan;if(!a2)break;if(v==='bad'){a2.bad=true;break}
-     if(a2.m==='ret'){sc2.scan=null;scDoReturn(c,a2.n,'old')}
+     if(a2.m==='ret'){sc2.scan=null;scDoReturn(c,a2.n,a2.v==='fnew'?'fnew':a2.v==='newfault'?'new':'old');if(a2.v==='newfault'){var rl9=pxP(pxS(c),a2.n).rl;if(rl9&&rl9.length){var rc9=rl9[rl9.length-1];rc9.bk='fault';rc9.fr=a2.r.slice()}}}
      else{var rp=pxP(pxS(c),a2.n);rp.recvAt=pxClock();rp.req=false;rp.sc=false;rp.recv+=(rp.reqQ||1);rp.nsn='';sc2.scan=null}
      break}
-   case 'scundo':{var uu=P.frT;if(uu&&uu.rec){var up=pxP(pxS(c),uu.n);uu.rec.cancel=true;up.rl=(up.rl||[]).filter(function(r){return r!==uu.rec});if(uu.rec.k!=='old')up.recv=uu.rec.q}P.frT=null;break}
-   case 'frundo':{var fu=P.frT;if(fu){var fr3=fmS(c).faults[fu.i];if(fr3){var fp3=pxP(pxS(c),fr3.n);fp3.off=fu.prev.off;fp3.inst=fu.prev.inst;fp3.sOld=fu.prev.sOld}P.frT=null;P.frAnim=null}break}
-   case 'fmrow':{var fs0=fmS(c),fs=fs0,ff=fs.faults[i];fs.sheet={t:'res',i:i,act:ff.res?ff.res.act:null,old:!!(ff.res&&ff.res.old),nw:!!(ff.res&&ff.res.nw)};pxS(c).info=false;pxS(c).infoN=false;pxS(c).resSel=null;pxS(c).draft=(isRes(c)||ff.added||kon(c,'delex'))?{n:ff.n,r:ff.r.slice(),edit:false}:null;break}
+   case 'scundo':{var uu=P.frT;if(uu&&uu.rec){var up=pxP(pxS(c),uu.n);uu.rec.cancel=true;up.rl=(up.rl||[]).filter(function(r){return r!==uu.rec});}P.frT=null;break}
+   case 'frundo':{var fu=P.frT;if(fu){var fr3=fmS(fu.cid?pFind(fu.cid):c).faults[fu.i];if(fr3){var fp3=pxP(pxS(c),fr3.n);fp3.off=fu.prev.off;fp3.inst=fu.prev.inst;fp3.sOld=fu.prev.sOld;if('fnew' in fu.prev){fp3.fnew=fu.prev.fnew;fp3.recv=fu.prev.recv}if(fu.prev.autoReq&&!(fp3.recv>0)){fp3.req=false;fp3.acc=false}}P.frT=null;P.frAnim=null}break}
+   case 'fmrow':{var fs0=fmS(c),fs=fs0,ff=fs.faults[i];fs0.resExp=false;fs0.nb=null;fs0.nbExp=false;fs.sheet={t:'res',i:i,act:ff.res?ff.res.act:null,old:!!(ff.res&&ff.res.old),nw:!!(ff.res&&ff.res.nw)};pxS(c).info=false;pxS(c).infoN=false;pxS(c).resSel=null;pxS(c).draft=(isRes(c)||ff.added||kon(c,'delex'))?{n:ff.n,r:ff.r.slice(),edit:false}:null;break}
    case 'fminfo':pxS(c).info=!pxS(c).info;break;
    case 'fminfon':pxS(c).infoN=!pxS(c).infoN;break;
    case 'fmact':{var fs2=fmS(c);fs2.sheet.act=v;if(v!=='Replaced'){fs2.sheet.old=false;fs2.sheet.nw=false}break}
@@ -2435,13 +2526,60 @@ document.addEventListener('click',function(e){
    case 'fmqrm':{var fsr=fmS(c),rf=fsr.faults[+el.dataset.i];if(rf){var rn=rf.n,rp=pxP(pxS(c),rn);fsr.faults.splice(+el.dataset.i,1);rp.miss=false;rp.rs=[];rp.req=false;rp.act=null;rp.recv=0}break}
    case 'fmqdone':{var dd=pxS(c).draft;if(dd&&dd.mq){var all=dd.secs.filter(function(g){return g.r.length});if(all.length){var fsd=fmS(c),bs=dd.n;all.forEach(function(g){var k0=0,nm;do{nm=bs+new Array(k0+1).join('\u200B');k0++}while(fsd.faults.some(function(f){return f.n===nm}));fsd.faults.push({n:nm,r:g.r.slice(),q:g.q,added:1});var pp=pxP(pxS(c),nm);pp.miss=g.r[0]==='Missing';pp.rs=g.r.slice()});pxS(c).draft=null;pxS(c).info=false;pxS(c).infoN=false;fsd.sheet=null}}break}
    case 'fmadd1':{var ad=pxS(c).draft;if(ad&&ad.fresh&&ad.add&&ad.r.length){var an=ad.n,ap=pxP(pxS(c),an);fmS(c).faults.push({n:an,r:ad.r.slice(),added:1});ap.miss=ad.r[0]==='Missing';ap.rs=ad.r.slice();pxS(c).draft=null;pxS(c).info=false;pxS(c).infoN=false;fmS(c).sheet=null}break}/* adding the fault closes its dialog */
+   case 'nbmark':{var sn=fmS(c);sn.nb={i:i,mode:'mark',r:[]};break}
+   case 'nbr':{var nn=fmS(c).nb;if(!nn)break;var ni=nn.r.indexOf(v);if(ni>=0)nn.r.splice(ni,1);else nn.r.push(v);break}
+   case 'nbcancel':{var sc3=fmS(c);if(sc3.nb)sc3.nb.mode='view';break}
+   case 'nbgo':{var sg=fmS(c),ng=sg.nb,fg=sg.faults[i];if(!ng||!ng.r.length||!fg)break;var pg=pxP(pxS(c),fg.n);
+     var autoR=frWant(c,pg)&&!pg.req&&!(pg.recv>1);
+     P.frT={msg:pbase(fg.n)+' moved to sparecard',ic:'out',i:i,prev:{off:!!pg.off,inst:!!pg.inst,sOld:!!pg.sOld,autoReq:autoR,fnew:pg.fnew||null,recv:pg.recv}};
+     pg.inst=false;pg.off=true;pg.fnew={r:ng.r.slice()};pg.recv=Math.max(0,pg.recv-1);frToastTimer();
+     sg.sheet=null;sg.nb=null;sg.nbExp=false;if(autoR&&!(pg.recv>0))scFire('pxreq',{n:fg.n});break}
+   case 'rsmore':{var mm=fmS(c);mm.menu=true;P.moreOpen=false;break}
+   case 'rsmx':{fmS(c).menu=false;break}
+   case 'rsmreq':{var mq=fmS(c);mq.reqRemove=(mq.reqRemove===false);break}
+   case 'rsmdel':{var md=fmS(c);md.menu=false;
+     if(P.mode==='module'){toast('Delete task works inside a job, not in the module preview');break}
+     var pi=-1,ci=-1;(P.pools||[]).forEach(function(pl,a1){var b1=pl.cards.indexOf(c);if(b1>=0){pi=a1;ci=b1;pl.cards.splice(b1,1)}});
+     var gi=P.cards.indexOf(c);if(gi>=0)P.cards.splice(gi,1);
+     P.delT={card:c,pi:pi,ci:ci,gi:gi};P.frT={msg:MOD[c.module].name+' deleted',ic:'del',ua:'rsmundo'};frToastTimer();
+     P.scr='dash';P.cur=null;P.tab='work';P.resetScroll=true;break}
+   case 'rsmundo':{var dt=P.delT;if(dt){if(dt.pi>=0&&P.pools&&P.pools[dt.pi])P.pools[dt.pi].cards.splice(Math.min(dt.ci,P.pools[dt.pi].cards.length),0,dt.card);if(dt.gi>=0)P.cards.splice(Math.min(dt.gi,P.cards.length),0,dt.card);P.delT=null}P.frT=null;break}
+   case 'scinst':{var itn=scParts(c)[i];if(!itn||!scSlotEmpty(itn.n))break;if(itn.k==='old'&&itn.st.k==='fault')break;
+     var fci=P.cards.filter(isRes)[0],ixi=fci?fmS(fci).faults.map(function(f){return f.n}).indexOf(itn.n):-1,kind=itn.k==='new'?'new':'old';
+     if(itn.v==='fnew'){var pfn=pxP(pxS(c),itn.n);pfn.fnew=null;pfn.recv+=1;kind='new'}
+     if(fci&&ixi>=0)frInstall(fci,ixi,kind);else{var pi2=pxP(pxS(c),itn.n);pi2.off=false;if(kind==='new')pi2.inst=true;else pi2.sOld=false}break}
+   case 'scnoinst':{scS(c).dlg=true;break}
+   case 'scdlgx':{scS(c).dlg=false;break}
+   case 'rsscan':{var fcs=P.cards.filter(isRes)[0];if(!fcs)break;var fx=fmS(fcs).faults[i];if(!fx)break;fmS(fcs).sheet=null;pxS(c).draft=null;
+     var ix=-1;scParts(c).forEach(function(r,q){if(r.n===fx.n&&r.k==='old'&&ix<0)ix=q});if(ix>=0)scFire('scret',{i:ix});break}
+   case 'rsspare':{var rsf=fmS(c).faults[i];if(!rsf)break;var rsp=pxP(pxS(c),rsf.n);if(!rsp.req&&!(rsp.recv>0))scFire('pxreq',{n:rsf.n});break}
+   case 'rsreq':{var rf=fmS(c).faults[i];if(!rf)break;var rp=pxP(pxS(c),rf.n);if(rp.recv>0||rp.inst)break;
+     var onb=frState(rf,Object.assign({},rp,{off:false,inst:false})).k==='fault'&&!rp.off&&!rp.sOld;
+     if(rp.req){rp.req=false;rp.acc=false}else if(onb){if(fmS(c).reqRemove===false)rp.wantSpare=!rp.wantSpare}else{scFire('pxreq',{n:rf.n})}break}
+   case 'rsrm':{var rf4=fmS(c).faults[i];fmS(c).sheet=null;pxS(c).draft=null;scFire('frrm',{i:i});break}
+   case 'rsedit':{var re1=fmS(c),rf1=re1.faults[i];if(!rf1)break;re1.sheet={t:'part',n:rf1.n};re1.af={n:rf1.n,mode:'edit',r:rf1.r.slice(),from:i};break}
+   case 'rsfix':case 'rsfalse':{var rf2=fmS(c).faults[i];if(!rf2)break;if(a==='rsfix'&&(rf2.r.indexOf('Missing')>=0||pxP(pxS(c),rf2.n).miss))break;var want=a==='rsfix'?'Repaired':'False issue';rf2.res=(rf2.res&&rf2.res.act===want)?null:{act:want};if(!rf2.res)delete rf2.res;break}/* one of the two at a time; the sheet stays open and drops the request and remove sections once the fault is resolved */
+   case 'rsdel':{var re3=fmS(c),rf3=re3.faults[i];if(!rf3)break;re3.af={n:rf3.n,mode:'view',r:rf3.r.slice()};scFire('afdel');break}
+   case 'afx':{var sx=fmS(c);sx.sheet=null;sx.af=null;break}
+   case 'afedit':{var ae=fmS(c).af;if(ae)ae.mode='edit';break}
+   case 'afr':{var ar=fmS(c).af;if(!ar)break;if(v==='Missing')ar.r=ar.r[0]==='Missing'?[]:['Missing'];else{ar.r=ar.r.filter(function(r){return r!=='Missing'});var ai=ar.r.indexOf(v);if(ai>=0)ar.r.splice(ai,1);else ar.r.push(v)}break}
+   case 'afcancel':{var ac=fmS(c),aa=ac.af;if(!aa)break;if(aa.from!=null){ac.sheet={t:'res',i:aa.from};ac.af=null}else if(aa.mode==='edit'){var rc1=afRecs(aa.n)[0];aa.mode='view';aa.r=rc1?rc1.f.r.slice():['Missing']}else{ac.sheet=null;ac.af=null}break}
+   case 'afgo':{var ag=fmS(c),ab=ag.af;if(!ab||!ab.r.length)break;var pg0=pxP(pxS(c),ab.n);
+     if(ab.mode==='mark'){ag.faults.push({n:ab.n,r:ab.r.slice(),added:1})}
+     else P.cards.filter(isFm).forEach(function(k){fmS(k).faults.forEach(function(f){if(f.n===ab.n)f.r=ab.r.slice()})});
+     pg0.miss=ab.r[0]==='Missing';pg0.rs=ab.r.slice();if(ab.from!=null){ag.sheet={t:'res',i:ab.from};ag.af=null}else if(ab.mode==='edit'){ab.mode='view'}else{ag.sheet=null;ag.af=null}break}/* after an update the sheet goes back to where the person came from: the part's view sheet, now showing the saved faults */
+   case 'afdel':{var ad=fmS(c),ab2=ad.af;if(!ab2)break;var snap=[];P.cards.filter(isFm).forEach(function(k){var fs2=fmS(k);fs2.faults.forEach(function(f,ix){if(f.n===ab2.n)snap.push({k:k.id,ix:ix,f:f})});fs2.faults=fs2.faults.filter(function(f){return f.n!==ab2.n})});
+     var pd=pxP(pxS(c),ab2.n);P.frT={msg:'Fault deleted',ic:'del',ua:'afundo',snap:snap,n:ab2.n,miss:!!pd.miss,rs:(pd.rs||[]).slice()};frToastTimer();pd.miss=false;pd.rs=[];ad.sheet=null;ad.af=null;break}
+   case 'afundo':{var u2=P.frT;if(u2&&u2.snap){u2.snap.forEach(function(o){var k=pFind(o.k);if(!k)return;var fl=fmS(k).faults;fl.splice(Math.min(o.ix,fl.length),0,o.f)});var pu=pxP(pxS(c),u2.n);pu.miss=u2.miss;pu.rs=u2.rs}P.frT=null;break}
    case 'fmed':{var ed0=pxS(c).draft;if(ed0)ed0.edit=true;break}
    case 'fmcancel':{var cx=pxS(c),cd=cx.draft;if(cd){var cf=fmFind(cd.n);cd.r=cf?cf.r.slice():cd.r;cd.edit=false}break}
    case 'fmdr':{var dx=pxS(c).draft,dv=el.dataset.v;if(dx){if(dv==='Missing')dx.r=dx.r[0]==='Missing'?[]:['Missing'];else if(dx.r[0]==='Missing')dx.r=[dv];else{var di=dx.r.indexOf(dv);if(di>=0)dx.r.splice(di,1);else dx.r.push(dv)}}break}
    case 'fmupd':{var ux=pxS(c),ud=ux.draft;if(ud){var un=ud.n,up=pxP(ux,un);var fcs=P.cards.filter(isFm);if(fcs.length)fcs.forEach(function(k){var ks=fmS(k);if(ud.r.length)ks.faults.forEach(function(f){if(f.n===un)f.r=ud.r.slice()});else ks.faults=ks.faults.filter(function(f){return f.n!==un})});else for(var fi=FM_EXIST.length-1;fi>=0;fi--){if(FM_EXIST[fi].n===un){if(ud.r.length)FM_EXIST[fi].r=ud.r.slice();else FM_EXIST.splice(fi,1)}}up.miss=ud.r[0]==='Missing';if(!ud.r.length){up.rs=[];up.req=false;up.sc=false}else up.rs=ud.r.slice();if(ud.r.length)ux.draft={n:un,r:ud.r.slice(),edit:!!ud.open,open:!!ud.open};else{ux.draft=null;if(isFm(c))fmS(c).sheet={t:'part',n:un}}}break}/* stay in the dialog: after an update it shows the saved state; a removed fault leaves the part's own dialog open */
    case 'fmadd':fmS(c).view='add';break;
-   case 'fmtab':fmS(c).tabF=el.dataset.t;break;
-   case 'fmpart':fmS(c).sheet={t:'part',n:el.dataset.n};pxS(c).info=false;pxS(c).infoN=false;pxS(c).draft=PART_QTY[el.dataset.n]?mqNew(el.dataset.n,c):(pxDraft(pxList(c),el.dataset.n,true)||{n:el.dataset.n,r:[],edit:true,fresh:true,add:true});break;
+   case 'fmtab':{var fst=fmS(c);fst.tabF=el.dataset.t;fst.afq='';break}
+   case 'fmsearch':{var fss=fmS(c);fss.afOpen=!fss.afOpen;if(!fss.afOpen)fss.afq='';break}
+   case 'fmpart':{var fp0=el.dataset.n;if(!PART_QTY[fp0]){var fq=fmS(c),rc0=afRecs(fp0)[0],pm0=pxP(pxS(c),fp0),mk0=!!(rc0||pm0.miss);fq.sheet={t:'part',n:fp0};fq.af={n:fp0,mode:mk0?'view':'mark',r:mk0?(rc0?rc0.f.r.slice():['Missing']):[]};break}
+   fmS(c).af=null;fmS(c).sheet={t:'part',n:el.dataset.n};pxS(c).info=false;pxS(c).infoN=false;pxS(c).draft=PART_QTY[el.dataset.n]?mqNew(el.dataset.n,c):(pxDraft(pxList(c),el.dataset.n,true)||{n:el.dataset.n,r:[],edit:true,fresh:true,add:true});break}
    case 'fmmiss':{var mn=el.dataset.n,mp=pxP(pxS(c),mn),fmc=P.cards.filter(isFm);mp.miss=!mp.miss;
      fmc.forEach(function(k){var ms=fmS(k),mf=ms.faults.filter(function(f){return f.n===mn})[0];
        if(mp.miss){if(mf)mf.r=['Missing'];else if(k===c||fmc.length===1)ms.faults.push({n:mn,r:['Missing'],added:1})}
@@ -2668,11 +2806,12 @@ function fmStart(c){var s=fmS(c),sh=fmShown(c,s),res=isRes(c),r=sh.filter(functi
   return '<button type="button" class="ck-trow" style="border-top:0" data-pa="ckopen"><span class="ck-art"><img src="'+img(B.issues)+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:12px"></span><span class="grow"><b>'+(res?'Resolve faults':'Mechanical faults')+'</b><small>'+(res?r+'/'+sh.length:sh.length+(sh.length===1?' fault':' faults'))+'</small></span>'+(d?'<span class="ck-st g">✓</span>':'<span style="font-size:24px;color:#222">›</span>')+'</button>'}
 function fmSheet(c,s){
   var sh=s.sheet;if(!sh)return '';
-  if(sh.t==='part')return fmPartSheet(c,s);
+  if(sh.t==='part'){if(s.af&&!PART_QTY[pbase(sh.n)])return fmAddSheet(c,s);return fmPartSheet(c,s)}
   if(sh.t==='res'){
     var f=s.faults[sh.i],canRes=isRes(c),need=false,ok=false,canDel=f.added||kon(c,'delex');
     var delB='';
-    if(canRes){var rr=pxList(c).filter(function(q){return q.n===f.n})[0];if(rr)return pxFaultSheet(c,pxS(c),rr,'fmsheetx',delB)}
+    if(canRes){/* one part name can be two parts: the old faulty one in the sparecard and the new one on the bike. The row that was tapped decides which sheet opens: from the Resolve list it is the part on the bike, from the Sparecard it is the old part in the sparecard. */
+      var pnb=pxP(pxS(c),f.n),fromSc=!!(P.cur&&pcard()&&pcard().module==='partex');return (pnb.inst&&!pnb.off&&!fromSc)?frNewBikeSheet(c,s,f,sh.i):frResSheet(c,s,f,sh.i)}
     else return fmPartSheet(c,{sheet:{n:f.n}},delB,!(f.added||kon(c,'delex')));
     return '<div class="ck-sheet"><div style="display:flex;align-items:center;gap:12px"><span class="ck-th" style="width:56px;height:56px">'+fmThumb(f.n)+'</span><b>'+esc(f.n)+'</b></div>'+
      (canRes?'<small style="color:#777">Your action</small><div class="pm-chips hs">'+['Repaired'].concat(['Replaced'],kon(c,'falsei')?['False issue']:[],kon(c,'unres')?['Unresolved']:[]).map(function(a){return '<button type="button" class="pm-chip'+(sh.act===a?' on':'')+'" data-pa="fmact" data-v="'+a+'">'+a+'</button>'}).join('')+'</div>'+
@@ -2743,27 +2882,103 @@ function fmPartSheet(c,s,extra,view){
   body='<div class="px-sec px-first">'+pxTop(r,chips,dr?dr[0]==='Missing':p.miss,D&&!D.edit?'<button type="button" class="px-edit" data-pa="fmed">Edit</button>':'')+(D?fmDraftBar(c,r,x):'')+'</div>'+(extra||'');/* no Done button: ✕, a tap outside or a swipe down closes the dialog */
   return '<div class="px-bd" data-pa="fmsheetx"></div><div class="ck-sheet px-fs">'+pxX('fmsheetx')+body+'</div>';
 }
-function fmAdd(c,s){
-  var shown=fmShown(c,s),TABS=['Recommended'].concat(Object.keys(PX_CAT));if(TABS.indexOf(s.tabF)<0)s.tabF='Recommended';
-  var tabs=TABS.map(function(t){return '<button type="button" class="ck-tab'+(s.tabF===t?' on':'')+'" data-pa="fmtab" data-t="'+esc(t)+'">'+esc(t)+'</button>'}).join('');
-  var L=pxList(c),rows=s.tabF==='Recommended'?FM_PARTS.Recommended.map(function(n){return L.filter(function(q){return q.n===n})[0]}).filter(Boolean):L.filter(function(q){return q.area===s.tabF});
-  var list=rows.map(function(r){var x=shown.filter(function(y){return y.f.n===r.n})[0],miss=r.q<=0,sub=[];
-    if(r.sn)sub.push('S/N '+pxSn(r.n));
-    if(PART_QTY[r.n]){var rc=mqRecs(c,r.n),un=[];rc.forEach(function(z){z.f.r.forEach(function(q){if(un.indexOf(q)<0)un.push(q)})});if(rc.length)sub.push(un.join(' • ')+' · '+mqUsed(c,r.n)+' of '+PART_QTY[r.n]);x=rc[0]}
-    else if(miss)sub.push('Missing');else if(x)sub.push(x.f.r.join(' • '));
-    return pRow({n:r.n,img:miss?'T':'S',sub:sub.join(' · '),act:'fmpart',cta:(x||miss)?'fault':'empty'})}).join('');
-  return sbHTML()+'<div class="ck-stk"><div class="ck-hd"><button type="button" class="ck-back" data-pa="back" aria-label="Back">‹</button><p>'+BIKE.no+' <span>/ Add faults</span></p><span class="ck-more" aria-hidden="true">⌕</span></div><div class="ck-tabs">'+tabs+'</div></div><div class="ck-body">'+list+'</div>'+fmSheet(c,s)+
-   '<div class="pm-stick"><button type="button" class="pm-cta" data-pa="fmconfirm">Done</button></div>';
+/* ───────── Add faults: bottom sheets per the Figma reference (view / mark / edit a fault) ───────── */
+var AF_ICON_EDIT="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 19H6.425L16.2 9.225L14.775 7.8L5 17.575V19ZM4 21C3.71667 21 3.47917 20.9042 3.2875 20.7125C3.09583 20.5208 3 20.2833 3 20V17.575C3 17.3083 3.05 17.0542 3.15 16.8125C3.25 16.5708 3.39167 16.3583 3.575 16.175L16.2 3.575C16.4 3.39167 16.6208 3.25 16.8625 3.15C17.1042 3.05 17.3583 3 17.625 3C17.8917 3 18.15 3.05 18.4 3.15C18.65 3.25 18.8667 3.4 19.05 3.6L20.425 5C20.625 5.18333 20.7708 5.4 20.8625 5.65C20.9542 5.9 21 6.15 21 6.4C21 6.66667 20.9542 6.92083 20.8625 7.1625C20.7708 7.40417 20.625 7.625 20.425 7.825L7.825 20.425C7.64167 20.6083 7.42917 20.75 7.1875 20.85C6.94583 20.95 6.69167 21 6.425 21H4ZM15.475 8.525L14.775 7.8L16.2 9.225L15.475 8.525Z\" fill=\"#222\"/></svg>";
+function afRecs(n){var out=[];P.cards.filter(isFm).forEach(function(k){fmS(k).faults.forEach(function(f){if(f.n===n)out.push({k:k.id,f:f})})});return out}
+function fmAddSheet(c,s){
+  var a=s.af;if(!a)return '';var n=a.n,x=pxS(c),p=pxP(x,n),rc=afRecs(n)[0],marked=!!(rc||p.miss),cur=rc?rc.f.r:(p.miss?['Missing']:[]);
+  var sub=cur.join(' • ');
+  var head='<div class="af-hd'+(a.mode==='view'?' v':'')+'"><span class="fr-th'+(marked&&cur[0]==='Missing'?' d':'')+'">'+frThumb(n)+(marked?(cur[0]==='Missing'?FR_BADGE.miss:FR_BADGE.fault):'')+'</span><span class="fr-tx"><b>'+pnm(n,null)+'</b>'+(a.mode==='view'&&sub?'<small>'+esc(sub)+'</small>':a.mode==='edit'&&sub?'<small>'+esc(sub)+'</small>':'')+'</span></div>';
+  var chips=function(){return '<div class="af-chips">'+FM_REASONS.concat(['Missing']).map(function(r){return '<button type="button" class="af-chip'+(a.r.indexOf(r)>=0?' on':'')+'" data-pa="afr" data-v="'+esc(r)+'">'+esc(r)+'</button>'}).join('')+'</div>'};
+  var body,bar='';
+  if(a.mode==='view'){
+    body='<div class="af-list"><div class="af-row"><button type="button" class="af-act" data-pa="afedit">'+AF_ICON_EDIT+'Edit fault</button></div><div class="af-row"><button type="button" class="af-act neg" data-pa="afdel">'+FR_ICON_DEL+'Delete fault</button></div></div>';
+  }else{
+    var chg=a.mode==='mark'?a.r.length>0:(a.r.length>0&&a.r.join('|')!==cur.join('|'));
+    body='<div class="af-body"><p class="af-lbl">'+(a.mode==='mark'?'Pick faults':'Edit fault')+'</p>'+chips()+'</div>';
+    bar='<div class="af-bar"><button type="button" class="ca" data-pa="afcancel">Cancel</button><button type="button" class="go" data-pa="afgo"'+(chg?'':' disabled')+'>'+(a.mode==='mark'?'Mark fault':'Update fault')+'</button></div>';
+  }
+  return '<div class="px-bd" data-pa="afx"></div><div class="ck-sheet px-fs af"><span class="px-grab" aria-hidden="true"></span>'+head+body+bar+'</div>';
 }
+/* ───────── Resolve mechanical faults: the faulty part's bottom sheet ───────── */
+var RS_CHK_ON="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M10.6 13.4L8.45 11.25C8.26667 11.0667 8.03333 10.975 7.75 10.975C7.46667 10.975 7.23333 11.0667 7.05 11.25C6.86667 11.4333 6.775 11.6667 6.775 11.95C6.775 12.2333 6.86667 12.4667 7.05 12.65L9.9 15.5C10.1 15.7 10.3333 15.8 10.6 15.8C10.8667 15.8 11.1 15.7 11.3 15.5L16.95 9.85C17.1333 9.66667 17.225 9.43333 17.225 9.15C17.225 8.86667 17.1333 8.63333 16.95 8.45C16.7667 8.26667 16.5333 8.175 16.25 8.175C15.9667 8.175 15.7333 8.26667 15.55 8.45L10.6 13.4ZM5 21C4.45 21 3.97917 20.8042 3.5875 20.4125C3.19583 20.0208 3 19.55 3 19V5C3 4.45 3.19583 3.97917 3.5875 3.5875C3.97917 3.19583 4.45 3 5 3H19C19.55 3 20.0208 3.19583 20.4125 3.5875C20.8042 3.97917 21 4.45 21 5V19C21 19.55 20.8042 20.0208 20.4125 20.4125C20.0208 20.8042 19.55 21 19 21H5Z\" fill=\"#003CE6\"/></svg>",RS_CHK_OFF="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 21q-.825 0-1.413-.587Q3 19.825 3 19V5q0-.825.587-1.413Q4.175 3 5 3h14q.825 0 1.413.587Q21 4.175 21 5v14q0 .825-.587 1.413Q19.825 21 19 21Zm0-2h14V5H5Z\" fill=\"#919191\"/></svg>",RS_FIX="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M10.6 13.8L8.45 11.65C8.26667 11.4667 8.03333 11.375 7.75 11.375C7.46667 11.375 7.23333 11.4667 7.05 11.65C6.86667 11.8333 6.775 12.0667 6.775 12.35C6.775 12.6333 6.86667 12.8667 7.05 13.05L9.9 15.9C10.1 16.1 10.3333 16.2 10.6 16.2C10.8667 16.2 11.1 16.1 11.3 15.9L16.95 10.25C17.1333 10.0667 17.225 9.83333 17.225 9.55C17.225 9.26667 17.1333 9.03333 16.95 8.85C16.7667 8.66667 16.5333 8.575 16.25 8.575C15.9667 8.575 15.7333 8.66667 15.55 8.85L10.6 13.8ZM12 22C10.6167 22 9.31667 21.7375 8.1 21.2125C6.88333 20.6875 5.825 19.975 4.925 19.075C4.025 18.175 3.3125 17.1167 2.7875 15.9C2.2625 14.6833 2 13.3833 2 12C2 10.6167 2.2625 9.31667 2.7875 8.1C3.3125 6.88333 4.025 5.825 4.925 4.925C5.825 4.025 6.88333 3.3125 8.1 2.7875C9.31667 2.2625 10.6167 2 12 2C13.3833 2 14.6833 2.2625 15.9 2.7875C17.1167 3.3125 18.175 4.025 19.075 4.925C19.975 5.825 20.6875 6.88333 21.2125 8.1C21.7375 9.31667 22 10.6167 22 12C22 13.3833 21.7375 14.6833 21.2125 15.9C20.6875 17.1167 19.975 18.175 19.075 19.075C18.175 19.975 17.1167 20.6875 15.9 21.2125C14.6833 21.7375 13.3833 22 12 22ZM12 20C14.2333 20 16.125 19.225 17.675 17.675C19.225 16.125 20 14.2333 20 12C20 9.76667 19.225 7.875 17.675 6.325C16.125 4.775 14.2333 4 12 4C9.76667 4 7.875 4.775 6.325 6.325C4.775 7.875 4 9.76667 4 12C4 14.2333 4.775 16.125 6.325 17.675C7.875 19.225 9.76667 20 12 20Z\" fill=\"#222\"/></svg>",RS_FALSE="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 13.4L14.9 16.3C15.0833 16.4833 15.3167 16.575 15.6 16.575C15.8833 16.575 16.1167 16.4833 16.3 16.3C16.4833 16.1167 16.575 15.8833 16.575 15.6C16.575 15.3167 16.4833 15.0833 16.3 14.9L13.4 12L16.3 9.1C16.4833 8.91667 16.575 8.68333 16.575 8.4C16.575 8.11667 16.4833 7.88333 16.3 7.7C16.1167 7.51667 15.8833 7.425 15.6 7.425C15.3167 7.425 15.0833 7.51667 14.9 7.7L12 10.6L9.1 7.7C8.91667 7.51667 8.68333 7.425 8.4 7.425C8.11667 7.425 7.88333 7.51667 7.7 7.7C7.51667 7.88333 7.425 8.11667 7.425 8.4C7.425 8.68333 7.51667 8.91667 7.7 9.1L10.6 12L7.7 14.9C7.51667 15.0833 7.425 15.3167 7.425 15.6C7.425 15.8833 7.51667 16.1167 7.7 16.3C7.88333 16.4833 8.11667 16.575 8.4 16.575C8.68333 16.575 8.91667 16.4833 9.1 16.3L12 13.4ZM12 22C10.6167 22 9.31667 21.7375 8.1 21.2125C6.88333 20.6875 5.825 19.975 4.925 19.075C4.025 18.175 3.3125 17.1167 2.7875 15.9C2.2625 14.6833 2 13.3833 2 12C2 10.6167 2.2625 9.31667 2.7875 8.1C3.3125 6.88333 4.025 5.825 4.925 4.925C5.825 4.025 6.88333 3.3125 8.1 2.7875C9.31667 2.2625 10.6167 2 12 2C13.3833 2 14.6833 2.2625 15.9 2.7875C17.1167 3.3125 18.175 4.025 19.075 4.925C19.975 5.825 20.6875 6.88333 21.2125 8.1C21.7375 9.31667 22 10.6167 22 12C22 13.3833 21.7375 14.6833 21.2125 15.9C20.6875 17.1167 19.975 18.175 19.075 19.075C18.175 19.975 17.1167 20.6875 15.9 21.2125C14.6833 21.7375 13.3833 22 12 22ZM12 20C14.2333 20 16.125 19.225 17.675 17.675C19.225 16.125 20 14.2333 20 12C20 9.76667 19.225 7.875 17.675 6.325C16.125 4.775 14.2333 4 12 4C9.76667 4 7.875 4.775 6.325 6.325C4.775 7.875 4 9.76667 4 12C4 14.2333 4.775 16.125 6.325 17.675C7.875 19.225 9.76667 20 12 20Z\" fill=\"#222\"/></svg>",RS_TICK="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M10 13.6L15.9 7.7C16.0833 7.51667 16.3167 7.425 16.6 7.425C16.8833 7.425 17.1167 7.51667 17.3 7.7C17.4833 7.88333 17.575 8.11667 17.575 8.4C17.575 8.68333 17.4833 8.91667 17.3 9.1L10.7 15.7C10.5 15.9 10.2667 16 10 16C9.73333 16 9.5 15.9 9.3 15.7L6.7 13.1C6.51667 12.9167 6.425 12.6833 6.425 12.4C6.425 12.1167 6.51667 11.8833 6.7 11.7C6.88333 11.5167 7.11667 11.425 7.4 11.425C7.68333 11.425 7.91667 11.5167 8.1 11.7L10 13.6Z\" fill=\"#003CE6\"/></svg>";
+/* ───────── Resolve faults: a new part that is fitted on the bike ───────── */
+function frNewBikeSheet(c,s,f,i){
+  var nb=(s.nb&&s.nb.i===i)?s.nb:null,mark=!!(nb&&nb.mode==='mark');
+  var head='<div class="af-hd'+(mark?'':' v')+'"><span class="fr-th">'+frThumb(f.n)+FR_BADGE['new']+'</span><span class="fr-tx"><b>'+pnm(f.n,null)+'</b>'+(mark?'':'<small>New part</small>')+'</span></div>';
+  if(mark){
+    var chips='<div class="af-chips">'+FM_REASONS.map(function(r){return '<button type="button" class="af-chip'+(nb.r.indexOf(r)>=0?' on':'')+'" data-pa="nbr" data-v="'+esc(r)+'">'+esc(r)+'</button>'}).join('')+'</div>';/* no Missing: the part is on the bike */
+    return '<div class="px-bd" data-pa="fmsheetx"></div><div class="ck-sheet px-fs af"><span class="px-grab" aria-hidden="true"></span>'+head+'<div class="af-body"><p class="af-lbl">Mark fault</p>'+chips+'</div><div class="af-bar"><button type="button" class="ca" data-pa="nbcancel">Cancel</button><button type="button" class="go" data-pa="nbgo" data-i="'+i+'"'+(nb.r.length?'':' disabled')+'>Remove part</button></div></div>';
+  }
+  var exp=!!s.nbExp;
+  return '<div class="px-bd" data-pa="fmsheetx"></div><div class="ck-sheet px-fs af" data-sk="nb" data-col="228" data-exp="'+(exp?1:0)+'"'+(exp?'':' style="max-height:228px"')+'><span class="px-grab" aria-hidden="true"></span>'+head+
+    '<div class="af-bar one"><button type="button" class="go" data-pa="rsrm" data-i="'+i+'">'+FR_ICON_OUT+'Remove part</button></div>'+
+    '<div class="af-list"><div class="af-row"><button type="button" class="af-act w" data-pa="nbmark" data-i="'+i+'">'+NP_ERR+'Mark fault and remove part</button></div></div></div>';
+}
+function frResSheet(c,s,f,i){
+  var x=pxS(c),p=pxP(x,f.n),st=frState(f,Object.assign({},p,{off:false,inst:false})),miss=st.k==='gap'||f.r.indexOf('Missing')>=0;
+  var act=f.res&&f.res.act,k=(miss&&act!=='False issue')?'miss':st.k,rs=f.r.filter(function(r){return r!=='Missing'}).join(' • ')||'Missing';
+  var onBike=!p.off&&!p.sOld&&!p.inst,needSpare=(k==='fault'||k==='miss')&&!p.inst,canRemove=k==='fault'&&onBike,spareCta=needSpare&&(k==='miss'||!onBike);/* a missing or already removed part has nothing to remove: Request spare is the main action */
+  var checked=!!(p.req||p.recv>0||p.inst||(canRemove&&frWant(c,p))),lock=p.recv>0||p.inst||(canRemove&&fmS(c).reqRemove!==false);/* on a part still on the bike the tick is on by default: the spare is requested when the part is removed */
+  var head='<div class="af-hd v"><span class="fr-th'+(k==='miss'?' d':'')+'">'+frThumb(f.n)+(k==='miss'?FR_BADGE.miss:k==='fixed'?FR_BADGE.fixed:k==='false'?FR_BADGE['false']:FR_BADGE.fault)+'</span><span class="fr-tx"><b>'+pnm(f.n,null)+'</b><small>'+esc(k==='fixed'||k==='false'?st.sub:rs)+'</small></span></div>';
+  var inSc=!!(P.cur&&pcard()&&pcard().module==='partex'&&p.sOld);/* opened from the Sparecard: the main action is scanning the tag to return it */
+  var req=(needSpare&&!spareCta&&!inSc)?'<button type="button" class="rs-req" data-pa="rsreq" data-i="'+i+'"'+(lock?' disabled':'')+' aria-pressed="'+checked+'">'+(checked?RS_CHK_ON:RS_CHK_OFF)+'Request spare</button>':'';
+  var rm=canRemove?'<div class="af-bar one"><button type="button" class="go" data-pa="rsrm" data-i="'+i+'">'+FR_ICON_OUT+'Remove part</button></div>':'';
+  if(inSc){var scRec=(p.rl||[]).filter(function(r){return r.k==='old'&&!r.acc&&!r.cancel})[0];rm='<div class="af-bar one"><button type="button" class="go" data-pa="rsscan" data-i="'+i+'">'+(pxKon('tag')?(scRec?'Re-scan tag':'Scan tag to initiate return'):(scRec?'Return requested':'Return part'))+'</button></div>'}
+  else if(spareCta&&!(p.recv>0))rm='<div class="af-bar one"><button type="button" class="go" data-pa="rsspare" data-i="'+i+'"'+(p.req?' disabled':'')+'>'+(p.req?'Spare requested':'Request spare')+'</button></div>';
+  var tk=function(on){return on?'<span class="af-tk">'+RS_TICK+'</span>':''};
+  var rows=[
+    '<div class="af-row"><button type="button" class="af-act" data-pa="rsedit" data-i="'+i+'">'+AF_ICON_EDIT+'Edit fault</button></div>'
+  ];
+  var noFix=miss;/* a missing part cannot be fixed, only found to be a false issue */
+  rows.push('<div class="af-row"><button type="button" class="af-act w" data-pa="rsfix" data-i="'+i+'"'+(noFix?' disabled':'')+'>'+RS_FIX+'Mark as fixed<span class="af-tk">'+(act==='Repaired'?RS_CHK_ON:RS_CHK_OFF)+'</span></button></div>');
+  if(pxRK('falsei'))rows.push('<div class="af-row"><button type="button" class="af-act w" data-pa="rsfalse" data-i="'+i+'">'+RS_FALSE+'Mark as false issue<span class="af-tk">'+(act==='False issue'?RS_CHK_ON:RS_CHK_OFF)+'</span></button></div>');
+  rows.push('<div class="af-row"><button type="button" class="af-act neg" data-pa="rsdel" data-i="'+i+'">'+FR_ICON_DEL+'Delete fault</button></div>');
+  var colH=(req||rm)?140+(req?56:0)+(rm?88:0):0,exp=!!s.resExp;/* with a request / remove section the sheet first opens only that far: pull it up for the rest */
+  return '<div class="px-bd" data-pa="fmsheetx"></div><div class="ck-sheet px-fs af"'+(colH?' data-col="'+colH+'" data-exp="'+(exp?1:0)+'"'+(exp?'':' style="max-height:'+colH+'px"'):'')+'><span class="px-grab" aria-hidden="true"></span>'+head+req+rm+'<div class="af-list">'+rows.join('')+'</div></div>';
+}
+/* the module default for Request spare: on, unless the person turns it off in the three-dot sheet */
+function frWant(c,p){return fmS(c).reqRemove!==false?true:p.wantSpare===true}/* the three-dot option governs both the swipe and the sheet */
+function frMenuSheet(c,s){
+  var on=s.reqRemove!==false;
+  return '<div class="px-bd" data-pa="rsmx"></div><div class="ck-sheet px-fs af"><span class="px-grab" aria-hidden="true"></span><div class="af-list mn" style="padding-top:36px">'+
+    '<div class="af-row"><button type="button" class="mn-r" data-pa="rsmreq" aria-pressed="'+on+'">'+(on?RS_CHK_ON:RS_CHK_OFF)+'<span><b>Auto-request spare</b><small>On removing parts</small></span></button></div>'+
+    '<div class="af-row"><button type="button" class="mn-r neg" data-pa="rsmdel">'+FR_ICON_DEL+'<span><b>Delete task</b></span></button></div></div></div>';
+}
+function fmAddList(c,s){
+  var shown=fmShown(c,s),q=(s.afq||'').trim().toLowerCase(),L=pxList(c);
+  var src=q?L.filter(function(r){return pbase(r.n).toLowerCase().indexOf(q)>=0}):L.filter(function(r){return r.area===s.tabF});
+  var B='•';
+  var html=src.map(function(r){var x=shown.filter(function(y){return y.f.n===r.n})[0],miss=r.q<=0,sub=[];
+    if(r.sn)sub.push('S/N '+pxSn(r.n));
+    if(PART_QTY[r.n]){var rc=mqRecs(c,r.n),un=[];rc.forEach(function(z){z.f.r.forEach(function(w){if(un.indexOf(w)<0)un.push(w)})});if(rc.length)sub.push(un.join(' '+B+' ')+' · '+mqUsed(c,r.n)+' of '+PART_QTY[r.n]);x=rc[0]}
+    else if(miss)sub.push('Missing');else if(x)sub.push(x.f.r.join(' '+B+' '));
+    var bd=miss?FR_BADGE.miss:x?FR_BADGE.fault:'',st=sub.join(' · ');
+    return '<div class="fr-w"><div class="fr'+(st?'':' c')+'" data-pa="fmpart" data-n="'+esc(r.n)+'"><span class="fr-th'+(miss?' d':'')+'">'+frThumb(r.n)+bd+'</span><span class="fr-tx"><b>'+pnm(r.n,null)+'</b>'+(st?'<small>'+esc(st)+'</small>':'')+'</span></div></div>'}).join('');
+  return html||'<div class="sc-empty"><b>'+(q?'No parts match':'Nothing here')+'</b><small>'+(q?'Try a different name.':'There are no parts in this section.')+'</small></div>';
+}
+function fmAdd(c,s){
+  var TABS=Object.keys(PX_CAT);if(TABS.indexOf(s.tabF)<0)s.tabF=TABS[0];
+  var rail=TABS.map(function(t){return '<button type="button" class="rq-tab'+(s.tabF===t&&!(s.afq||'').trim()?' on':'')+'" data-pa="fmtab" data-t="'+esc(t)+'"><span class="rq-sq"></span><span class="rq-lb">'+esc(t)+'</span></button>'}).join('');
+  return sbHTML()+'<div class="ck-stk"><div class="fr-hd"><button type="button" class="fr-bk" data-pa="back" aria-label="Back">'+FR_ICON_BACK+'</button><span class="fr-t"><b>Add faults</b><small>'+BIKE.no+'</small></span><button type="button" class="sc-inv" data-pa="fmsearch" aria-label="Search parts">'+RQ_SEARCH+'</button>'+moreDots()+'</div></div>'+
+    (s.afOpen?'<div class="rq-sr"><input id="afsearch" type="search" placeholder="Search parts" value="'+esc(s.afq||'')+'" autocomplete="off"></div>':'')+
+    '<div class="rq-wrap"><nav class="rq-rail" aria-label="Sections">'+rail+'</nav><div class="rq-list" id="aflist">'+fmAddList(c,s)+'</div></div>'+frToastHTML(!!s.sheet)+fmSheet(c,s)+
+    '<div class="pm-stick"><button type="button" class="pm-cta" data-pa="fmconfirm">Done</button></div>';
+}
+document.addEventListener('input',function(e){var t=e.target;if(!t||t.id!=='afsearch'||!P)return;var c=pcard();if(!c)return;var st=fmS(c);st.afq=t.value;var L=document.getElementById('aflist');if(L)L.innerHTML=fmAddList(c,st);[].forEach.call(document.querySelectorAll('.rq-tab'),function(b){b.classList.toggle('on',!st.afq.trim()&&b.dataset.t===st.tabF)})});
 /* ───────── Resolve mechanical faults: list per the Figma reference ───────── */
 var FR_BADGE={"fault": "<svg class=\"fr-bd\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"12\" fill=\"#C13515\"/><path d=\"M11.2875 13.7125C11.0958 13.5208 11 13.2833 11 13V6C11 5.71667 11.0958 5.47917 11.2875 5.2875C11.4792 5.09583 11.7167 5 12 5C12.2833 5 12.5208 5.09583 12.7125 5.2875C12.9042 5.47917 13 5.71667 13 6V13C13 13.2833 12.9042 13.5208 12.7125 13.7125C12.5208 13.9042 12.2833 14 12 14C11.7167 14 11.4792 13.9042 11.2875 13.7125ZM11.2875 18.7125C11.0958 18.5208 11 18.2833 11 18C11 17.7167 11.0958 17.4792 11.2875 17.2875C11.4792 17.0958 11.7167 17 12 17C12.2833 17 12.5208 17.0958 12.7125 17.2875C12.9042 17.4792 13 17.7167 13 18C13 18.2833 12.9042 18.5208 12.7125 18.7125C12.5208 18.9042 12.2833 19 12 19C11.7167 19 11.4792 18.9042 11.2875 18.7125Z\" fill=\"#fff\"/></svg>", "miss": "<svg class=\"fr-bd\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"12\" fill=\"#919191\"/><path d=\"M13.9999 8.39564C13.9999 7.86786 13.8124 7.43383 13.4374 7.09355C13.0624 6.75328 12.5832 6.58314 11.9999 6.58314C11.6388 6.58314 11.3089 6.663 11.0103 6.82272C10.7117 6.98244 10.4513 7.20814 10.229 7.4998C10.0346 7.76369 9.78808 7.93036 9.48947 7.9998C9.19085 8.06925 8.9096 8.02758 8.64572 7.8748C8.36794 7.70814 8.20127 7.49633 8.14572 7.23939C8.09016 6.98244 8.1596 6.71508 8.35405 6.4373C8.75683 5.82619 9.28113 5.3505 9.92697 5.01022C10.5728 4.66994 11.2638 4.4998 11.9999 4.4998C13.236 4.4998 14.2429 4.85744 15.0207 5.57272C15.7985 6.288 16.1874 7.20814 16.1874 8.33314C16.1874 8.91647 16.0589 9.44772 15.802 9.92689C15.545 10.4061 15.0832 10.9581 14.4165 11.5831C13.9721 11.9859 13.6735 12.3123 13.5207 12.5623C13.3679 12.8123 13.2638 13.097 13.2082 13.4165C13.1527 13.7359 13.0172 13.9963 12.802 14.1977C12.5867 14.3991 12.3332 14.4998 12.0415 14.4998C11.736 14.4998 11.479 14.3991 11.2707 14.1977C11.0624 13.9963 10.9582 13.7567 10.9582 13.479C10.9582 12.9651 11.0797 12.4824 11.3228 12.0311C11.5659 11.5797 11.9513 11.1317 12.479 10.6873C13.0763 10.1595 13.479 9.74286 13.6874 9.4373C13.8957 9.13175 13.9999 8.78453 13.9999 8.39564ZM11.9999 18.9998C11.5832 18.9998 11.229 18.854 10.9374 18.5623C10.6457 18.2706 10.4999 17.9165 10.4999 17.4998C10.4999 17.0831 10.6457 16.729 10.9374 16.4373C11.229 16.1456 11.5832 15.9998 11.9999 15.9998C12.4165 15.9998 12.7707 16.1456 13.0624 16.4373C13.354 16.729 13.4999 17.0831 13.4999 17.4998C13.4999 17.9165 13.354 18.2706 13.0624 18.5623C12.7707 18.854 12.4165 18.9998 11.9999 18.9998Z\" fill=\"#fff\"/></svg>", "new": "<svg class=\"fr-bd\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"12\" fill=\"#F0AF48\"/><path d=\"M11.2875 20.7125C11.0958 20.5208 11 20.2833 11 20V14.4L7.05 18.375C6.85 18.575 6.6125 18.675 6.3375 18.675C6.0625 18.675 5.825 18.575 5.625 18.375C5.425 18.175 5.325 17.9375 5.325 17.6625C5.325 17.3875 5.425 17.15 5.625 16.95L9.6 13H4C3.71667 13 3.47917 12.9042 3.2875 12.7125C3.09583 12.5208 3 12.2833 3 12C3 11.7167 3.09583 11.4792 3.2875 11.2875C3.47917 11.0958 3.71667 11 4 11H9.6L5.625 7.05C5.425 6.85 5.325 6.6125 5.325 6.3375C5.325 6.0625 5.425 5.825 5.625 5.625C5.825 5.425 6.0625 5.325 6.3375 5.325C6.6125 5.325 6.85 5.425 7.05 5.625L11 9.6V4C11 3.71667 11.0958 3.47917 11.2875 3.2875C11.4792 3.09583 11.7167 3 12 3C12.2833 3 12.5208 3.09583 12.7125 3.2875C12.9042 3.47917 13 3.71667 13 4V9.6L16.95 5.625C17.15 5.425 17.3875 5.325 17.6625 5.325C17.9375 5.325 18.175 5.425 18.375 5.625C18.575 5.825 18.675 6.0625 18.675 6.3375C18.675 6.6125 18.575 6.85 18.375 7.05L14.4 11H20C20.2833 11 20.5208 11.0958 20.7125 11.2875C20.9042 11.4792 21 11.7167 21 12C21 12.2833 20.9042 12.5208 20.7125 12.7125C20.5208 12.9042 20.2833 13 20 13H14.4L18.375 16.95C18.575 17.15 18.675 17.3875 18.675 17.6625C18.675 17.9375 18.575 18.175 18.375 18.375C18.175 18.575 17.9375 18.675 17.6625 18.675C17.3875 18.675 17.15 18.575 16.95 18.375L13 14.4V20C13 20.2833 12.9042 20.5208 12.7125 20.7125C12.5208 20.9042 12.2833 21 12 21C11.7167 21 11.4792 20.9042 11.2875 20.7125Z\" fill=\"#fff\"/></svg>", "fixed": "<svg class=\"fr-bd\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"12\" fill=\"#003CE6\"/><path d=\"M10 13.6L15.9 7.7C16.0833 7.51667 16.3167 7.425 16.6 7.425C16.8833 7.425 17.1167 7.51667 17.3 7.7C17.4833 7.88333 17.575 8.11667 17.575 8.4C17.575 8.68333 17.4833 8.91667 17.3 9.1L10.7 15.7C10.5 15.9 10.2667 16 10 16C9.73333 16 9.5 15.9 9.3 15.7L6.7 13.1C6.51667 12.9167 6.425 12.6833 6.425 12.4C6.425 12.1167 6.51667 11.8833 6.7 11.7C6.88333 11.5167 7.11667 11.425 7.4 11.425C7.68333 11.425 7.91667 11.5167 8.1 11.7L10 13.6Z\" fill=\"#fff\"/></svg>", "false": "<svg class=\"fr-bd\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"12\" fill=\"#003CE6\"/><path d=\"M12 13.4L9.1 16.3C8.91667 16.4833 8.68333 16.575 8.4 16.575C8.11667 16.575 7.88333 16.4833 7.7 16.3C7.51667 16.1167 7.425 15.8833 7.425 15.6C7.425 15.3167 7.51667 15.0833 7.7 14.9L10.6 12L7.7 9.125C7.51667 8.94167 7.425 8.70833 7.425 8.425C7.425 8.14167 7.51667 7.90833 7.7 7.725C7.88333 7.54167 8.11667 7.45 8.4 7.45C8.68333 7.45 8.91667 7.54167 9.1 7.725L12 10.625L14.875 7.725C15.0583 7.54167 15.2917 7.45 15.575 7.45C15.8583 7.45 16.0917 7.54167 16.275 7.725C16.475 7.925 16.575 8.1625 16.575 8.4375C16.575 8.7125 16.475 8.94167 16.275 9.125L13.375 12L16.275 14.9C16.4583 15.0833 16.55 15.3167 16.55 15.6C16.55 15.8833 16.4583 16.1167 16.275 16.3C16.075 16.5 15.8375 16.6 15.5625 16.6C15.2875 16.6 15.0583 16.5 14.875 16.3L12 13.4Z\" fill=\"#fff\"/></svg>"};
 var FR_ICON_OUT="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 21C4.45 21 3.97917 20.8042 3.5875 20.4125C3.19583 20.0208 3 19.55 3 19V5C3 4.45 3.19583 3.97917 3.5875 3.5875C3.97917 3.19583 4.45 3 5 3H11C11.2833 3 11.5208 3.09583 11.7125 3.2875C11.9042 3.47917 12 3.71667 12 4C12 4.28333 11.9042 4.52083 11.7125 4.7125C11.5208 4.90417 11.2833 5 11 5H5V19H19V13C19 12.7167 19.0958 12.4792 19.2875 12.2875C19.4792 12.0958 19.7167 12 20 12C20.2833 12 20.5208 12.0958 20.7125 12.2875C20.9042 12.4792 21 12.7167 21 13V19C21 19.55 20.8042 20.0208 20.4125 20.4125C20.0208 20.8042 19.55 21 19 21H5ZM19 6.4L10.4 15C10.2167 15.1833 9.98333 15.275 9.7 15.275C9.41667 15.275 9.18333 15.1833 9 15C8.81667 14.8167 8.725 14.5833 8.725 14.3C8.725 14.0167 8.81667 13.7833 9 13.6L17.6 5H15C14.7167 5 14.4792 4.90417 14.2875 4.7125C14.0958 4.52083 14 4.28333 14 4C14 3.71667 14.0958 3.47917 14.2875 3.2875C14.4792 3.09583 14.7167 3 15 3H20C20.2833 3 20.5208 3.09583 20.7125 3.2875C20.9042 3.47917 21 3.71667 21 4V9C21 9.28333 20.9042 9.52083 20.7125 9.7125C20.5208 9.90417 20.2833 10 20 10C19.7167 10 19.4792 9.90417 19.2875 9.7125C19.0958 9.52083 19 9.28333 19 9V6.4Z\" fill=\"#fff\"/></svg>",FR_ICON_OUT_D="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 21C4.45 21 3.97917 20.8042 3.5875 20.4125C3.19583 20.0208 3 19.55 3 19V5C3 4.45 3.19583 3.97917 3.5875 3.5875C3.97917 3.19583 4.45 3 5 3H11C11.2833 3 11.5208 3.09583 11.7125 3.2875C11.9042 3.47917 12 3.71667 12 4C12 4.28333 11.9042 4.52083 11.7125 4.7125C11.5208 4.90417 11.2833 5 11 5H5V19H19V13C19 12.7167 19.0958 12.4792 19.2875 12.2875C19.4792 12.0958 19.7167 12 20 12C20.2833 12 20.5208 12.0958 20.7125 12.2875C20.9042 12.4792 21 12.7167 21 13V19C21 19.55 20.8042 20.0208 20.4125 20.4125C20.0208 20.8042 19.55 21 19 21H5ZM19 6.4L10.4 15C10.2167 15.1833 9.98333 15.275 9.7 15.275C9.41667 15.275 9.18333 15.1833 9 15C8.81667 14.8167 8.725 14.5833 8.725 14.3C8.725 14.0167 8.81667 13.7833 9 13.6L17.6 5H15C14.7167 5 14.4792 4.90417 14.2875 4.7125C14.0958 4.52083 14 4.28333 14 4C14 3.71667 14.0958 3.47917 14.2875 3.2875C14.4792 3.09583 14.7167 3 15 3H20C20.2833 3 20.5208 3.09583 20.7125 3.2875C20.9042 3.47917 21 3.71667 21 4V9C21 9.28333 20.9042 9.52083 20.7125 9.7125C20.5208 9.90417 20.2833 10 20 10C19.7167 10 19.4792 9.90417 19.2875 9.7125C19.0958 9.52083 19 9.28333 19 9V6.4Z\" fill=\"#222\"/></svg>",FR_ICON_DEL="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6C4.71667 6 4.47917 5.90417 4.2875 5.7125C4.09583 5.52083 4 5.28333 4 5C4 4.71667 4.09583 4.47917 4.2875 4.2875C4.47917 4.09583 4.71667 4 5 4H9C9 3.71667 9.09583 3.47917 9.2875 3.2875C9.47917 3.09583 9.71667 3 10 3H14C14.2833 3 14.5208 3.09583 14.7125 3.2875C14.9042 3.47917 15 3.71667 15 4H19C19.2833 4 19.5208 4.09583 19.7125 4.2875C19.9042 4.47917 20 4.71667 20 5C20 5.28333 19.9042 5.52083 19.7125 5.7125C19.5208 5.90417 19.2833 6 19 6V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM17 6H7V19H17V6ZM10.7125 16.7125C10.9042 16.5208 11 16.2833 11 16V9C11 8.71667 10.9042 8.47917 10.7125 8.2875C10.5208 8.09583 10.2833 8 10 8C9.71667 8 9.47917 8.09583 9.2875 8.2875C9.09583 8.47917 9 8.71667 9 9V16C9 16.2833 9.09583 16.5208 9.2875 16.7125C9.47917 16.9042 9.71667 17 10 17C10.2833 17 10.5208 16.9042 10.7125 16.7125ZM14.7125 16.7125C14.9042 16.5208 15 16.2833 15 16V9C15 8.71667 14.9042 8.47917 14.7125 8.2875C14.5208 8.09583 14.2833 8 14 8C13.7167 8 13.4792 8.09583 13.2875 8.2875C13.0958 8.47917 13 8.71667 13 9V16C13 16.2833 13.0958 16.5208 13.2875 16.7125C13.4792 16.9042 13.7167 17 14 17C14.2833 17 14.5208 16.9042 14.7125 16.7125Z\" fill=\"#C13515\"/></svg>",FR_ICON_BACK="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M10.4538 12L14.5269 16.0731C14.6654 16.2115 14.7362 16.3856 14.7394 16.5952C14.7426 16.8048 14.6718 16.982 14.5269 17.1269C14.382 17.2718 14.2064 17.3442 14 17.3442C13.7936 17.3442 13.618 17.2718 13.4731 17.1269L8.97888 12.6327C8.88528 12.5391 8.81925 12.4404 8.7808 12.3365C8.74233 12.2327 8.7231 12.1205 8.7231 12C8.7231 11.8795 8.74233 11.7673 8.7808 11.6635C8.81925 11.5596 8.88528 11.4609 8.97888 11.3673L13.4731 6.8731C13.6116 6.73463 13.7856 6.6638 13.9952 6.6606C14.2048 6.65738 14.382 6.72822 14.5269 6.8731C14.6718 7.01797 14.7442 7.1936 14.7442 7.4C14.7442 7.6064 14.6718 7.78203 14.5269 7.9269L10.4538 12Z\" fill=\"#222\"/></svg>";
 /* what a row shows: faulty on bike, missing / removed (empty slot), new part fitted, fixed, false issue */
+/* what can be fitted into an empty slot: a received new part, and an old part in the sparecard that was marked fixed (or a false issue) */
+function frCands(f,p){var out=[];if(p.recv>0&&!p.inst)out.push('new');if(p.sOld){var a=f.res&&f.res.act;if(a==='Repaired'||a==='False issue')out.push('old')}return out}
+function frCandBadge(f,k){return k==='new'?FR_BADGE['new']:(f.res&&f.res.act==='False issue')?FR_BADGE['false']:FR_BADGE.fixed}
 function frState(f,p){
   var rs=f.r.filter(function(r){return r!=='Missing'}).join(' • '),act=f.res&&f.res.act;
   if(p.inst&&!p.off)return {k:'new',sub:'New part'};
+  if(act==='False issue'&&!p.off&&!p.inst&&(f.r.indexOf('Missing')>=0||p.miss))return {k:'false',sub:'False issues: Missing'};
   var empty=p.off?'Removed':((f.r.indexOf('Missing')>=0||p.miss)?'Missing':'');
-  if(empty){var x=empty+(p.recv>0?' • Spare received':p.req?' • Spare requested':'');return {k:'gap',sub:x,empty:empty}}
+  if(empty){var cd0=frCands(f,p),x=empty+(cd0.length>1?' • 2 parts available':cd0[0]==='new'?' • Spare received':cd0[0]==='old'?' • Fixed part available':p.req?' • Spare requested':'');return {k:'gap',sub:x,empty:empty}}
   if(act==='Repaired')return {k:'fixed',sub:'Fixed: '+rs};
   if(act==='False issue')return {k:'false',sub:'False issues: '+rs};
   if(act==='Unresolved')return {k:'fault',sub:'Unresolved: '+rs};
@@ -2775,37 +2990,46 @@ function frRow(c,x,i,f){
   var p=pxP(pxS(c),f.n),st=frState(f,p),gap=st.k==='gap';
   var bd=gap?FR_BADGE.miss:st.k==='new'?FR_BADGE['new']:st.k==='fixed'?FR_BADGE.fixed:st.k==='false'?FR_BADGE['false']:FR_BADGE.fault;
   var sw=gap?'l':(st.k==='fault'||st.k==='new')?'r':'';
-  var spare=gap&&p.recv>0;
+  var cd=gap?frCands(f,p):[],spare=cd.length>0;
   var an=P.frAnim&&P.frAnim.i===i?(' '+P.frAnim.k):'';
   var la=!gap?'':spare?'':p.req?'<span class="fr-la dis" aria-disabled="true">Requested</span>':'<button type="button" class="fr-la" data-pa="pxreq" data-n="'+esc(f.n)+'">Request<br>spare</button>';
   return '<div class="fr-w'+(gap?' g':'')+'" data-i="'+i+'">'+(sw==='r'?'<span class="fr-ra">'+FR_ICON_OUT_D+'<span>Remove<br>part</span></span>':'')+
    '<button type="button" class="fr'+(gap?' g':'')+an+'" data-pa="fmrow" data-i="'+i+'"'+(sw?' data-sw="'+(gap&&!spare?'b':sw)+'"':'')+(spare?' data-spare="1"':'')+'>'+
-   '<span class="fr-th'+(gap?' d':'')+'">'+frThumb(f.n)+bd+'</span><span class="fr-tx"><b>'+pnm(f.n,PART_QTY[pbase(f.n)]?(f.q||1):null)+'</b><small>'+esc(st.sub)+'</small></span></button>'+(sw==='l'&&!spare?la:'')+(spare?'<div class="fr-in" aria-hidden="true"><span class="fr-th">'+frThumb(f.n)+FR_BADGE['new']+'</span><span class="fr-tx"><b>'+pnm(f.n,PART_QTY[pbase(f.n)]?(f.q||1):null)+'</b><small>New part</small></span></div>':'')+'</div>';
+   '<span class="fr-th'+(gap?' d':'')+'">'+frThumb(f.n)+bd+'</span><span class="fr-tx"><b>'+pnm(f.n,PART_QTY[pbase(f.n)]?(f.q||1):null)+'</b><small>'+esc(st.sub)+'</small></span></button>'+(sw==='l'&&!spare?la:'')+(spare?'<div class="fr-in" aria-hidden="true"><span class="fr-th">'+frThumb(f.n)+cd.map(function(k,j){var b=frCandBadge(f,k);return j?b.replace('class="fr-bd"','class="fr-bd" style="right:'+(4+j*28)+'px"'):b}).join('')+'</span><span class="fr-tx"><b>'+pnm(f.n,PART_QTY[pbase(f.n)]?(f.q||1):null)+'</b><small>'+cd.map(function(k){return k==='new'?'New part':'Fixed part'}).join(' • ')+'</small></span></div>':'')+'</div>';
 }
 /* ───────── Sparecard: what the mechanic holds ───────── */
-var SC_SCAN=["<svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5zM22 7h-2V4h-3V2h5v5zm0 15v-5h-2v3h-3v2h5zM2 22h5v-2H4v-3H2v5zM2 2v5h2V4h3V2H2z\" fill=\"#fff\"/></svg>","<svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5zM22 7h-2V4h-3V2h5v5zm0 15v-5h-2v3h-3v2h5zM2 22h5v-2H4v-3H2v5zM2 2v5h2V4h3V2H2z\" fill=\"#003ce6\"/></svg>"];var FR_ICON_INV="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2zm-5 12H9v-2h6v2zm5-7H4V4h16v3z\" fill=\"#222\"/></svg>",FR_ICON_INV_W="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2zm-5 12H9v-2h6v2zm5-7H4V4h16v3z\" fill=\"#fff\"/></svg>",FR_ICON_RET="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z\" fill=\"#222\"/></svg>",SC_CLOCK="<svg class=\"fr-bd\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"12\" fill=\"#F0AF48\"/><circle cx=\"12\" cy=\"12\" r=\"6.2\" fill=\"none\" stroke=\"#fff\" stroke-width=\"1.8\"/><path d=\"M12 8.6V12l2.4 1.4\" fill=\"none\" stroke=\"#fff\" stroke-width=\"1.8\" stroke-linecap=\"round\"/></svg>";
+var FR_ICON_CLOSE="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M6.4 19L5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6L6.4 19z\" fill=\"#222\"/></svg>";var SC_SCAN=["<svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5zM22 7h-2V4h-3V2h5v5zm0 15v-5h-2v3h-3v2h5zM2 22h5v-2H4v-3H2v5zM2 2v5h2V4h3V2H2z\" fill=\"#fff\"/></svg>","<svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5zM22 7h-2V4h-3V2h5v5zm0 15v-5h-2v3h-3v2h5zM2 22h5v-2H4v-3H2v5zM2 2v5h2V4h3V2H2z\" fill=\"#003ce6\"/></svg>"];var FR_ICON_INV="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M3.2875 22.7125C3.09583 22.5208 3 22.2833 3 22V2C3 1.71667 3.09583 1.47917 3.2875 1.2875C3.47917 1.09583 3.71667 1 4 1C4.28333 1 4.52083 1.09583 4.7125 1.2875C4.90417 1.47917 5 1.71667 5 2V3H19V2C19 1.71667 19.0958 1.47917 19.2875 1.2875C19.4792 1.09583 19.7167 1 20 1C20.2833 1 20.5208 1.09583 20.7125 1.2875C20.9042 1.47917 21 1.71667 21 2V22C21 22.2833 20.9042 22.5208 20.7125 22.7125C20.5208 22.9042 20.2833 23 20 23C19.7167 23 19.4792 22.9042 19.2875 22.7125C19.0958 22.5208 19 22.2833 19 22V21H5V22C5 22.2833 4.90417 22.5208 4.7125 22.7125C4.52083 22.9042 4.28333 23 4 23C3.71667 23 3.47917 22.9042 3.2875 22.7125ZM5 11H7V8C7 7.71667 7.09583 7.47917 7.2875 7.2875C7.47917 7.09583 7.71667 7 8 7H12C12.2833 7 12.5208 7.09583 12.7125 7.2875C12.9042 7.47917 13 7.71667 13 8V11H19V5H5V11ZM5 19H11V16C11 15.7167 11.0958 15.4792 11.2875 15.2875C11.4792 15.0958 11.7167 15 12 15H16C16.2833 15 16.5208 15.0958 16.7125 15.2875C16.9042 15.4792 17 15.7167 17 16V19H19V13H5V19ZM9 11H11V9H9V11ZM13 19H15V17H13V19Z\" fill=\"#222\"/></svg>",FR_ICON_INV_W="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M3.2875 22.7125C3.09583 22.5208 3 22.2833 3 22V2C3 1.71667 3.09583 1.47917 3.2875 1.2875C3.47917 1.09583 3.71667 1 4 1C4.28333 1 4.52083 1.09583 4.7125 1.2875C4.90417 1.47917 5 1.71667 5 2V3H19V2C19 1.71667 19.0958 1.47917 19.2875 1.2875C19.4792 1.09583 19.7167 1 20 1C20.2833 1 20.5208 1.09583 20.7125 1.2875C20.9042 1.47917 21 1.71667 21 2V22C21 22.2833 20.9042 22.5208 20.7125 22.7125C20.5208 22.9042 20.2833 23 20 23C19.7167 23 19.4792 22.9042 19.2875 22.7125C19.0958 22.5208 19 22.2833 19 22V21H5V22C5 22.2833 4.90417 22.5208 4.7125 22.7125C4.52083 22.9042 4.28333 23 4 23C3.71667 23 3.47917 22.9042 3.2875 22.7125ZM5 11H7V8C7 7.71667 7.09583 7.47917 7.2875 7.2875C7.47917 7.09583 7.71667 7 8 7H12C12.2833 7 12.5208 7.09583 12.7125 7.2875C12.9042 7.47917 13 7.71667 13 8V11H19V5H5V11ZM5 19H11V16C11 15.7167 11.0958 15.4792 11.2875 15.2875C11.4792 15.0958 11.7167 15 12 15H16C16.2833 15 16.5208 15.0958 16.7125 15.2875C16.9042 15.4792 17 15.7167 17 16V19H19V13H5V19ZM9 11H11V9H9V11ZM13 19H15V17H13V19Z\" fill=\"#fff\"/></svg>",FR_ICON_RET="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z\" fill=\"#222\"/></svg>",SC_CLOCK="<svg class=\"fr-bd\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"12\" fill=\"#F0AF48\"/><circle cx=\"12\" cy=\"12\" r=\"6.2\" fill=\"none\" stroke=\"#fff\" stroke-width=\"1.8\"/><path d=\"M12 8.6V12l2.4 1.4\" fill=\"none\" stroke=\"#fff\" stroke-width=\"1.8\" stroke-linecap=\"round\"/></svg>";
 function scS(c){var s=pst(c.id);return s.sc||(s.sc={v:'main',scan:null})}
 /* old parts taken off the bike, then new parts received and not fitted: one row each */
 function scParts(c){
   var x=pxS(c),old=[],nw=[];
   Object.keys(x.p).forEach(function(n){var p=x.p[n],f=fmFind(n);
-    if(p.sOld){var st=f?frState(f,Object.assign({},p,{off:false,inst:false})):{k:'fault',sub:'Faulty part'};
+    if(p.sOld){var st=f?frState(f,Object.assign({},p,{off:false,inst:false})):{k:'false',sub:'No fault'};
       if(st.k==='gap')st={k:'fault',sub:(f&&f.r.filter(function(r){return r!=='Missing'}).join(' • '))||'Faulty part'};
       var rec=(p.rl||[]).filter(function(r){return r.k==='old'&&!r.acc&&!r.cancel})[0];
-      if(rec)st={k:'init',sub:'Return request initiated'};
+      if(rec)st=Object.assign({},st,{ret:'Return initiated'});
       old.push({n:n,p:p,k:'old',st:st,q:null,rec:rec})}
-    if(p.recv>0&&!p.inst)nw.push({n:n,p:p,k:'new',st:{k:'new',sub:'New part'},q:p.recv>1?p.recv:null})});
+    if(p.fnew){var frec=(p.rl||[]).filter(function(r){return r.k==='fnew'&&!r.acc&&!r.cancel})[0],fres=p.fnew.res,fk=fres==='Repaired'?'fixed':fres?'false':'fault',frs=p.fnew.r.join(' \u2022 ');
+      var fst={k:fk,top:fk,sub:'New part: '+(fres?(fres==='Repaired'?'Fixed: ':'False issues: '):'')+frs,dual:true};if(frec)fst.ret='Return initiated';
+      old.push({n:n,p:p,k:'old',v:'fnew',st:fst,q:null,rec:frec})}
+    if(p.recv>0&&!p.inst){var nrec=(p.rl||[]).filter(function(r){return r.k==='new'&&!r.acc&&!r.cancel})[0];
+      nw.push({n:n,p:p,k:'new',st:nrec?{k:'new',sub:(nrec.bk==='fault'&&nrec.fr)?'New part: '+nrec.fr.join(' \u2022 '):'New part',ret:'Return initiated',dual:nrec.bk==='fault'}:{k:'new',sub:'New part'},q:p.recv>1?p.recv:null,rec:nrec})}});
   return old.concat(nw);
 }
+function scDualBadges(top){return FR_BADGE['new'].replace('class="fr-bd"','class="fr-bd" style="right:19px"')+(top==='fixed'?FR_BADGE.fixed:top==='false'?FR_BADGE['false']:FR_BADGE.fault)}/* new-part icon behind, fault icon on top */
 function scBadge(k){return k==='init'?SC_CLOCK:k==='new'?FR_BADGE['new']:k==='fixed'?FR_BADGE.fixed:k==='false'?FR_BADGE['false']:FR_BADGE.fault}
+var FR_ICON_INSTALL="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4.875 18.125C4.29167 17.5417 4 16.8333 4 16H3C2.71667 16 2.47917 15.9042 2.2875 15.7125C2.09583 15.5208 2 15.2833 2 15V13C2 11.9 2.39167 10.9583 3.175 10.175C3.95833 9.39167 4.9 9 6 9H8C8.55 9 9.02083 9.19583 9.4125 9.5875C9.80417 9.97917 10 10.45 10 11V14H13.5L17 9.65V7H15C14.7167 7 14.4792 6.90417 14.2875 6.7125C14.0958 6.52083 14 6.28333 14 6C14 5.71667 14.0958 5.47917 14.2875 5.2875C14.4792 5.09583 14.7167 5 15 5H17C17.55 5 18.0208 5.19583 18.4125 5.5875C18.8042 5.97917 19 6.45 19 7V9.65C19 9.88333 18.9625 10.1042 18.8875 10.3125C18.8125 10.5208 18.7083 10.7167 18.575 10.9L15.1 15.25C14.9167 15.4833 14.6833 15.6667 14.4 15.8C14.1167 15.9333 13.825 16 13.525 16H10C10 16.8333 9.70833 17.5417 9.125 18.125C8.54167 18.7083 7.83333 19 7 19C6.16667 19 5.45833 18.7083 4.875 18.125ZM7.7125 16.7125C7.90417 16.5208 8 16.2833 8 16H6C6 16.2833 6.09583 16.5208 6.2875 16.7125C6.47917 16.9042 6.71667 17 7 17C7.28333 17 7.52083 16.9042 7.7125 16.7125ZM9 8H6C5.71667 8 5.47917 7.90417 5.2875 7.7125C5.09583 7.52083 5 7.28333 5 7C5 6.71667 5.09583 6.47917 5.2875 6.2875C5.47917 6.09583 5.71667 6 6 6H9C9.28333 6 9.52083 6.09583 9.7125 6.2875C9.90417 6.47917 10 6.71667 10 7C10 7.28333 9.90417 7.52083 9.7125 7.7125C9.52083 7.90417 9.28333 8 9 8ZM16.875 18.125C16.2917 17.5417 16 16.8333 16 16C16 15.1667 16.2917 14.4583 16.875 13.875C17.4583 13.2917 18.1667 13 19 13C19.8333 13 20.5417 13.2917 21.125 13.875C21.7083 14.4583 22 15.1667 22 16C22 16.8333 21.7083 17.5417 21.125 18.125C20.5417 18.7083 19.8333 19 19 19C18.1667 19 17.4583 18.7083 16.875 18.125ZM19.7125 16.7125C19.9042 16.5208 20 16.2833 20 16C20 15.7167 19.9042 15.4792 19.7125 15.2875C19.5208 15.0958 19.2833 15 19 15C18.7167 15 18.4792 15.0958 18.2875 15.2875C18.0958 15.4792 18 15.7167 18 16C18 16.2833 18.0958 16.5208 18.2875 16.7125C18.4792 16.9042 18.7167 17 19 17C19.2833 17 19.5208 16.9042 19.7125 16.7125ZM4 14H8V11H6C5.45 11 4.97917 11.1958 4.5875 11.5875C4.19583 11.9792 4 12.45 4 13V14Z\" fill=\"#222\"/></svg>";var NP_MOPED_W="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4.875 18.125C4.29167 17.5417 4 16.8333 4 16H3C2.71667 16 2.47917 15.9042 2.2875 15.7125C2.09583 15.5208 2 15.2833 2 15V13C2 11.9 2.39167 10.9583 3.175 10.175C3.95833 9.39167 4.9 9 6 9H8C8.55 9 9.02083 9.19583 9.4125 9.5875C9.80417 9.97917 10 10.45 10 11V14H13.5L17 9.65V7H15C14.7167 7 14.4792 6.90417 14.2875 6.7125C14.0958 6.52083 14 6.28333 14 6C14 5.71667 14.0958 5.47917 14.2875 5.2875C14.4792 5.09583 14.7167 5 15 5H17C17.55 5 18.0208 5.19583 18.4125 5.5875C18.8042 5.97917 19 6.45 19 7V9.65C19 9.88333 18.9625 10.1042 18.8875 10.3125C18.8125 10.5208 18.7083 10.7167 18.575 10.9L15.1 15.25C14.9167 15.4833 14.6833 15.6667 14.4 15.8C14.1167 15.9333 13.825 16 13.525 16H10C10 16.8333 9.70833 17.5417 9.125 18.125C8.54167 18.7083 7.83333 19 7 19C6.16667 19 5.45833 18.7083 4.875 18.125ZM7.7125 16.7125C7.90417 16.5208 8 16.2833 8 16H6C6 16.2833 6.09583 16.5208 6.2875 16.7125C6.47917 16.9042 6.71667 17 7 17C7.28333 17 7.52083 16.9042 7.7125 16.7125ZM9 8H6C5.71667 8 5.47917 7.90417 5.2875 7.7125C5.09583 7.52083 5 7.28333 5 7C5 6.71667 5.09583 6.47917 5.2875 6.2875C5.47917 6.09583 5.71667 6 6 6H9C9.28333 6 9.52083 6.09583 9.7125 6.2875C9.90417 6.47917 10 6.71667 10 7C10 7.28333 9.90417 7.52083 9.7125 7.7125C9.52083 7.90417 9.28333 8 9 8ZM16.875 18.125C16.2917 17.5417 16 16.8333 16 16C16 15.1667 16.2917 14.4583 16.875 13.875C17.4583 13.2917 18.1667 13 19 13C19.8333 13 20.5417 13.2917 21.125 13.875C21.7083 14.4583 22 15.1667 22 16C22 16.8333 21.7083 17.5417 21.125 18.125C20.5417 18.7083 19.8333 19 19 19C18.1667 19 17.4583 18.7083 16.875 18.125ZM19.7125 16.7125C19.9042 16.5208 20 16.2833 20 16C20 15.7167 19.9042 15.4792 19.7125 15.2875C19.5208 15.0958 19.2833 15 19 15C18.7167 15 18.4792 15.0958 18.2875 15.2875C18.0958 15.4792 18 15.7167 18 16C18 16.2833 18.0958 16.5208 18.2875 16.7125C18.4792 16.9042 18.7167 17 19 17C19.2833 17 19.5208 16.9042 19.7125 16.7125ZM4 14H8V11H6C5.45 11 4.97917 11.1958 4.5875 11.5875C4.19583 11.9792 4 12.45 4 13V14Z\" fill=\"#fff\"/></svg>",NP_ERR="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12.7125 16.7123C12.9042 16.5207 13 16.2832 13 15.9998C13 15.7165 12.9042 15.479 12.7125 15.2873C12.5208 15.0957 12.2833 14.9998 12 14.9998C11.7167 14.9998 11.4792 15.0957 11.2875 15.2873C11.0958 15.479 11 15.7165 11 15.9998C11 16.2832 11.0958 16.5207 11.2875 16.7123C11.4792 16.904 11.7167 16.9998 12 16.9998C12.2833 16.9998 12.5208 16.904 12.7125 16.7123ZM12.7125 12.7123C12.9042 12.5207 13 12.2832 13 11.9998V7.99983C13 7.7165 12.9042 7.479 12.7125 7.28733C12.5208 7.09567 12.2833 6.99983 12 6.99983C11.7167 6.99983 11.4792 7.09567 11.2875 7.28733C11.0958 7.479 11 7.7165 11 7.99983V11.9998C11 12.2832 11.0958 12.5207 11.2875 12.7123C11.4792 12.904 11.7167 12.9998 12 12.9998C12.2833 12.9998 12.5208 12.904 12.7125 12.7123ZM12 21.9998C10.6167 21.9998 9.31667 21.7373 8.1 21.2123C6.88333 20.6873 5.825 19.9748 4.925 19.0748C4.025 18.1748 3.3125 17.1165 2.7875 15.8998C2.2625 14.6832 2 13.3832 2 11.9998C2 10.6165 2.2625 9.3165 2.7875 8.09983C3.3125 6.88317 4.025 5.82483 4.925 4.92483C5.825 4.02483 6.88333 3.31233 8.1 2.78733C9.31667 2.26233 10.6167 1.99983 12 1.99983C13.3833 1.99983 14.6833 2.26233 15.9 2.78733C17.1167 3.31233 18.175 4.02483 19.075 4.92483C19.975 5.82483 20.6875 6.88317 21.2125 8.09983C21.7375 9.3165 22 10.6165 22 11.9998C22 13.3832 21.7375 14.6832 21.2125 15.8998C20.6875 17.1165 19.975 18.1748 19.075 19.0748C18.175 19.9748 17.1167 20.6873 15.9 21.2123C14.6833 21.7373 13.3833 21.9998 12 21.9998ZM12 19.9998C14.2333 19.9998 16.125 19.2248 17.675 17.6748C19.225 16.1248 20 14.2332 20 11.9998C20 9.7665 19.225 7.87483 17.675 6.32483C16.125 4.77483 14.2333 3.99983 12 3.99983C9.76667 3.99983 7.875 4.77483 6.325 6.32483C4.775 7.87483 4 9.7665 4 11.9998C4 14.2332 4.775 16.1248 6.325 17.6748C7.875 19.2248 9.76667 19.9998 12 19.9998Z\" fill=\"#222\"/></svg>";
+/* a new part can go on the bike only when its slot is empty: the part was taken off, or it is missing */
+function scSlotEmpty(n){var p=pxP(pxS(),n),f=fmFind(n);return !p.inst&&!!(p.off||p.miss||(f&&f.r.indexOf('Missing')>=0))}
 function scRow(it,i){
-  if(it.k==='old'){var tag=pxKon('tag');
-    return '<div class="fr-w" data-i="'+i+'"><div class="fr"><span class="fr-th">'+frThumb(it.n)+scBadge(it.st.k)+'</span><span class="fr-tx"><b>'+pnm(it.n,it.q)+'</b><small>'+esc(it.st.sub)+'</small></span><span class="sc-act"><button type="button" class="sc-btn ic'+(it.rec?' alt':'')+'" data-pa="scret" data-i="'+i+'">'+(tag?SC_SCAN[it.rec?1:0]+(it.rec?'Re-scan':'Scan tag'):(it.rec?'Return requested':'Return'))+'</button></span></div></div>'}
-  return '<div class="fr-w" data-i="'+i+'" data-fa="scret"><span class="fr-ra">'+FR_ICON_INV+'<span>Return to<br>Inventory</span></span><div class="fr" data-sw="r"><span class="fr-th">'+frThumb(it.n)+scBadge(it.st.k)+'</span><span class="fr-tx"><b>'+pnm(it.n,it.q)+'</b><small>'+esc(it.st.sub)+'</small></span></div></div>';
+  var faulty=it.k==='old'&&it.st.k==='fault',free=scSlotEmpty(it.n);
+  /* left: a faulty part cannot go on the bike (a dialog says so); anything else only if its slot is empty */
+  var lAct=faulty?'scnoinst':'scinst',lDis=((!faulty&&!free)||(it.k==='new'&&it.rec))?' data-disl="1"':'';
+  return '<div class="fr-w" data-i="'+i+'" data-fa="scret" data-fl="'+lAct+'"><span class="fr-ra">'+FR_ICON_INV+'<span>Return to<br>Inventory</span></span><span class="fr-rb'+(((!faulty&&!free)||(it.k==='new'&&it.rec))?' dis':'')+'"><span>Install<br>on bike</span>'+FR_ICON_INSTALL+'</span><div class="fr" data-sw="rl"'+lDis+' data-pa="scopen" data-i="'+i+'"><span class="fr-th">'+frThumb(it.n)+(it.st.dual?scDualBadges(it.st.top||'fault'):scBadge(it.st.k))+'</span><span class="fr-tx'+(it.st.ret?' rt':'')+'"><span><b>'+pnm(it.n,it.q)+'</b><small>'+esc(it.st.sub)+'</small></span>'+(it.st.ret?'<small class="fr-ret">'+esc(it.st.ret)+'</small>':'')+'</span></div></div>';
 }
-function scHead(c,title,sub,inv){
-  var n=0;Object.keys(pxS(c).p).forEach(function(k){(pxS(c).p[k].rl||[]).forEach(function(r){if(!(r.k==='old'&&!r.acc)&&!r.cancel)n++})});
-  return sbHTML()+'<div class="ck-stk"><div class="fr-hd"><button type="button" class="fr-bk" data-pa="scback" aria-label="Back">'+FR_ICON_BACK+'</button><span class="fr-t"><b>'+esc(title)+'</b><small>'+esc(sub)+'</small></span>'+(inv?'<button type="button" class="sc-inv" data-pa="scinv" aria-label="Inventory">'+FR_ICON_INV+(n?'<i>'+n+'</i>':'')+'</button>':'')+moreDots()+'</div></div>';
+function scHead(c,title,sub,inv,extra,closeBtn){
+  var n=0;Object.keys(pxS(c).p).forEach(function(k){(pxS(c).p[k].rl||[]).forEach(function(r){if(r.acc&&!r.cancel)n++})});
+  return sbHTML()+'<div class="ck-stk"><div class="fr-hd"><button type="button" class="fr-bk" data-pa="scback" aria-label="'+(closeBtn?'Close':'Back')+'">'+(closeBtn?FR_ICON_CLOSE:FR_ICON_BACK)+'</button><span class="fr-t"><b>'+esc(title)+'</b><small>'+esc(sub)+'</small></span>'+(inv?'<button type="button" class="sc-inv" data-pa="scinv" aria-label="Inventory">'+FR_ICON_INV+(n?'<i>'+n+'</i>':'')+'</button>':'')+(extra||'')+moreDots()+'</div></div>';
 }
 function frToastHTML(open){return P.frT&&!open?'<div class="fr-tw"><div class="fr-ts" role="status">'+(P.frT.ic==='del'?FR_ICON_DEL:P.frT.ic==='inv'?FR_ICON_INV_W:P.frT.ic==='ok'?'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13.6L15.9 7.7C16.0833 7.51667 16.3167 7.425 16.6 7.425C16.8833 7.425 17.1167 7.51667 17.3 7.7C17.4833 7.88333 17.575 8.11667 17.575 8.4C17.575 8.68333 17.4833 8.91667 17.3 9.1L10.7 15.7C10.5 15.9 10.2667 16 10 16C9.73333 16 9.5 15.9 9.3 15.7L6.7 13.1C6.51667 12.9167 6.425 12.6833 6.425 12.4C6.425 12.1167 6.51667 11.8833 6.7 11.7C6.88333 11.5167 7.11667 11.425 7.4 11.425C7.68333 11.425 7.91667 11.5167 8.1 11.7L10 13.6Z" fill="#fff"/></svg>':FR_ICON_OUT)+'<span>'+esc(P.frT.msg)+'</span>'+(P.frT.nu?'':'<button type="button" data-pa="'+(P.frT.ua||'frundo')+'">Undo</button>')+'</div></div>':''}
 function scScan(c,s){
@@ -2813,11 +3037,11 @@ function scScan(c,s){
   return '<div class="sc-scan"><button type="button" class="sc-sx" data-pa="scscanx" aria-label="Close">✕</button><b>'+(ret?'Scan the tag':'Scan the new part')+'</b><small>'+(ret?'Scan the yellow tag on the faulty part to start its return':'Scan the part to receive it into your sparecard')+'</small><div class="sc-vf"><i></i><i></i><i></i><i></i></div><p class="sc-err">'+(a.bad?'This tag does not match '+esc(pbase(a.n))+'. Try again.':'')+'</p><button type="button" class="pm-cta" data-pa="scscan" data-v="ok">Simulate a valid scan</button><button type="button" class="sc-alt" data-pa="scscan" data-v="bad">Simulate a wrong tag</button></div>';
 }
 function scInvPage(c,s){
-  var x=pxS(c),L=[];Object.keys(x.p).forEach(function(n){(x.p[n].rl||[]).forEach(function(r){if(r.k==='old'&&!r.acc)return;L.push({n:n,r:r})})});
+  var x=pxS(c),L=[];Object.keys(x.p).forEach(function(n){(x.p[n].rl||[]).forEach(function(r){if(!r.acc||r.cancel)return;L.push({n:n,r:r})})});
   L.sort(function(a,b){return b.r.t-a.r.t});
   var rows=L.map(function(o){var r=o.r,done=!!r.acc;
-    return '<div class="fr-w"><div class="fr"><span class="fr-th">'+frThumb(o.n)+(done?FR_BADGE.fixed:SC_CLOCK)+'</span><span class="fr-tx"><b>'+pnm(o.n,r.q>1?r.q:null)+'</b><small>'+(r.k==='old'?'Faulty part':'New part')+' • '+(done?'Returned':'Return initiated')+'</small><small>'+(done?r.accAt:r.at)+'</small></span></div></div>'}).join('');
-  return scHead(c,'Inventory',BIKE.no,false)+'<div class="fr-body"><div class="fr-list">'+(rows||'<div class="sc-empty"><b>No returns yet</b><small>Parts you return from the sparecard are listed here until IA receives them.</small></div>')+'</div></div>';
+    return '<div class="fr-w"><div class="fr"><span class="fr-th">'+frThumb(o.n)+(((r.k==='new'&&r.bk==='fault')||r.k==='fnew')?scDualBadges():scBadge(r.bk||(r.k==='new'?'new':'fault')))+'</span><span class="fr-tx rt"><span><b>'+pnm(o.n,r.q>1?r.q:null)+'</b><small>'+((((r.k==='new'&&r.bk==='fault')||r.k==='fnew')&&r.fr&&r.fr.length)?'New part: '+r.fr.join(' \u2022 '):r.bk==='fixed'?'Fixed part':r.bk==='false'?'False issue':(r.bk==='fault'||r.k==='old')?'Faulty part':'New part')+'</small></span><small class="fr-ret">Returned at '+esc(r.accAt||'')+'</small></span></div></div>'}).join('');
+  return scHead(c,'Inventory',BIKE.no,false,'',true)+'<div class="fr-body"><div class="fr-list">'+(rows||'<div class="sc-empty"><b>No returns yet</b><small>Parts you return from the sparecard are listed here until IA receives them.</small></div>')+'</div></div>';
 }
 /* parts that need a new part and have not received one: fault marked, nothing received yet */
 function scReqItems(c){
@@ -2827,41 +3051,118 @@ function scReqItems(c){
   Object.keys(x.p).forEach(function(n){var p=x.p[n];if(!seen[n]&&p.req&&!(p.recv>0))out.push({n:n,f:null,p:p})});
   return out;
 }
+var RQ_CART_B="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M11 6H9C8.71667 6 8.47917 5.90417 8.2875 5.7125C8.09583 5.52083 8 5.28333 8 5C8 4.71667 8.09583 4.47917 8.2875 4.2875C8.47917 4.09583 8.71667 4 9 4H11V2C11 1.71667 11.0958 1.47917 11.2875 1.2875C11.4792 1.09583 11.7167 1 12 1C12.2833 1 12.5208 1.09583 12.7125 1.2875C12.9042 1.47917 13 1.71667 13 2V4H15C15.2833 4 15.5208 4.09583 15.7125 4.2875C15.9042 4.47917 16 4.71667 16 5C16 5.28333 15.9042 5.52083 15.7125 5.7125C15.5208 5.90417 15.2833 6 15 6H13V8C13 8.28333 12.9042 8.52083 12.7125 8.7125C12.5208 8.90417 12.2833 9 12 9C11.7167 9 11.4792 8.90417 11.2875 8.7125C11.0958 8.52083 11 8.28333 11 8V6ZM5.5875 21.4125C5.19583 21.0208 5 20.55 5 20C5 19.45 5.19583 18.9792 5.5875 18.5875C5.97917 18.1958 6.45 18 7 18C7.55 18 8.02083 18.1958 8.4125 18.5875C8.80417 18.9792 9 19.45 9 20C9 20.55 8.80417 21.0208 8.4125 21.4125C8.02083 21.8042 7.55 22 7 22C6.45 22 5.97917 21.8042 5.5875 21.4125ZM15.5875 21.4125C15.1958 21.0208 15 20.55 15 20C15 19.45 15.1958 18.9792 15.5875 18.5875C15.9792 18.1958 16.45 18 17 18C17.55 18 18.0208 18.1958 18.4125 18.5875C18.8042 18.9792 19 19.45 19 20C19 20.55 18.8042 21.0208 18.4125 21.4125C18.0208 21.8042 17.55 22 17 22C16.45 22 15.9792 21.8042 15.5875 21.4125ZM3 4H2C1.71667 4 1.47917 3.90417 1.2875 3.7125C1.09583 3.52083 1 3.28333 1 3C1 2.71667 1.09583 2.47917 1.2875 2.2875C1.47917 2.09583 1.71667 2 2 2H3.65C3.83333 2 4.00833 2.05 4.175 2.15C4.34167 2.25 4.46667 2.39167 4.55 2.575L8.525 11H15.525L19.15 4.5C19.2333 4.33333 19.35 4.20833 19.5 4.125C19.65 4.04167 19.8167 4 20 4C20.3833 4 20.6708 4.1625 20.8625 4.4875C21.0542 4.8125 21.0583 5.14167 20.875 5.475L17.3 11.95C17.1167 12.2833 16.8708 12.5417 16.5625 12.725C16.2542 12.9083 15.9167 13 15.55 13H8.1L7 15H18C18.2833 15 18.5208 15.0958 18.7125 15.2875C18.9042 15.4792 19 15.7167 19 16C19 16.2833 18.9042 16.5208 18.7125 16.7125C18.5208 16.9042 18.2833 17 18 17H7C6.25 17 5.67917 16.675 5.2875 16.025C4.89583 15.375 4.88333 14.7167 5.25 14.05L6.6 11.6L3 4Z\" fill=\"#003CE6\"/></svg>",RQ_CART_G="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M11 6H9C8.71667 6 8.47917 5.90417 8.2875 5.7125C8.09583 5.52083 8 5.28333 8 5C8 4.71667 8.09583 4.47917 8.2875 4.2875C8.47917 4.09583 8.71667 4 9 4H11V2C11 1.71667 11.0958 1.47917 11.2875 1.2875C11.4792 1.09583 11.7167 1 12 1C12.2833 1 12.5208 1.09583 12.7125 1.2875C12.9042 1.47917 13 1.71667 13 2V4H15C15.2833 4 15.5208 4.09583 15.7125 4.2875C15.9042 4.47917 16 4.71667 16 5C16 5.28333 15.9042 5.52083 15.7125 5.7125C15.5208 5.90417 15.2833 6 15 6H13V8C13 8.28333 12.9042 8.52083 12.7125 8.7125C12.5208 8.90417 12.2833 9 12 9C11.7167 9 11.4792 8.90417 11.2875 8.7125C11.0958 8.52083 11 8.28333 11 8V6ZM5.5875 21.4125C5.19583 21.0208 5 20.55 5 20C5 19.45 5.19583 18.9792 5.5875 18.5875C5.97917 18.1958 6.45 18 7 18C7.55 18 8.02083 18.1958 8.4125 18.5875C8.80417 18.9792 9 19.45 9 20C9 20.55 8.80417 21.0208 8.4125 21.4125C8.02083 21.8042 7.55 22 7 22C6.45 22 5.97917 21.8042 5.5875 21.4125ZM15.5875 21.4125C15.1958 21.0208 15 20.55 15 20C15 19.45 15.1958 18.9792 15.5875 18.5875C15.9792 18.1958 16.45 18 17 18C17.55 18 18.0208 18.1958 18.4125 18.5875C18.8042 18.9792 19 19.45 19 20C19 20.55 18.8042 21.0208 18.4125 21.4125C18.0208 21.8042 17.55 22 17 22C16.45 22 15.9792 21.8042 15.5875 21.4125ZM3 4H2C1.71667 4 1.47917 3.90417 1.2875 3.7125C1.09583 3.52083 1 3.28333 1 3C1 2.71667 1.09583 2.47917 1.2875 2.2875C1.47917 2.09583 1.71667 2 2 2H3.65C3.83333 2 4.00833 2.05 4.175 2.15C4.34167 2.25 4.46667 2.39167 4.55 2.575L8.525 11H15.525L19.15 4.5C19.2333 4.33333 19.35 4.20833 19.5 4.125C19.65 4.04167 19.8167 4 20 4C20.3833 4 20.6708 4.1625 20.8625 4.4875C21.0542 4.8125 21.0583 5.14167 20.875 5.475L17.3 11.95C17.1167 12.2833 16.8708 12.5417 16.5625 12.725C16.2542 12.9083 15.9167 13 15.55 13H8.1L7 15H18C18.2833 15 18.5208 15.0958 18.7125 15.2875C18.9042 15.4792 19 15.7167 19 16C19 16.2833 18.9042 16.5208 18.7125 16.7125C18.5208 16.9042 18.2833 17 18 17H7C6.25 17 5.67917 16.675 5.2875 16.025C4.89583 15.375 4.88333 14.7167 5.25 14.05L6.6 11.6L3 4Z\" fill=\"#B0B0B0\"/></svg>",RQ_SEARCH="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M11 18C12.9333 18 14.5833 17.3192 15.95 15.9578C17.3167 14.5963 18 12.9437 18 11C18 9.06667 17.3167 7.41667 15.95 6.05C14.5833 4.68333 12.9333 4 11 4C9.05633 4 7.40375 4.68333 6.04225 6.05C4.68075 7.41667 4 9.06667 4 11C4 12.9437 4.68075 14.5963 6.04225 15.9578C7.40375 17.3192 9.05633 18 11 18ZM11 19.5C9.8205 19.5 8.71542 19.2769 7.68475 18.8307C6.65392 18.3846 5.75517 17.7782 4.9885 17.0115C4.22183 16.2448 3.61542 15.3461 3.16925 14.3152C2.72308 13.2846 2.5 12.1795 2.5 11C2.5 9.83083 2.72308 8.73083 3.16925 7.7C3.61542 6.66917 4.22183 5.76792 4.9885 4.99625C5.75517 4.22442 6.65392 3.61542 7.68475 3.16925C8.71542 2.72308 9.8205 2.5 11 2.5C12.1692 2.5 13.2692 2.72308 14.3 3.16925C15.3308 3.61542 16.2321 4.22442 17.0038 4.99625C17.7756 5.76792 18.3846 6.66917 18.8308 7.7C19.2769 8.73083 19.5 9.83083 19.5 11C19.5 12.041 19.3234 13.0237 18.9703 13.948C18.6169 14.8723 18.1288 15.7102 17.5058 16.4615L20.9828 19.9385C21.1314 20.0872 21.2016 20.2596 21.1933 20.4557C21.1849 20.6519 21.1064 20.8243 20.9578 20.973C20.8089 21.1115 20.6348 21.1807 20.4355 21.1807C20.2362 21.1807 20.0622 21.1115 19.9135 20.973L16.4463 17.521C15.6949 18.1442 14.8571 18.6298 13.9328 18.9778C13.0084 19.3259 12.0308 19.5 11 19.5Z\" fill=\"#222222\"/></svg>";
+/* an area's parts that have no fault marked, nothing requested and nothing received */
+function scAreaParts(c,area){
+  var x=pxS(c),mk={};P.cards.filter(isFm).forEach(function(k){fmS(k).faults.forEach(function(f){mk[pbase(f.n)]=1})});
+  return (PX_CAT[area]||'').split(',').filter(function(n){var p=x.p[n];return n&&!mk[n]&&!(p&&(p.req||p.recv>0||p.inst||p.sOld||(p.rl&&p.rl.length)))});
+}
+function scRqRow(n,kind,p){
+  var req=kind==='marked'&&p&&p.req;
+  var btn=kind==='marked'?(req?'<span class="rq-cart off" aria-label="Requested">'+RQ_CART_G+'</span>':'<button type="button" class="rq-cart" data-pa="pxreq" data-n="'+esc(n)+'" aria-label="Request new part">'+RQ_CART_B+'</button>'):'<span class="rq-cart" aria-hidden="true">'+RQ_CART_B+'</span>';
+  return '<div class="fr-w"><div class="fr"'+(kind==='free'?' data-pa="rqpick" data-n="'+esc(n)+'"':'')+'><span class="fr-th">'+frThumb(n)+FR_BADGE['new']+'</span><span class="fr-tx"><b>'+pnm(n,null)+'</b><small>'+(req?'New part • requested':'New part')+'</small></span>'+btn+'</div></div>';
+}
+function scRqList(c,s){
+  var q=(s.q||'').trim().toLowerCase(),hit=function(n){return !q||pbase(n).toLowerCase().indexOf(q)>=0},html='';
+  var marked=scReqItems(c).filter(function(o){return hit(o.n)});
+  if(q){
+    var seen={};marked.forEach(function(o){seen[o.n]=1;html+=scRqRow(o.n,'marked',o.p)});
+    Object.keys(PX_CAT).forEach(function(a){scAreaParts(c,a).forEach(function(n){if(hit(n)&&!seen[n]){seen[n]=1;html+=scRqRow(n,'free')}})});
+    return html||'<div class="sc-empty"><b>No parts match</b><small>Try a different name.</small></div>';
+  }
+  if(s.rt==='marked'||!PX_CAT[s.rt]){
+    marked.forEach(function(o){html+=scRqRow(o.n,'marked',o.p)});
+    return html||'<div class="sc-empty"><b>No marked parts</b><small>Parts with a fault marked that you have not received yet are listed here. Pick a part from another section to mark it faulty and request it.</small></div>';
+  }
+  scAreaParts(c,s.rt).forEach(function(n){html+=scRqRow(n,'free')});
+  return html||'<div class="sc-empty"><b>Nothing here</b><small>Every part in this section is already marked or requested.</small></div>';
+}
+function scRqSheet(c,s){
+  var pk=s.pick;if(!pk)return '';
+  var chips=FM_REASONS.concat(['Missing']).map(function(r){return '<button type="button" class="af-chip'+(pk.r.indexOf(r)>=0?' on':'')+'" data-pa="rqr" data-v="'+esc(r)+'">'+esc(r)+'</button>'}).join('');
+  return '<div class="px-bd" data-pa="rqx"></div><div class="ck-sheet px-fs af"><span class="px-grab" aria-hidden="true"></span><div class="af-hd"><span class="fr-th">'+frThumb(pk.n)+FR_BADGE['new']+'</span><span class="fr-tx"><b>'+pnm(pk.n,null)+'</b><small>New part</small></span></div><div class="af-body"><p class="af-lbl">Pick faults</p><div class="af-chips">'+chips+'</div></div><div class="af-bar"><button type="button" class="ca" data-pa="rqx">Cancel</button><button type="button" class="go" data-pa="rqgo"'+(pk.r.length?'':' disabled')+'>Mark faulty &amp; request</button></div></div>';
+}
 function scReqPage(c,s){
-  var L=scReqItems(c);
-  var rows=L.map(function(o){var p=o.p,f=o.f,ser=PX_SERIAL.indexOf(pbase(o.n))>=0,st=f?frState(f,Object.assign({},p,{off:false,inst:false})):{k:'fault',sub:'Requested part'};
-    var rs=f?(f.r.filter(function(r){return r!=='Missing'}).join(' • ')||'Missing'):'Requested part';
-    var stt=p.req?(p.acc?'Accepted by IA':'Waiting for IA'):'';
-    var act=!p.req?'<button type="button" class="sc-btn" data-pa="pxreq" data-n="'+esc(o.n)+'">Request</button>':'<span class="sc-pill">Requested</span>';
-    return '<div class="fr-w"><div class="fr"><span class="fr-th">'+frThumb(o.n)+FR_BADGE['new']+'</span><span class="fr-tx"><b>'+pnm(o.n,null)+'</b><small>New part</small></span><span class="sc-act">'+act+'</span></div></div>'}).join('');
-  return scHead(c,'Request parts',BIKE.no,false)+'<div class="fr-body"><div class="sc-sub">Parts with a fault marked that you have not received yet</div><div class="fr-list">'+(rows||'<div class="sc-empty"><b>Nothing to request</b><small>Every part with a fault already has a new part with you.</small></div>')+'</div></div>';
+  var tabs=[['marked','Marked']].concat(Object.keys(PX_CAT).map(function(a){return [a,a]}));
+  if(!s.rt)s.rt='marked';
+  var rail=tabs.map(function(t){return '<button type="button" class="rq-tab'+(s.rt===t[0]&&!(s.q||'').trim()?' on':'')+'" data-pa="rqtab" data-v="'+esc(t[0])+'"><span class="rq-sq"></span><span class="rq-lb">'+esc(t[1])+'</span></button>'}).join('');
+  return scHead(c,'Request part',BIKE.no,false,'<button type="button" class="sc-inv" data-pa="rqsearch" aria-label="Search parts">'+RQ_SEARCH+'</button>',true)+
+    (s.rsOpen?'<div class="rq-sr"><input id="rqsearch" type="search" placeholder="Search parts" value="'+esc(s.q||'')+'" autocomplete="off"></div>':'')+
+    '<div class="rq-wrap"><nav class="rq-rail" aria-label="Sections">'+rail+'</nav><div class="rq-list" id="rqlist">'+scRqList(c,s)+'</div></div>'+frToastHTML(!!s.pick)+scRqSheet(c,s);
+}
+document.addEventListener('input',function(e){var t=e.target;if(!t||t.id!=='rqsearch'||!P)return;var c=pcard();if(!c)return;var st=scS(c);st.q=t.value;var L=document.getElementById('rqlist');if(L)L.innerHTML=scRqList(c,st);[].forEach.call(document.querySelectorAll('.rq-tab'),function(b){b.classList.toggle('on',!st.q.trim()&&b.dataset.v===st.rt)})});
+function scFire(a,d){var b=document.createElement('button');b.type='button';b.hidden=true;b.dataset.pa=a;Object.keys(d||{}).forEach(function(k){b.dataset[k]=d[k]});document.body.appendChild(b);b.click();b.parentNode.removeChild(b)}
+function scDialogs(c){var fc=P.cards.filter(isRes)[0],x=pxS(c),h='';if(fc&&fmS(fc).sheet)h+=fmSheet(fc,fmS(fc));if(x.sheet)h+=pxSheet(c,x,pxList(c));return h}
+/* ───────── Sparecard: a new part's bottom sheet ───────── */
+function scFnewSheet(c,s){
+  var fn=s.fn;if(!fn)return '';var p=pxP(pxS(c),fn.n);if(!p.fnew){s.fn=null;return ''}
+  var rec=(p.rl||[]).filter(function(r){return r.k==='fnew'&&!r.acc&&!r.cancel})[0],res=p.fnew.res,k=res==='Repaired'?'fixed':res?'false':'fault';
+  var rs=p.fnew.r.join(' • '),sub='New part: '+(res?(res==='Repaired'?'Fixed: ':'False issues: '):'')+rs;
+  var edit=fn.mode==='edit';
+  var head='<div class="af-hd'+(edit?'':' v')+'"><span class="fr-th">'+frThumb(fn.n)+scDualBadges(k)+'</span><span class="fr-tx"><b>'+pnm(fn.n,null)+'</b><small>'+esc(sub)+'</small></span></div>';
+  if(edit){
+    var chips='<div class="af-chips">'+FM_REASONS.map(function(r){return '<button type="button" class="af-chip'+(fn.r.indexOf(r)>=0?' on':'')+'" data-pa="fnr" data-v="'+esc(r)+'">'+esc(r)+'</button>'}).join('')+'</div>';
+    var chg=fn.r.length>0&&fn.r.join('|')!==p.fnew.r.join('|');
+    return '<div class="px-bd" data-pa="fnx"></div><div class="ck-sheet px-fs af"><span class="px-grab" aria-hidden="true"></span>'+head+'<div class="af-body"><p class="af-lbl">Edit fault</p>'+chips+'</div><div class="af-bar"><button type="button" class="ca" data-pa="fncancel">Cancel</button><button type="button" class="go" data-pa="fngo"'+(chg?'':' disabled')+'>Update fault</button></div></div>';
+  }
+  var cta=(k==='fault')?'<div class="af-bar one"><button type="button" class="go" data-pa="fnscan">'+(pxKon('tag')?(rec?'Re-scan tag':'Scan tag to initiate return'):(rec?'Return requested':'Return part'))+'</button></div>':'';
+  var rows='<div class="af-row"><button type="button" class="af-act" data-pa="fnedit">'+AF_ICON_EDIT+'Edit fault</button></div>'+
+    '<div class="af-row"><button type="button" class="af-act w" data-pa="fnfix">'+RS_FIX+'Mark as fixed<span class="af-tk">'+(res==='Repaired'?RS_CHK_ON:RS_CHK_OFF)+'</span></button></div>'+
+    (pxRK('falsei')?'<div class="af-row"><button type="button" class="af-act w" data-pa="fnfalse">'+RS_FALSE+'Mark as false issue<span class="af-tk">'+(res==='False issue'?RS_CHK_ON:RS_CHK_OFF)+'</span></button></div>':'')+
+    '<div class="af-row"><button type="button" class="af-act neg" data-pa="fndel">'+FR_ICON_DEL+'Delete fault</button></div>';
+  var col=cta?228:0,exp=!!s.fnExp;
+  return '<div class="px-bd" data-pa="fnx"></div><div class="ck-sheet px-fs af"'+(col?' data-sk="fn" data-col="228" data-exp="'+(exp?1:0)+'"'+(exp?'':' style="max-height:228px"'):'')+'><span class="px-grab" aria-hidden="true"></span>'+head+cta+'<div class="af-list">'+rows+'</div></div>';
+}
+function scNewSheet(c,s){
+  var np=s.np;if(!np)return '';var n=np.n,free=scSlotEmpty(n),pend=!!(pxP(pxS(c),n).rl||[]).filter(function(r){return r.k==='new'&&!r.acc&&!r.cancel}).length;
+  var dual=!!(pxP(pxS(c),n).rl||[]).filter(function(r){return r.k==='new'&&!r.acc&&!r.cancel&&r.bk==='fault'}).length;
+  var head='<div class="af-hd'+(np.mode==='view'?' v':'')+'"><span class="fr-th">'+frThumb(n)+(dual?scDualBadges():FR_BADGE['new'])+'</span><span class="fr-tx"><b>'+pnm(n,null)+'</b>'+(np.mode==='view'?'<small>New part</small>':'')+'</span></div>';
+  if(np.mode==='mark'){
+    var chips='<div class="af-chips">'+FM_REASONS.map(function(r){return '<button type="button" class="af-chip'+(np.r.indexOf(r)>=0?' on':'')+'" data-pa="spr" data-v="'+esc(r)+'">'+esc(r)+'</button>'}).join('')+'</div>';/* no Missing here: the part is in your hands */
+    return '<div class="px-bd" data-pa="spx"></div><div class="ck-sheet px-fs af"><span class="px-grab" aria-hidden="true"></span>'+head+'<div class="af-body"><p class="af-lbl">Mark fault</p>'+chips+'</div><div class="af-bar"><button type="button" class="ca" data-pa="spcancel">Cancel</button><button type="button" class="go" data-pa="spgo"'+(np.r.length?'':' disabled')+'>Initiate return</button></div></div>';
+  }
+  var exp=!!s.npExp;
+  return '<div class="px-bd" data-pa="spx"></div><div class="ck-sheet px-fs af" data-sk="np" data-col="228" data-exp="'+(exp?1:0)+'"'+(exp?'':' style="max-height:228px"')+'><span class="px-grab" aria-hidden="true"></span>'+head+
+    '<div class="af-bar one"><button type="button" class="go" data-pa="spinst"'+((free&&!pend)?'':' disabled')+'>'+NP_MOPED_W+'Install on bike</button></div>'+
+    (pend?'<div class="af-list"><div class="af-row"><span class="af-act g16" style="color:#919191;cursor:default">'+FR_ICON_INV+'Return initiated</span></div></div></div>':'<div class="af-list"><div class="af-row"><button type="button" class="af-act g16" data-pa="spret">'+FR_ICON_INV+'Initiate return</button></div><div class="af-row"><button type="button" class="af-act w" data-pa="spmark">'+NP_ERR+'Mark as faulty &amp; initiate return</button></div></div></div>');
+}
+function scNoInstallSheet(){
+  return '<div class="px-bd" data-pa="scdlgx"></div><div class="ck-sheet px-fs af"><span class="px-grab" aria-hidden="true"></span><div class="af-body" style="padding-top:36px"><p class="sc-sheet-t" style="margin:0 0 4px">A faulty part can\u2019t be installed on bike</p><p class="af-lbl" style="font-weight:500;color:#919191;margin:0 0 8px">Give it to inventory.</p></div><div class="af-bar one"><button type="button" class="go" data-pa="scdlgx">OK</button></div></div>';
 }
 function scScreen(c){
   var s=scS(c);
   if(s.scan)return scScan(c,s);
   if(s.v==='inv')return scInvPage(c,s);
   if(s.v==='req')return scReqPage(c,s);
-  var L=scParts(c),nOld=L.filter(function(r){return r.k==='old'&&!r.rec}).length;
+  var L=scParts(c),nOld=L.filter(function(r){return r.k==='old'&&!r.rec&&r.st.k==='fault'}).length;
   var rows=L.map(scRow).join('');
-  return scHead(c,'Sparecard',BIKE.no,true)+'<div class="fr-body"><div class="fr-list">'+(rows||'<div class="sc-empty"><b>Your sparecard is empty</b><small>Parts you take off a bike and new parts you receive show up here.</small></div>')+'</div><div class="fr-ft"><button type="button" class="pen-add" data-pa="screq">Request parts</button><button type="button" class="pm-cta ck-end" data-pa="pxdone"'+(nOld?' disabled':'')+'>'+(nOld?(pxKon('tag')?'Scan '+nOld+(nOld===1?' tag':' tags'):'Return '+nOld+(nOld===1?' part':' parts'))+' to finish':'Done')+'</button></div></div>'+frToastHTML(false);
+  return scHead(c,'Sparecard',BIKE.no,true)+'<div class="fr-body"><div class="fr-list">'+(rows||'<div class="sc-empty"><b>Your sparecard is empty</b><small>Parts you take off a bike and new parts you receive show up here.</small></div>')+'</div><div class="fr-ft"><button type="button" class="pen-add" data-pa="screq">Request parts</button>'+(nOld?'':'<button type="button" class="pm-cta ck-end" data-pa="pxdone">Done</button>')+'</div></div>'+frToastHTML(!!s.np)+scDialogs(c)+(s.dlg?scNoInstallSheet():'')+(s.np?scNewSheet(c,s):'')+(s.fn?scFnewSheet(c,s):'');
 }
 /* start a return: an old part goes after its tag is scanned, a new part goes straight away. It sits in the inventory until IA receives it. */
 function scDoReturn(c,n,k){
   var x=pxS(c),p=pxP(x,n);p.rl=p.rl||[];
-  var rec=k==='old'?p.rl.filter(function(r){return r.k==='old'&&!r.acc&&!r.cancel})[0]:null;
+  var rec=k!=='new'?p.rl.filter(function(r){return r.k===k&&!r.acc&&!r.cancel})[0]:null;
   if(rec){rec.at=pxClock();P.frT={msg:'Tag scan updated',ic:'inv',nu:1};frToastTimer();return}/* a re-scan only updates the tag */
   rec={k:k,q:k==='new'?p.recv:1,at:pxClock(),t:Date.now(),acc:false};
-  if(k==='new')p.recv=0;/* an old part stays in the sparecard until IA receives it */
+  var it0=scParts(c).filter(function(r){return r.n===n&&r.k===k})[0];rec.bk=it0?it0.st.k:(k==='new'?'new':'fault');/* the icon it had */
+  if(k==='fnew'){rec.bk='fault';rec.fr=((p.fnew&&p.fnew.r)||[]).slice()}
   p.rl.push(rec);P.frT={msg:'Return request initiated',ic:'inv',ua:'scundo',n:n,rec:rec};frToastTimer();
-  setTimeout(function(){if(!rec.cancel){rec.acc=true;rec.accAt=pxClock();if(k==='old')p.sOld=false;if(typeof P!=='undefined'&&P)phoneRender()}},8000);
+  setTimeout(function(){if(!rec.cancel){rec.acc=true;rec.accAt=pxClock();if(k==='old')p.sOld=false;else if(k==='fnew')p.fnew=null;else p.recv=Math.max(0,p.recv-rec.q);if(typeof P!=='undefined'&&P)phoneRender()}},8000);/* a part stays in the sparecard, marked Return initiated, until IA accepts: then it moves to the inventory */
+}
+function frInstall(c,i,k){var f=fmS(c).faults[i],p=pxP(pxS(c),f.n);P.frT={msg:pbase(f.n)+' installed on bike',ic:'ok',i:i,cid:c.id,prev:{off:!!p.off,inst:!!p.inst,sOld:!!p.sOld}};frToastTimer();p.off=false;if(k==='new')p.inst=true;else p.sOld=false;P.frAnim=null}
+function frPickSheet(c,s){
+  var pk=P.frPick,f=s.faults[pk.i];if(!f){P.frPick=null;return ''}
+  var p=pxP(pxS(c),f.n),cd=frCands(f,p),rs=f.r.filter(function(r){return r!=='Missing'}).join(' • ');
+  var row=function(k){return '<button type="button" class="sc-pick'+(pk.sel===k?' on':'')+'" data-pa="frps" data-v="'+k+'"><span class="fr-th">'+frThumb(f.n)+frCandBadge(f,k)+'</span><span class="fr-tx"><b>'+pnm(f.n,null)+'</b><small>'+(k==='new'?'New part':(f.res.act==='Repaired'?'Fixed: ':'False issues: ')+esc(rs))+'</small></span><span class="sc-rad"></span></button>'};
+  return '<div class="px-bd" data-pa="frpx"></div><div class="ck-sheet px-fs af"><span class="px-grab" aria-hidden="true"></span><div class="af-body" style="padding-top:28px"><p class="af-lbl" style="font-size:16px;line-height:24px;margin-bottom:8px">Choose a part to install</p>'+cd.map(row).join('')+'</div><div class="af-bar"><button type="button" class="ca" data-pa="frpx">Cancel</button><button type="button" class="go" data-pa="frpgo"'+(pk.sel?'':' disabled')+'>Install on bike</button></div></div>';
 }
 function frToastTimer(){clearTimeout(P.frTT);P.frTT=setTimeout(function(){if(P&&P.frT){P.frT=null;phoneRender()}},4500)}
 function frScreen(c,s){
-  var sh=fmShown(c,s),x=pxS(c),n=sh.length,r=sh.filter(function(q){return q.f.res}).length;
+  var sh=fmShown(c,s),x=pxS(c),n=sh.length,r=sh.filter(function(q){return q.f.res||pxP(x,q.f.n).inst}).length;
   var rows=sh.map(function(q){return frRow(c,x,q.i,q.f)}).join('');
-  var T=frToastHTML(!!s.sheet);
+  var T=frToastHTML(!!s.sheet||!!s.menu)+(P.frPick&&!s.sheet?frPickSheet(c,s):'')+(s.menu?frMenuSheet(c,s):'');
   if(P.frAnim){var fa=P.frAnim;setTimeout(function(){if(P&&P.frAnim===fa)P.frAnim=null},500)}
-  return sbHTML()+'<div class="ck-stk"><div class="fr-hd"><button type="button" class="fr-bk" data-pa="back" aria-label="Back">'+FR_ICON_BACK+'</button><span class="fr-t"><b>Resolve mechanical faults</b><small>'+BIKE.no+'</small></span>'+moreDots()+'</div></div>'+
+  return sbHTML()+'<div class="ck-stk"><div class="fr-hd"><button type="button" class="fr-bk" data-pa="back" aria-label="Back">'+FR_ICON_BACK+'</button><span class="fr-t"><b>Resolve mechanical faults</b><small>'+BIKE.no+'</small></span><span class="ck-mw"><button type="button" class="ck-more" data-pa="rsmore" aria-label="More options">\u22EE</button></span></div></div>'+
    '<div class="fr-body"><div class="fr-list">'+(rows||'<p style="color:#888;padding:16px">No faults to resolve.</p>')+'</div><div class="fr-ft">'+(kon(c,'addf')?'<button type="button" class="pen-add" data-pa="fmadd">+ Add issues</button>':'')+'<button type="button" class="pm-cta ck-end" data-pa="fmfinish"'+(kon(c,'reqres')&&r<n?' disabled':'')+'>Finish</button></div></div>'+T+fmSheet(c,s);
 }
 /* swipe a row: right = take the part off the bike (to the sparecard), left = fit the new part from the sparecard, or reveal Request spare */
@@ -2878,6 +3179,7 @@ function frScreen(c,s){
     if(!d.on){if(Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)*1.3){d.on=true;try{d.r.setPointerCapture(e.pointerId)}catch(x){}}else{if(Math.abs(dy)>10)d=null;return}}
     if(d.sw==='b'){var bt=d.w.querySelector('.fr-la');if(!bt)return;var tx=Math.max(0,Math.min(132,132+dx));d.tx=tx;dragged=true;bt.style.transition='none';bt.style.transform='translateX('+tx+'px)';return}/* the row stays put, the button is pulled in over it */
     if(d.sw==='l'){var ov=d.w.querySelector('.fr-in');if(!ov)return;var Ww=d.w.offsetWidth,ox=Math.max(0,Math.min(Ww,Ww+dx));d.tx=ox;dragged=true;ov.style.transition='none';ov.style.transform='translateX('+ox+'px)';return}/* the new part comes in with the finger */
+    if(d.sw==='rl'){var W3=d.r.offsetWidth,v3=Math.max(-W3,Math.min(W3,dx));d.v=v3;dragged=true;d.r.style.transition='none';d.r.style.transform='translateX('+v3+'px)';d.w.classList.toggle('r-on',v3>0);d.w.classList.toggle('l-on',v3<0);return}
     var v=Math.max(0,Math.min(d.base+dx,d.r.offsetWidth));
     d.dx=dx;d.v=v;dragged=true;d.r.style.transition='none';d.r.style.transform='translateX('+v+'px)';
     d.w.classList.toggle('r-on',v>0)});
@@ -2886,6 +3188,10 @@ function frScreen(c,s){
     if(o.sw==='b'){var b2=o.w.querySelector('.fr-la');if(!b2)return;b2.style.transition='transform .2s';if((o.tx==null?132:o.tx)<80){b2.style.transform='translateX(0)';o.w.classList.add('l-open')}else{b2.style.transform='';o.w.classList.remove('l-open')}return}
     if(o.sw==='l'){var ov2=o.w.querySelector('.fr-in');if(!ov2)return;var W2=o.w.offsetWidth,i2=o.w.dataset.i;ov2.style.transition='transform .15s';if((o.tx==null?W2:o.tx)<W2-TH){ov2.style.transform='translateX(0)';setTimeout(function(){fire('frin',i2)},160)}else ov2.style.transform='translateX('+W2+'px)';return}
     var v=o.v||0,r=o.r,w=o.w,i=w.dataset.i,W=r.offsetWidth;r.style.transition='transform .2s';
+    if(o.sw==='rl'){var back=function(){r.style.transform='';w.classList.remove('r-on','l-on')};
+      if(v>TH){r.style.transform='translateX('+W+'px)';setTimeout(function(){fire(w.dataset.fa,i)},180);return}
+      if(v<-TH){if(r.dataset.disl){back();return}r.style.transform='translateX('+(-W)+'px)';setTimeout(function(){fire(w.dataset.fl,i)},180);return}
+      back();return}
     if(o.sw==='r'){if(v>TH){r.style.transform='translateX('+W+'px)';setTimeout(function(){fire(w.dataset.fa||'frrm',i)},180)}else{r.style.transform='';w.classList.remove('r-on')}return}
   }
   document.addEventListener('pointerup',end);document.addEventListener('pointercancel',end);
@@ -3147,7 +3453,7 @@ function pxList(c){
   Object.keys(fl).forEach(function(n){if(!seen[n]){seen[n]=1;out.push(mk(n,'Other'))}});
   return out;
 }
-function pxRet(c){return scParts(c).filter(function(r){return r.k==='old'&&!r.rec}).length}
+function pxRet(c){return scParts(c).filter(function(r){return r.k==='old'&&!r.rec&&r.st.k==='fault'}).length}
 function pxRow(c){var n=pxRet(c),d=!!pst(c.id).done;return '<div class="px-det"><button type="button" class="pm-row" data-pa="open" data-cid="'+c.id+'" style="text-align:left">'+miRow('partex')+'<span class="grow"><b>Sparecard</b><br><small>'+(n?n+(n===1?' part to return':' parts to return'):(d?'Done':'Nothing to return'))+'</small></span>'+(n?'<span class="pm-pill">'+n+'</span>':'<span style="font-size:20px;color:#999">›</span>')+'</button></div>'}
 /* full page: every part on the bike, same layout as Add issues, request from the row */
 function pxAllPage(c,x,L){
@@ -3277,9 +3583,9 @@ function pxFaultSheet(c,x,r,closeAct,extra){
   var D=(!pxView&&x.draft&&x.draft.n===r.n&&ed&&(r.f||p.miss||x.draft.fresh))?x.draft:null,dr=(D&&D.edit)?D.r:null;
   var chips=pxView?fmRo(rs):D&&!D.edit?fmRo(rs):ed?pxIssueChips(r,dr?'fmdr':'pxrs',dr):'<div class="pm-chips">'+(rs.length?rs.map(function(q){return '<span class="px-reason">'+esc(q)+'</span>'}).join(''):'<span class="px-line">No fault marked</span>')+'</div>';
   return '<div class="px-bd" data-pa="'+closeAct+'"></div><div class="ck-sheet px-fs'+(closeAct==='pxclose'?' px-fit':'')+'">'+pxX(closeAct)+
-    '<div class="px-sec px-first">'+pxTop(r,chips,dr?dr[0]==='Missing':p.miss,D&&!D.edit?'<button type="button" class="px-edit" data-pa="fmed">Edit</button>':'',(closeAct==='fmsheetx'&&r.act==='Replaced'&&p.recv>0)?'Old part · return to IA':'')+(D?fmDraftBar(c,r,x):'')+st.old+'</div>'+
+    '<div class="px-sec px-first">'+pxTop(r,chips,dr?dr[0]==='Missing':p.miss,D&&!D.edit?'<button type="button" class="px-edit" data-pa="fmed">Edit</button>':'',p.sOld?'In sparecard':p.off?'Removed from bike':'')+(D?fmDraftBar(c,r,x):'')+st.old+'</div>'+
     ((closeAct==='fmsheetx'&&(r.f||p.miss))?pxSec('Resolution','',st.acts):'')+/* Part exchange never asks for a resolution */
-    '<div class="px-sec">'+st.nw+'</div>'+(extra||'')+'</div>';
+    (extra||'')+'</div>';/* one part in context: the new part's details and its request button are not part of this dialog */
 }
 /* a part waiting to go back to IA: only that part, one instruction and one button. Scan tag / Scan QR sends the return request; IA accepting it moves the part to Returned. */
 function pxRetSheet(c,x,r){
