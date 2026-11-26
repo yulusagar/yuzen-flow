@@ -291,8 +291,8 @@ main{max-width:1360px;margin:0 auto;padding-top:28px}
 .yc-item span{font-size:13px;color:var(--muted)}
 .savestate{font-size:13px;color:var(--muted)}
 .note{font-size:13px;color:var(--muted);margin-top:14px}
-#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:14px;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
-#toast.on{opacity:1}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,calc(100% + 40px));background:var(--ink);background:color-mix(in srgb,var(--ink) 84%,transparent);-webkit-backdrop-filter:blur(10px) saturate(1.3);backdrop-filter:blur(10px) saturate(1.3);box-shadow:0 8px 24px rgba(0,0,0,.18);color:var(--bg);padding:10px 18px;border-radius:99px;font-size:14px;font-weight:500;z-index:60;opacity:0;pointer-events:none;transition:transform .24s cubic-bezier(.55,0,.75,.4),opacity .2s .04s}/* toasts rise from the bottom and sink back; the tinted glass stays dark enough for white text */
+#toast.on{opacity:1;transform:translate(-50%,0);transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .2s}
 
 /* ───── phone preview popup ───── */
 .pm-scrim{position:fixed;inset:0;background:rgba(6,8,26,.84);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:70}
@@ -427,7 +427,7 @@ main{max-width:1360px;margin:0 auto;padding-top:28px}
 .scr{overflow-anchor:none}/* no scroll anchoring: it would answer the fold with a scroll of its own */
 .ckh .fr-hd,.ckh .ck-tabs{max-height:120px;overflow:hidden;transition:max-height .32s cubic-bezier(.22,.61,.36,1),opacity .24s ease,padding .32s cubic-bezier(.22,.61,.36,1)}
 .ckh.hid .fr-hd,.ckh.hid .ck-tabs{max-height:0;opacity:0;padding-top:0;padding-bottom:0;border-bottom-width:0}.ckh.hid .fr-hd{min-height:0!important;padding-top:0!important;padding-bottom:0!important;box-shadow:none}.ckh .fr-hd{transition:max-height .32s cubic-bezier(.22,.61,.36,1),min-height .32s cubic-bezier(.22,.61,.36,1),opacity .24s ease,padding .32s cubic-bezier(.22,.61,.36,1)}/* the shared header spec sets min-height:72px and !important padding, which outrank max-height:0; without these the folded header kept its 72px as an empty band */
-.dt-bar{position:sticky;bottom:0;z-index:5;margin-top:auto;display:flex;align-items:flex-start;justify-content:center;gap:45px;height:100px;box-sizing:border-box;background:#fff;box-shadow:inset 0 .5px 0 #e8e8e8;flex:none}
+.dt-bar{position:sticky;bottom:0;z-index:5;margin-top:auto;display:flex;align-items:flex-start;justify-content:center;gap:45px;height:84px;box-sizing:border-box;background:#fff;box-shadow:inset 0 .5px 0 #e8e8e8;flex:none}
 .dt-tab{position:relative;flex:0 0 64px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 0 0;border:0;background:none;cursor:pointer}.dt-tab.on::before{content:"";position:absolute;left:14px;width:36px;top:0;height:2px;background:#222}
 .dt-tab svg{display:block;width:24px;height:24px;fill:#919191;transition:fill .18s}.dt-tab svg path{fill:inherit}
 .dt-tab span{position:relative;font:500 12px/16px var(--font-body);color:#919191!important;white-space:nowrap;transition:color .18s}
@@ -1125,7 +1125,7 @@ html.mirror .ck-stk{top:0!important}
 .tk-hd:not(:has(+.ck-prog)){box-shadow:inset 0 -1px 0 #e8e8e8}
 .rb-hd h3 small,.fr-hd .fr-t small{margin-top:4px!important}/* 24px title, 4px, 20px subheading: a 48px block centred in the 72px header */
 .bc{display:flex!important;align-items:baseline;gap:4px;min-width:0;white-space:nowrap}.bc-p{flex:0 1 auto;min-width:24px;overflow:hidden;text-overflow:ellipsis;font-weight:500;color:#919191}.bc-s{flex:none;font-weight:500;color:#919191}.bc-c{flex:0 0 auto;max-width:80%;overflow:hidden;text-overflow:ellipsis;color:#222}/* breadcrumb: the task name gives way first, the page name stays in focus */
-.dh-fin{position:sticky;bottom:100px;z-index:5;flex:none;padding:16px;background:#fff;box-shadow:inset 0 1px 0 #e8e8e8}.dh-fin .pm-cta{margin:0;width:100%}.scr:has(.dh-fin) .dt-bar{margin-top:0}.scr:has(.dh-fin) .pm-body{flex:1 0 auto}/* Finish task: pinned just above the bottom tabs once every task is done */
+.dh-fin{position:sticky;bottom:84px;z-index:5;flex:none;padding:16px;background:#fff;box-shadow:inset 0 1px 0 #e8e8e8}.dh-fin .pm-cta{margin:0;width:100%}.scr:has(.dh-fin) .dt-bar{margin-top:0}.scr:has(.dh-fin) .pm-body{flex:1 0 auto}/* Finish task: pinned just above the bottom tabs once every task is done */
 
 .ck-sheet.px-fs{touch-action:none;overscroll-behavior:contain}
 
@@ -1152,6 +1152,12 @@ html.mirror .ck-stk{top:0!important}
 
 .al-g em{display:inline-block;margin-left:6px;min-width:18px;box-sizing:border-box;padding:1px 6px;border-radius:99px;background:#5A2DC0;color:#fff;font:600 11px/16px var(--font-body);font-style:normal;vertical-align:1px}
 .al-bar{bottom:0!important}
+
+.rq-sq{display:flex;align-items:center;justify-content:center;overflow:hidden}.rq-art{width:46px;height:46px;display:block}
+
+.fr-bk,.ck-back,.pq-ib[data-pa=back],.rb-hd>button:first-child{position:relative}
+.fr-bk::after,.ck-back::after,.pq-ib[data-pa=back]::after{content:"";position:absolute;inset:-12px -6px -12px -14px}
+.tk-hd .tk-hi{cursor:pointer}
 </style><style>/* installed-app overrides: the deck's phone fills the real screen */
 html.ops,html.ops body{margin:0;height:100%;background:#fff;overflow:hidden;padding:0!important}
 html.ops body>*:not(#phone):not(#opspick):not(#toast):not(script):not(style){display:none!important}
@@ -1218,7 +1224,7 @@ var CUST_PH=['1550d38a65879a16dca6d3bc461d7b20','866377933297cdcbbdfb406e15f04c7
 var B={throttle:'7955f79adf373cb3fe9f654e43cf3cbc',checks:'f2ea1ab12470b002893a89e1617e2924',issues:'3a174c5bf2cd075b10cda4d5550cb031',wheel:'f0755fa0f769b091c495de90bcf3e5f3',mcu:'48cc8477419e0874cca0be630f79cfce',battery:'c8ea9d8ad2f5d26e8cf59e7a4e29fb95',spares:'21abd5260bf5a5e2c5979d37afa7ec05',
  phChecklists:'108f7f0157d043786a189431b9d9f522',phAssess:'5ce2e689137c119366f2af3757a10c04',phPenalties:'b89df058d9469d0b17cd9a7e2d91a771',phSpares:'1bf7a66005e867fa71c33760f042eb22',phPx:'7b47eb3a81eb75c5c0035c8786e63cf6',phBattery:'5005138ab485010605f11d1483b66dc6',phTransfer:'f6906ed71253b51c9a0f299f65ed5cdb',phRepElec:'4f7b4940a60223e1e312a6994e8b652d',phAllocElec:'71df5e07a7efa67431aa9ff00c008af4',phFaults:'337b9ac3e5ce6ee126f074298280c6dc',phAllocMech:'6d6236f36c8f3918f15aa67590a186b6',
  rChecks:'656a5d50484000eb4a965ccadb7d7ec7',rPenalty:'4e3f29ec82ef6357e285db06b6f4638d',rParts:'9a345b82789a1bc4430a398e2886551a',rBattery:'b4add738cb19fb86430bb49d13c3f229',rElec:'a3925f5c8a259bb4f4ca65de66c82f69',rFaults:'6d5a6d75e0f4b2c5f1d49ccf25fc341e'};
-var ASSET_EXT={"6a2dec66b17b385ab90e919a21419af1": "png", "21abd5260bf5a5e2c5979d37afa7ec05": "jpg", "5005138ab485010605f11d1483b66dc6": "jpg", "64abaa0778e7248285d2d946ca8785a8": "jpg", "3a174c5bf2cd075b10cda4d5550cb031": "png", "71df5e07a7efa67431aa9ff00c008af4": "jpg", "108f7f0157d043786a189431b9d9f522": "jpg", "f6906ed71253b51c9a0f299f65ed5cdb": "jpg", "5ce2e689137c119366f2af3757a10c04": "jpg", "866377933297cdcbbdfb406e15f04c79": "jpg", "656a5d50484000eb4a965ccadb7d7ec7": "jpg", "f275abb85063fbb696eb06a144d31305": "jpg", "c8ea9d8ad2f5d26e8cf59e7a4e29fb95": "jpg", "a3925f5c8a259bb4f4ca65de66c82f69": "jpg", "9a345b82789a1bc4430a398e2886551a": "jpg", "6d6236f36c8f3918f15aa67590a186b6": "jpg", "1bf7a66005e867fa71c33760f042eb22": "jpg", "4e3f29ec82ef6357e285db06b6f4638d": "jpg", "337b9ac3e5ce6ee126f074298280c6dc": "jpg", "012d57ea6622168a40278ad6bc26021b": "jpg", "4f7b4940a60223e1e312a6994e8b652d": "jpg", "eb34ff38bfe2bdc58972e82cec0cb659": "png", "b4add738cb19fb86430bb49d13c3f229": "jpg", "7b47eb3a81eb75c5c0035c8786e63cf6": "jpg", "b89df058d9469d0b17cd9a7e2d91a771": "jpg", "7955f79adf373cb3fe9f654e43cf3cbc": "png", "f0755fa0f769b091c495de90bcf3e5f3": "png", "1550d38a65879a16dca6d3bc461d7b20": "jpg", "ec4874e17e920ba838dc2f18804983ae": "png", "48cc8477419e0874cca0be630f79cfce": "png", "f2ea1ab12470b002893a89e1617e2924": "png", "6d5a6d75e0f4b2c5f1d49ccf25fc341e": "jpg"};function img(id){return 'assets/'+id+'.'+(ASSET_EXT[id]||'jpg')}
+var ASSET_EXT={"6a2dec66b17b385ab90e919a21419af1": "png", "21abd5260bf5a5e2c5979d37afa7ec05": "jpg", "5005138ab485010605f11d1483b66dc6": "jpg", "f48aa4d91e61c8fd9aebdd2196d102bf": "png", "64abaa0778e7248285d2d946ca8785a8": "jpg", "3a174c5bf2cd075b10cda4d5550cb031": "png", "71df5e07a7efa67431aa9ff00c008af4": "jpg", "108f7f0157d043786a189431b9d9f522": "jpg", "13ec16057199137339e0a534de0a938f": "webp", "f6906ed71253b51c9a0f299f65ed5cdb": "jpg", "20f986417a39d6fb7aa2c38db5ac1d30": "png", "5bade74d0f33962ad4cfc8f47273e935": "webp", "5ce2e689137c119366f2af3757a10c04": "jpg", "866377933297cdcbbdfb406e15f04c79": "jpg", "656a5d50484000eb4a965ccadb7d7ec7": "jpg", "1de9f16afea8a83df5c201cdde7cf94f": "webp", "934beeb0e0d3b4cae10cdbbc5e51862f": "webp", "f275abb85063fbb696eb06a144d31305": "jpg", "c8ea9d8ad2f5d26e8cf59e7a4e29fb95": "jpg", "a3925f5c8a259bb4f4ca65de66c82f69": "jpg", "d7e3cdd00708c5365fffd46373a301e4": "webp", "127f6b1a2df0842c702054843d87f762": "webp", "9a345b82789a1bc4430a398e2886551a": "jpg", "c76ad6f24afe70892e58008f5a8ac34f": "png", "6d6236f36c8f3918f15aa67590a186b6": "jpg", "1bf7a66005e867fa71c33760f042eb22": "jpg", "4e3f29ec82ef6357e285db06b6f4638d": "jpg", "337b9ac3e5ce6ee126f074298280c6dc": "jpg", "012d57ea6622168a40278ad6bc26021b": "jpg", "4f7b4940a60223e1e312a6994e8b652d": "jpg", "eb34ff38bfe2bdc58972e82cec0cb659": "png", "9073a435c90ad4a0028f2609a65a393e": "png", "b4add738cb19fb86430bb49d13c3f229": "jpg", "7b47eb3a81eb75c5c0035c8786e63cf6": "jpg", "09c9c96b77877fa25ca99e62c87589a8": "webp", "b89df058d9469d0b17cd9a7e2d91a771": "jpg", "7955f79adf373cb3fe9f654e43cf3cbc": "png", "f0755fa0f769b091c495de90bcf3e5f3": "png", "fc720b2d16812ef4e1fdd9c34dae9fbe": "png", "1550d38a65879a16dca6d3bc461d7b20": "jpg", "ec4874e17e920ba838dc2f18804983ae": "png", "48cc8477419e0874cca0be630f79cfce": "png", "f2ea1ab12470b002893a89e1617e2924": "png", "6d5a6d75e0f4b2c5f1d49ccf25fc341e": "jpg"};function img(id){return 'assets/'+id+'.'+(ASSET_EXT[id]||'jpg')}
 function artImg(m){if(typeof TK_ART!=='undefined'&&TK_ART[m.id])return '<span class="m3w" style="background:'+TK_ART[m.id].tint+'"><img class="m3d" src="'+TK_ART[m.id].img+'" alt="" draggable="false"></span>';/* whole image, on its own tint, never cropped */return m.art?'<img src="'+img(m.art)+'" alt="" draggable="false">':'<span class="glyph" aria-hidden="true">'+m.glyph+'</span>'}
 function env(task,result){var o={task:task,status:'finished',asset:'<asset id>',finishedAt:'<timestamp>',finishedBy:'<user id>'};if(result)o.result=result;return JSON.stringify(o,null,2)}
 var OUT_ASSESS=env('assessment_checklist',{assessed:17,faulty:[{part:'<part name>',system:'<mech | elec>',reasons:['<fault reason>'],penalty:'<no | minor | major>'}]});
@@ -2575,11 +2581,21 @@ function pinSheet(scr){if(!scr)return;var fs=scr.querySelector('.px-fs'),bd=scr.
 function scClear(c){return scParts(c).every(function(r){return !!r.rec})}
 function scAuto(){if(!P||!P.cards)return;var req=P.cards.filter(function(k){return !k.demand}),sidx=stageIdx(req);
   req.forEach(function(c,i){if(c.module!=='partex')return;var above=P.mode==='module'||req.every(function(k,j){return k.module==='partex'||sidx[j]>=sidx[i]||!!pst(k.id).done});pst(c.id).done=above&&scClear(c)})}
-function phoneRender(){try{scAuto()}catch(e){}setTimeout(essLayout,0);setTimeout(tkAfter,0);fitPhone();
+/* a folded header must never get stuck: when the page is too short to scroll back up (a checklist that just got shorter, the task home with few cards), unfold it */
+function foldFix(){var sc=document.querySelector('#phone .scr');if(!sc||!P)return;var room=sc.scrollHeight-sc.clientHeight;
+  var ck=sc.querySelector('.ckh');if(ck&&P.ckHid&&(room<ck.scrollHeight+40||sc.scrollTop<=0)){P.ckHid=false;ck.classList.remove('hid')}
+  if(P.dhHid&&sc.classList.contains('dh-hid')&&(room<120||sc.scrollTop<=0)){P.dhHid=false;sc.classList.remove('dh-hid')}}
+(function(){var ty=null;var up=function(){var sc=document.querySelector('#phone .scr');if(sc&&sc.scrollTop<=0)foldFix()};
+  document.addEventListener('wheel',function(e){if(e.deltaY<0&&e.target.closest&&e.target.closest('#phone'))up()},{passive:true});
+  document.addEventListener('touchstart',function(e){ty=e.touches[0].clientY},{passive:true});
+  document.addEventListener('touchmove',function(e){if(ty!=null&&e.touches[0].clientY-ty>12&&e.target.closest&&e.target.closest('#phone'))up()},{passive:true})})();
+/* tapping the task art beside the back chevron works as the back button */
+document.addEventListener('click',function(e){var im=e.target.closest&&e.target.closest('#phone .tk-hd .tk-hi');if(!im)return;var b=im.parentNode.querySelector('button');if(b&&b!==im){e.preventDefault();e.stopPropagation();b.click()}},true);
+function phoneRender(){try{scAuto()}catch(e){}setTimeout(function(){try{foldFix()}catch(e){}},30);setTimeout(essLayout,0);setTimeout(tkAfter,0);fitPhone();
   var L=(P&&P.inline)?document.getElementById('ckinline'):document.getElementById('phone');
   if(!L)return;
   if(!P){L.innerHTML=MIRROR?'<div class="mir-wait"><b>Waiting for the deck</b><span>Play a module or flow on the Ops control deck and it appears here.</span></div>':'';var ci=document.getElementById('ckinline');if(ci)ci.innerHTML='';return}
-  var old=L.querySelector('.scr'),st=old?old.scrollTop:0,same=old&&old.dataset.k===P.scr&&!P.resetScroll;P.resetScroll=false;
+  var old=L.querySelector('.scr'),st=old?old.scrollTop:0,orl=L.querySelector('.rq-rail'),rly=orl?orl.scrollTop:0,same=old&&old.dataset.k===P.scr&&!P.resetScroll;P.resetScroll=false;
   var idx=P.scr==='job'?3:['home','list','dash','job','done'].indexOf(P.scr);
   var side='<div class="pm-side"><h3>'+(P.mode==='module'?esc(MOD[P.cards[0].module].name):P.all?esc(P.wf||'Workflow'):esc(P.role))+'</h3><p>'+(P.mode==='module'?'This is how the module runs on a phone, using the knobs set on its card. Bike, connectivity and codes are sample data.':P.all?'The flow you built, on one phone, from home through every card in table order. Sample data only.':'The journey this profile takes, from home to task completion, for the tasks assigned to it on this table. Sample data only.')+'</p>'+
    ctlPanel()+
@@ -2588,6 +2604,8 @@ function phoneRender(){try{scAuto()}catch(e){}setTimeout(essLayout,0);setTimeout
   if(P.inline){L.innerHTML='<div class="phone"><div class="pm-notch"></div><div class="'+scrCls+'" data-k="'+P.scr+'">'+phoneScreen()+'</div>'+phoneOv()+'</div><button type="button" class="btn" data-pa="restart">Restart</button>';if(same)L.querySelector('.scr').scrollTop=st;pinSheet(L.querySelector('.scr'));return}
   L.innerHTML='<div class="pm-scrim" data-pa="close"></div><div class="pm-wrap" role="dialog" aria-modal="true" aria-label="Mobile preview"><div class="phone"><div class="pm-notch"></div><div class="'+scrCls+'" data-k="'+P.scr+'">'+phoneScreen()+'</div>'+phoneOv()+'</div>'+side+'</div>'+(P.confirm?confirmHTML():'');
   if(same)L.querySelector('.scr').scrollTop=st;
+  /* the vertical tab rail keeps its own scroll when a tab is picked */
+  var nrl=L.querySelector('.rq-rail');if(nrl&&orl&&rly)nrl.scrollTop=rly;
   pinSheet(L.querySelector('.scr'));
 }
 function finishTask(c){
@@ -3263,9 +3281,30 @@ function fmAddList(c,s){
     return '<div class="fr-w"><div class="fr'+(st?'':' c')+'" data-pa="fmpart" data-n="'+esc(r.n)+'"><span class="fr-th'+(miss?' d':'')+'">'+frThumb(r.n)+bd+'</span><span class="fr-tx"><b>'+pnm(r.n,null)+'</b>'+(st?'<small>'+esc(st)+'</small>':'')+'</span></div></div>'}).join('');
   return html||'<div class="sc-empty"><b>'+(q?'No parts match':'Nothing here')+'</b><small>'+(q?'Try a different name.':'There are no parts in this section.')+'</small></div>';
 }
+/* rail art for Add faults / Request parts: one line drawing of our bike, cropped to the area the tab names, that area picked out in Yulu blue */
+var RQ_P={rwheel:'<circle cx="45" cy="88" r="22"/><circle cx="45" cy="88" r="16"/>',fwheel:'<circle cx="158" cy="88" r="22"/><circle cx="158" cy="88" r="16"/>',
+ hub:'<circle cx="45" cy="88" r="7"/><path d="M45 81v-5M45 95v5M38 88h-5M52 88h5"/>',disc:'<circle cx="158" cy="88" r="9"/><circle cx="158" cy="88" r="3"/>',caliper:'<rect x="162" y="76" width="7" height="9" rx="2"/>',
+ swing:'<path d="M45 88L70 60"/>',frame:'<path d="M70 44L76 80H128L146 38"/>',board:'<rect x="74" y="76" width="56" height="6" rx="2"/>',
+ fork:'<path d="M146 38L158 88"/>',spring:'<path d="M148.5 49l5 1.5-4.4 2.6 5 1.5-4.4 2.6 5 1.5-4.4 2.6 5 1.5-4.4 2.6 5 1.5"/>',
+ stem:'<path d="M146 38L143 22"/>',bar:'<path d="M133 23L156 19"/><path d="M152 19.7l3.5-.6"/>',lever:'<path d="M151 21l8 6"/>',
+ light:'<rect x="149" y="29" width="9" height="7" rx="2.5"/>',display:'<rect x="137" y="13" width="11" height="7" rx="1.5"/>',wires:'<path d="M145 20c2 6 4 8 6 9"/>',
+ seat:'<path d="M54 40c10-6 24-6 34 0l-2 4H56z"/>',battery:'<rect x="56" y="48" width="28" height="20" rx="3"/><path d="M62 54v8M78 54v8"/><circle cx="70" cy="58" r="1.6"/>',
+ rguard:'<path d="M21 80a25 25 0 0 1 40-15"/>',tail:'<rect x="14" y="69" width="7" height="6" rx="2"/>',fguard:'<path d="M139 72a25 25 0 0 1 38-1"/>'};
+var RQ_A={'Front end':['112 10 84 84',['fork','stem','bar','light','fwheel','fguard']],'Brakes':['118 12 84 84',['disc','caliper','lever']],'Rear end':['8 38 72 72',['rguard','tail','rwheel','swing']],
+ 'Drive and motor':['17 60 56 56',['hub']],'Electrical':['126 6 42 42',['light','display','wires']],'Battery and charging':['46 28 50 50',['battery']],'Frame and body':['6 6 188 112',['frame','board','swing','fork']],
+ 'Suspension':['130 34 44 44',['spring','fork']]};
+function rqArt(t){
+  var w=function(inner,vb){return '<svg class="rq-art" viewBox="'+vb+'" aria-hidden="true" preserveAspectRatio="xMidYMid meet">'+inner+'</svg>'};
+  var base='fill="none" stroke="#A3A8B0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"',hi='fill="#D9F1FB" stroke="#0E8FC0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+  if(t==='Marked'||t==='Recommended')return w('<path d="M16 41V9" fill="none" stroke="#0E8FC0" stroke-width="2.4" stroke-linecap="round"/><path d="M16 10h18l-4 7 4 7H16z" fill="#D9F1FB" stroke="#0E8FC0" stroke-width="2.2" stroke-linejoin="round"/><path d="M21 17l2.6 2.6L28.5 14" fill="none" stroke="#0E8FC0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>','0 0 48 48');
+  if(t==='Fasteners and small parts')return w('<g fill="#D9F1FB" stroke="#0E8FC0" stroke-width="2" stroke-linejoin="round"><path d="M17 9l8 0 4 7-4 7h-8l-4-7z"/><circle cx="21" cy="16" r="3"/></g><path d="M18 23v14l3 3 3-3V23M18 28h6M18 33h6" fill="none" stroke="#A3A8B0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><g fill="none" stroke="#A3A8B0" stroke-width="1.8"><circle cx="35" cy="34" r="5"/><circle cx="35" cy="34" r="2"/></g>','0 0 48 48');
+  var a=RQ_A[t]||['6 6 188 112',[]],out='<g '+base.replace('vector-effect','vector-effect')+'>';
+  Object.keys(RQ_P).forEach(function(k){if(a[1].indexOf(k)<0)out+=RQ_P[k].replace(/<(path|rect|circle)/g,'<$1 vector-effect="non-scaling-stroke"')});out+='</g><g '+hi+'>';
+  a[1].forEach(function(k){var p=RQ_P[k];if(/wheel|guard|swing|frame|fork|stem|bar|lever|wires|spring/.test(k))p=p.replace(/<(path|circle)/g,'<$1 fill="none"');out+=p.replace(/<(path|rect|circle)/g,'<$1 vector-effect="non-scaling-stroke"')});
+  return w(out+'</g>',a[0])}
 function fmAdd(c,s){
   var TABS=Object.keys(PX_CAT);if(TABS.indexOf(s.tabF)<0)s.tabF=TABS[0];
-  var rail=TABS.map(function(t){return '<button type="button" class="rq-tab'+(s.tabF===t&&!(s.afq||'').trim()?' on':'')+'" data-pa="fmtab" data-t="'+esc(t)+'"><span class="rq-sq"></span><span class="rq-lb">'+esc(t)+'</span></button>'}).join('');
+  var rail=TABS.map(function(t){return '<button type="button" class="rq-tab'+(s.tabF===t&&!(s.afq||'').trim()?' on':'')+'" data-pa="fmtab" data-t="'+esc(t)+'"><span class="rq-sq">'+rqArt(t)+'</span><span class="rq-lb">'+esc(t)+'</span></button>'}).join('');
   return sbHTML()+'<div class="ck-stk"><div class="fr-hd" data-inner="1"><button type="button" class="fr-bk" data-pa="back" aria-label="Back">'+FR_ICON_BACK+'</button><span class="fr-t"><b>Add faults</b><small>'+BIKE.no+'</small></span><button type="button" class="sc-inv" data-pa="fmsearch" aria-label="Search parts">'+RQ_SEARCH+'</button>'+moreDots()+'</div></div>'+
     (s.afOpen?'<div class="rq-sr"><input id="afsearch" type="search" placeholder="Search parts" value="'+esc(s.afq||'')+'" autocomplete="off"></div>':'')+
     '<div class="rq-wrap"><nav class="rq-rail" aria-label="Sections">'+rail+'</nav><div class="rq-list" id="aflist">'+fmAddList(c,s)+'</div></div>'+frToastHTML(!!s.sheet)+fmSheet(c,s)+
@@ -3425,7 +3464,7 @@ function scRqSheet(c,s){
 function scReqPage(c,s){
   var tabs=[['marked','Marked']].concat(Object.keys(PX_CAT).map(function(a){return [a,a]}));
   if(!s.rt)s.rt='marked';
-  var rail=tabs.map(function(t){return '<button type="button" class="rq-tab'+(s.rt===t[0]&&!(s.q||'').trim()?' on':'')+'" data-pa="rqtab" data-v="'+esc(t[0])+'"><span class="rq-sq"></span><span class="rq-lb">'+esc(t[1])+'</span></button>'}).join('');
+  var rail=tabs.map(function(t){return '<button type="button" class="rq-tab'+(s.rt===t[0]&&!(s.q||'').trim()?' on':'')+'" data-pa="rqtab" data-v="'+esc(t[0])+'"><span class="rq-sq">'+rqArt(t[1])+'</span><span class="rq-lb">'+esc(t[1])+'</span></button>'}).join('');
   return scHead(c,'Request parts',BIKE.no,false,'<button type="button" class="sc-inv" data-pa="rqsearch" aria-label="Search parts">'+RQ_SEARCH+'</button>',true)+
     (s.rsOpen?'<div class="rq-sr"><input id="rqsearch" type="search" placeholder="Search parts" value="'+esc(s.q||'')+'" autocomplete="off"></div>':'')+
     '<div class="rq-wrap"><nav class="rq-rail" aria-label="Sections">'+rail+'</nav><div class="rq-list" id="rqlist">'+scRqList(c,s)+'</div></div>'+frToastHTML(!!s.pick)+scRqSheet(c,s);
@@ -3503,7 +3542,7 @@ function frScreen(c,s){
   var T=frToastHTML(!!s.sheet||!!s.menu)+(P.frPick&&!s.sheet?frPickSheet(c,s):'')+(s.menu?frMenuSheet(c,s):'');
   if(P.frAnim){var fa=P.frAnim;setTimeout(function(){if(P&&P.frAnim===fa)P.frAnim=null},500)}
   return sbHTML()+'<div class="ck-stk"><div class="fr-hd"><button type="button" class="fr-bk" data-pa="back" aria-label="Back">'+FR_ICON_BACK+'</button><span class="fr-t"><b>Resolve mechanical faults</b><small>'+BIKE.no+'</small></span><span class="ck-mw"><button type="button" class="ck-more" data-pa="rsmore" aria-label="More options">\u22EE</button></span></div><div class="ck-prog" role="progressbar" aria-label="Faults resolved" aria-valuemin="0" aria-valuemax="'+n+'" aria-valuenow="'+r+'"><i style="width:'+(n?Math.round(r/n*100):0)+'%"></i></div></div>'+
-   '<div class="fr-body"><div class="fr-list">'+(rows||'<p style="color:#888;padding:16px">No faults to resolve.</p>')+'</div><div class="fr-ft">'+(kon(c,'addf')?'<button type="button" class="pen-add" data-pa="fmadd">+ Add issues</button>':'')+(r>=n?'<button type="button" class="pm-cta ck-end" data-pa="fmfinish">Finish</button>':'')/* Finish shows only once every fault is resolved */+'</div></div>'+T+fmSheet(c,s);
+   '<div class="fr-body"><div class="fr-list">'+(rows||'<p style="color:#888;padding:16px">No faults to resolve.</p>')+'</div><div class="fr-ft">'+(kon(c,'addf')?'<button type="button" class="pen-add" data-pa="fmadd">+ Add faults</button>':'')+(r>=n?'<button type="button" class="pm-cta ck-end" data-pa="fmfinish">Finish</button>':'')/* Finish shows only once every fault is resolved */+'</div></div>'+T+fmSheet(c,s);
 }
 (function(){
   var d=null;
@@ -3603,7 +3642,7 @@ function fmScreen(c){
   return sbHTML()+'<div class="ck-stk"><div class="ck-hd"><button type="button" class="ck-back" data-pa="back" aria-label="Back">‹</button><p>'+BIKE.no+'</p>'+moreDots()+'</div>'+
    
    (res?'<div class="ck-prog" role="progressbar" aria-valuemin="0" aria-valuemax="'+n+'" aria-valuenow="'+r+'" aria-label="Faults resolved"><i style="width:'+(n?Math.round(r/n*100):0)+'%"></i></div>':'')+
-   '</div><div class="ck-body">'+(rows||'<p style="color:#888">'+(res?'No faults to resolve.':'No faults marked yet.')+'</p>')+(kon(c,'addf')?'<button type="button" class="pen-add" data-pa="fmadd">+ Add issues</button>':'')+'<button type="button" class="pm-cta ck-end" data-pa="fmfinish"'+(kon(c,'reqres')&&res&&r<n?' disabled':'')+'>Finish</button></div>'+fmSheet(c,s);
+   '</div><div class="ck-body">'+(rows||'<p style="color:#888">'+(res?'No faults to resolve.':'No faults marked yet.')+'</p>')+(kon(c,'addf')?'<button type="button" class="pen-add" data-pa="fmadd">+ Add faults</button>':'')+'<button type="button" class="pm-cta ck-end" data-pa="fmfinish"'+(kon(c,'reqres')&&res&&r<n?' disabled':'')+'>Finish</button></div>'+fmSheet(c,s);
 }
 function fmSide(){
   var c=P.cards[0];
