@@ -418,7 +418,7 @@ main{max-width:1360px;margin:0 auto;padding-top:28px}
 .ov-p{height:64px;border:0;border-radius:100px;background:#222;color:#fff!important;font:700 16px/24px var(--font-body);cursor:pointer}
 .ov-s{height:64px;border:1.5px solid #222;border-radius:100px;background:none;color:#222!important;font:700 16px/24px var(--font-body);cursor:pointer}.ov-s:active{background:#f7f7f7}
 .ov-mini{position:relative;width:100%;height:90px;border:0;cursor:pointer;background:#222;padding:22px 24px 24px;display:flex;align-items:center;gap:16px;text-align:left;box-sizing:border-box}
-.ov-mini:active{background:#333}.ov-mbar{position:absolute;left:0;right:0;top:0;height:6px;background:#717171}.ov-mbar i{display:block;height:100%;width:var(--pct);background:#fff}
+.ov-mini:active{background:#333}/* same green as the in-task progress, lifted one step so it reads on the dark band */.ov-mbar{position:absolute;left:0;right:0;top:0;height:6px;background:#3d3d3d}.ov-mbar i{display:block;height:100%;width:var(--pct);background:#1E9E78}
 .ov-mtx{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}.ov-mtx .l1{color:#fff;font:700 16px/20px var(--font-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ov-mtx .md{color:#b0b0b0;font-weight:500}
 .ov-mtx .l2{color:#b0b0b0;font:500 14px/16px var(--font-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ov-mex{width:24px;height:24px;flex:none;color:#fff}.ov-mex svg{display:block;width:24px;height:24px}
 /* action rows in every bottom sheet: icon in a 24x24 box, label 16px after it */
@@ -1126,6 +1126,32 @@ html.mirror .ck-stk{top:0!important}
 .rb-hd h3 small,.fr-hd .fr-t small{margin-top:4px!important}/* 24px title, 4px, 20px subheading: a 48px block centred in the 72px header */
 .bc{display:flex!important;align-items:baseline;gap:4px;min-width:0;white-space:nowrap}.bc-p{flex:0 1 auto;min-width:24px;overflow:hidden;text-overflow:ellipsis;font-weight:500;color:#919191}.bc-s{flex:none;font-weight:500;color:#919191}.bc-c{flex:0 0 auto;max-width:80%;overflow:hidden;text-overflow:ellipsis;color:#222}/* breadcrumb: the task name gives way first, the page name stays in focus */
 .dh-fin{position:sticky;bottom:100px;z-index:5;flex:none;padding:16px;background:#fff;box-shadow:inset 0 1px 0 #e8e8e8}.dh-fin .pm-cta{margin:0;width:100%}.scr:has(.dh-fin) .dt-bar{margin-top:0}.scr:has(.dh-fin) .pm-body{flex:1 0 auto}/* Finish task: pinned just above the bottom tabs once every task is done */
+
+.ck-sheet.px-fs{touch-action:none;overscroll-behavior:contain}
+
+.scr[data-k="bscan"]{background:#111;color:#fff}
+.bs-sb{background:#111!important;color:#fff}
+.bs-bar{display:flex;align-items:center;gap:8px;height:56px;padding:0 16px;flex:none}.bs-bar b{font:600 18px/24px var(--font-body);color:#fff}.bs-bar .pq-ib svg{width:24px;height:24px}.bs-bar .pq-ib svg *{stroke:#fff}
+.bs-cam{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:0 24px 120px;background:radial-gradient(circle at 50% 40%,#3a3d44,#111 70%)}
+.bs-vf{position:relative;width:240px;height:240px;border:0;padding:0;background:transparent;cursor:pointer}.bs-vf:disabled{cursor:default;opacity:.5}
+.bs-cr{position:absolute;inset:0;width:100%;height:100%}
+.bs-ln{position:absolute;left:16px;right:16px;top:20px;height:2px;border-radius:2px;background:#1E9E78;box-shadow:0 0 12px #1E9E78;animation:bsln 2s ease-in-out infinite alternate}
+@keyframes bsln{to{top:218px}}
+.bs-hint{margin:0;font:500 14px/20px var(--font-body);color:#e8e8e8}
+.bs-demo{margin:0;font:400 12px/16px var(--font-body);color:#9a9a9a}.bs-demo button{border:0;background:none;padding:0;color:#e8e8e8;text-decoration:underline;font:inherit;cursor:pointer}
+.bs-sh{position:absolute;left:0;right:0;bottom:0;z-index:5;display:flex;flex-direction:column;align-items:center;gap:4px;padding:28px 16px 32px;background:#fff;color:#222;border-radius:24px 24px 0 0;text-align:center;animation:ovup .3s cubic-bezier(.22,.61,.36,1) backwards}
+.bs-sh b{font:600 18px/24px var(--font-body);margin-top:8px}.bs-sh small{font:400 14px/20px var(--font-body);color:#666;margin-bottom:16px}
+.bs-sh .pm-cta{width:100%}
+.bs-ok,.bs-no{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 22px/1 var(--font-body);color:#fff;background:#00654F}.bs-no{background:#C62828}
+.bs-ag{margin-top:8px;border:0;background:none;padding:10px;font:600 14px/20px var(--font-body);color:#222;cursor:pointer}
+
+/* Unallocated bikes: built from the list's own parts (the Done row toggle, the section header with its count chip, list rows) */
+.un-acc{margin-top:8px}.un-hd .l.px2-hd{display:flex;padding:0}.un-hd .l.px2-hd b{display:inline;font:600 15px var(--font-body)}.un-list{padding-bottom:80px}
+
+.al-av:has(.avs){background:none;border-radius:10px;overflow:hidden}.al-av .avs{display:block}
+
+.al-g em{display:inline-block;margin-left:6px;min-width:18px;box-sizing:border-box;padding:1px 6px;border-radius:99px;background:#5A2DC0;color:#fff;font:600 11px/16px var(--font-body);font-style:normal;vertical-align:1px}
+.al-bar{bottom:0!important}
 </style><style>/* installed-app overrides: the deck's phone fills the real screen */
 html.ops,html.ops body{margin:0;height:100%;background:#fff;overflow:hidden;padding:0!important}
 html.ops body>*:not(#phone):not(#opspick):not(#toast):not(script):not(style){display:none!important}
@@ -1149,6 +1175,9 @@ html.ops .hm-shift{position:relative}
 .ops-sh select{font:500 15px var(--font-body);padding:11px 10px;border:1px solid #D5D8E2;border-radius:10px;background:#fff;color:#222}
 .ops-go{margin-top:4px;background:#4B2FC9;color:#fff;border:0;border-radius:12px;padding:13px;font:600 15px var(--font-body);cursor:pointer}.ops-go:disabled{opacity:.4}
 .ops-err{padding:60px 24px;text-align:center;font-family:var(--font-body);color:#444}
+/* no fake status bar in the app: sticky headers sit at the top, the fold slides the full header away */
+html.ops .scr.hd-flat>.rb-hd,html.ops .scr.hd-flat .dh-stk{top:0}
+html.ops .scr.dh-hid .dh-stk{top:-72px}
 </style>
 
 <header class="top">
@@ -2192,8 +2221,10 @@ var PQI={
  bike:'<svg viewBox="0 0 48 48" fill="none"><circle cx="12" cy="31" r="7" stroke="#3B6BFF" stroke-width="3"/><circle cx="36" cy="31" r="7" stroke="#3B6BFF" stroke-width="3"/><path d="M12 31l8-14h8l8 14M20 17l5 14" stroke="#3B6BFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
  spare:'<svg viewBox="0 0 48 48"><rect x="7" y="10" width="34" height="28" rx="5" fill="#F5B94A"/><rect x="12" y="17" width="12" height="5" rx="2" fill="#fff"/><rect x="12" y="26" width="24" height="3" rx="1.5" fill="#fff" opacity=".7"/></svg>'
 };
+/* the tile's number is what the tile opens: an Allocation-only pool counts its unallocated bikes, every other pool its pending bikes */
+function hmCount(pl){var w=pl.cards.filter(function(k){return !supportFlow(k)});if(w.length===1&&w[0].module==='allocation'){try{return alLeft(alS(w[0])).length}catch(e){}}return ppend(pl)}
 function homeScreen(){
-  var pools=P.pools.map(function(pl,i){return '<button type="button" class="hm-card" data-pa="pool" data-i="'+i+'"><span class="ic">'+PQI[pl.kind]+'</span><b>'+ppend(pl)+'</b><small>'+esc(pl.title)+'</small></button>'}).join('');
+  var pools=P.pools.map(function(pl,i){return '<button type="button" class="hm-card" data-pa="pool" data-i="'+i+'"><span class="ic">'+PQI[pl.kind]+'</span><b>'+hmCount(pl)+'</b><small>'+esc(pl.title)+'</small></button>'}).join('');
   return sbHTML()+'<div class="hm-shift"><span class="hm-ico">'+PQI.perf+'</span><span>'+esc(P.role)+'</span><span class="hm-on">On Duty</span></div>'+
    '<h4 class="hm-h">My Tasks</h4>'+(pools?'<div class="hm-grid">'+pools+'</div>':'<p class="hm-empty">No task pool is assigned to this profile yet.</p>')+
    '<div class="hm-hrow"><h4 class="hm-h" style="margin:0">Workbench shortcuts</h4><span>View all</span></div>'+
@@ -2219,6 +2250,15 @@ function doneJobScreen(){var no=P.viewNo,lg=(P.log||{})[no]||{at:'—',mins:0,by
   return sbHTML()+'<div class="pm-hd"><button type="button" class="pm-ib" data-pa="donejobx" aria-label="Back">‹</button><h3>'+esc(no)+'<small>'+esc(lg.m)+' · Done</small></h3></div><div class="pm-body"><div class="pm-card"><div class="pm-kv"><span>Done at</span><b>'+esc(lg.at)+'</b></div><div class="pm-kv"><span>Done by</span><b>'+esc(lg.by)+' · '+esc(lg.role)+'</b></div><div class="pm-kv"><span>Time taken</span><b>'+lg.mins+' min</b></div></div><h4>Job card</h4>'+
    lg.rows.map(function(r){return '<section class="dj-sec"><div class="dj-h">'+miRow(r.module)+'<span class="grow"><b>'+esc(r.name)+'</b><small class="pm-trunc">'+esc(r.res)+'</small></span><span class="dj-r"><b>'+esc(r.at)+'</b><small>'+r.mins+' min</small></span></div>'+
      (r.items||[]).map(function(it){return it.kind==='part'?pRow({n:it.n,img:it.sub&&it.sub.indexOf('Missing')===0?'T':'S',sub:it.sub}):'<div class="pr"><div class="pr-m"><span class="grow"><b>'+esc(it.n)+(it.crit?' <span class="el-crit">Critical</span>':'')+'</b><small>'+esc(it.sub)+'</small></span></div></div>'}).join('')+'</section>'}).join('')+'</div>'}
+/* the scan FAB on a list: a valid bike can come from the open (non-allocated) pool as well as this list */
+function bsPick(){var pl=P.pools[P.pool],src=(POOL_DATA.pool.rows||[]).concat(POOL_DATA[pl.kind].rows);return src.filter(function(r){return !P.fin[r.no]})[0]||null}
+function bscanScreen(){var b=P.bs,pl=P.pools[P.pool],inList=b&&b.row&&POOL_DATA[pl.kind].rows.some(function(r){return r.no===b.row.no});
+  var vf='<svg class="bs-cr" viewBox="0 0 240 240" aria-hidden="true"><path d="M2 40V14C2 7.4 7.4 2 14 2h26M200 2h26c6.6 0 12 5.4 12 12v26M238 200v26c0 6.6-5.4 12-12 12h-26M40 238H14c-6.6 0-12-5.4-12-12v-26" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>';
+  var sheet='';
+  if(b&&b.row)sheet='<div class="bs-sh"><span class="bs-ok" aria-hidden="true">✓</span><b>'+esc(b.row.m)+' • '+b.row.no+'</b><small>'+(b.row.sub?esc(b.row.sub):'Ready to start')+(inList?'':' · from the open pool')+'</small><button type="button" class="pm-cta" data-pa="bsstart">Start task</button><button type="button" class="bs-ag" data-pa="bsagain">Scan another bike</button></div>';
+  else if(b&&b.bad)sheet='<div class="bs-sh bad" role="alert"><span class="bs-no" aria-hidden="true">!</span><b>'+(b.bad==='qr'?'Not a valid bike QR':'No bike to start')+'</b><small>'+(b.bad==='qr'?'Scan the QR on the bike’s stem.':'Every bike in this pool is done.')+'</small><button type="button" class="pm-cta" data-pa="bsagain">Scan again</button></div>';
+  return '<div class="pm-sb bs-sb"><span>9:41</span><span>4G ▮▮▮ 86%</span></div><div class="bs-bar"><button type="button" class="pq-ib" data-pa="bsx" aria-label="Close scanner">'+FR_ICON_CLOSE.replace(/#222|#222222/g,'#fff')+'</button><b>Scan bike</b></div>'+
+    '<div class="bs-cam"><button type="button" class="bs-vf" data-pa="bsok" aria-label="Scan a valid bike (tap to simulate)"'+(b?' disabled':'')+'>'+vf+(b?'':'<span class="bs-ln" aria-hidden="true"></span>')+'</button><p class="bs-hint">Point at the QR on the bike’s stem</p>'+(b?'':'<p class="bs-demo">Tap the frame to scan · <button type="button" data-pa="bsbad">try an invalid QR</button></p>')+'</div>'+sheet}
 function poolList(){
   var pl=P.pools[P.pool],d=POOL_DATA[pl.kind],pend=ppend(pl),fin=pfin(pl),tab=P.ptab;
   var rows=d.rows.filter(function(r){return !P.fin[r.no]&&(P.chip==='all'||r.tag===P.chip)});
@@ -2235,9 +2275,13 @@ function poolList(){
   }else body=rows.length?rows.map(function(r){
     var low=r.b!=null&&r.b<20;
     return '<button type="button" class="pq-row'+(r.hl?' hl':'')+'" data-pa="bike" data-no="'+r.no+'"><span class="l"><b>'+r.m+(r.b!=null?' • <em'+(low?' class="red"':'')+'>'+r.b+'%</em>':' • '+r.no)+'</b><small>'+(r.sub?esc(r.sub):r.b!=null?r.no:'')+'</small></span><span class="r">'+esc(r.r)+(r.s?'<small>'+esc(r.s)+'</small>':'')+'</span></button>'}).join(''):'<p class="pq-none">Nothing matches this filter.</p>';
+  /* unallocated bikes: the open pool, folded under the list; a mechanic can pick one up from here too */
+  if(tab!=='fin'&&pl.kind!=='pool'){var un=POOL_DATA.pool.rows.filter(function(r){return !P.fin[r.no]}),uo=!!P.unx;
+    if(un.length)body+='<div class="un-acc'+(uo?' on':'')+'"><div class="pq-rw"><button type="button" class="pq-row un-hd" data-pa="unx" aria-expanded="'+uo+'"><span class="l px2-hd"><span class="px2-n mute">'+un.length+'</span><b>Unallocated bikes</b></span><span class="r" aria-hidden="true">'+(uo?'\u2303':'\u2304')+'</span></button></div>'+
+      (uo?'<div class="un-list">'+un.map(function(r){return '<button type="button" class="pq-row" data-pa="ubike" data-no="'+r.no+'"><span class="l"><b>'+r.m+' \u2022 '+r.no+'</b><small>'+esc(r.sub||'')+'</small></span><span class="r">'+esc(r.r)+'</span></button>'}).join('')+'</div>':'')+'</div>'}
   h+='<div class="pq-rows">'+body+'</div>';
   var foot=(P.ongoing?'<button type="button" class="ov-mini" data-pa="resume" style="--pct:'+(P.mini?P.mini.pct:ovPct())+'%" aria-label="Resume '+esc(P.ongoing.no)+'"><span class="ov-mbar" aria-hidden="true"><i></i></span><span class="ov-mtx"><span class="l1">'+P.ongoing.no+'<span class="md"> &bull; '+P.ongoing.m+'</span></span><span class="l2">'+esc(P.mini?P.mini.step:d.status)+'</span></span><span class="ov-mex" aria-hidden="true">'+OV.icExpand+'</span></button>':'')+'<div class="pq-avg">Avg. wait time: '+d.avg+'</div>';
-  return sbHTML()+h+(d.fab?'<button type="button" class="pq-fab" data-pa="scan" aria-label="Scan a bike">'+PQI.scan+'</button>':'')+'<div class="pq-foot">'+foot+'</div>';
+  return sbHTML()+h+(!P.ongoing&&tab!=='fin'?'<button type="button" class="pq-fab" data-pa="scan" aria-label="Scan a bike to start a task">'+PQI.scan+'</button>':'')+'<div class="pq-foot">'+foot+'</div>';
 }
 function playProfile(pid,gid,scope){
   var wf=curWf(scope||(S.tab==='yc'?'yc':'builder')),pools=[],supp={},dem=[];
@@ -2476,6 +2520,7 @@ function phoneScreen(){
   var c=P.cur?pcard():null,h='',cta='';
   if(P.scr==='home'&&P.mode==='profile'&&P.pools)return homeScreen();
   if(P.scr==='donejob')return doneJobScreen();
+  if(P.scr==='bscan')return bscanScreen();
   if(P.scr==='list'&&P.mode==='profile'&&P.pools)return poolList();
   if(P.scr==='home'){
     var n=P.cards.filter(function(k){return !k.demand}).length;
@@ -2568,11 +2613,14 @@ function finishTask(c){
   document.addEventListener('click',function(e){if(sw&&e.target.closest&&e.target.closest('.cp-slide')&&!e.__swipe){e.stopPropagation();e.preventDefault()}},true);
 })();
 /* swipe a part dialog down to close it, like tapping ✕ */
-(function(){var sh=null,y0=0,dy=0;
-  document.addEventListener('pointerdown',function(e){var f=e.target.closest&&e.target.closest('.px-fs');if(!f)return;sh=f;y0=e.clientY;dy=0});
-  document.addEventListener('pointermove',function(e){if(!sh)return;dy=e.clientY-y0;var col=+sh.dataset.col||0;if(col&&dy<0&&sh.dataset.exp==='0'){sh.style.transition='none';sh.style.maxHeight=Math.min(sh.scrollHeight,col-dy)+'px';return}if(dy>0&&sh.scrollTop<=0){sh.style.transition='none';sh.style.transform='translateY('+dy+'px)'}});
+(function(){var sh=null,y0=0,dy=0,s0=0,tch=false,mv=false,ly=0,lt=0,vy=0;
+  /* on a phone the sheet is its own scroll box, so the browser would take the pull as a scroll and cancel the gesture: the sheet turns off native touch panning (CSS) and this handler expands, closes or scrolls it itself */
+  document.addEventListener('pointerdown',function(e){var f=e.target.closest&&e.target.closest('.px-fs');if(!f||(e.button||0)>0)return;sh=f;y0=ly=e.clientY;lt=e.timeStamp;vy=0;dy=0;s0=f.scrollTop;mv=false;tch=e.pointerType!=='mouse';cancelAnimationFrame(f._ia||0)});
+  document.addEventListener('pointermove',function(e){if(!sh)return;dy=e.clientY-y0;if(Math.abs(dy)>8)mv=true;var dt=Math.max(1,e.timeStamp-lt);vy=(e.clientY-ly)/dt;ly=e.clientY;lt=e.timeStamp;var col=+sh.dataset.col||0;if(col&&dy<0&&sh.dataset.exp==='0'){sh.style.transition='none';sh.style.maxHeight=Math.min(sh.scrollHeight,col-dy)+'px';return}if(dy>0&&s0<=0&&sh.scrollTop<=0){sh.style.transition='none';sh.style.transform='translateY('+dy+'px)';return}if(tch)sh.scrollTop=s0-dy});
   var snap=function(v,f){var c=(typeof P!=='undefined'&&P&&P.cur)?pcard():null;if(!c)return;var fc=P.cards.filter(isRes)[0];if(f&&f.dataset.sk==='np')scS(c).npExp=v;else if(f&&f.dataset.sk==='fn')scS(c).fnExp=v;else if(f&&f.dataset.sk==='tg')scS(c).tgExp=v;else if(f&&f.dataset.sk==='nb')fmS(fc||c).nbExp=v;else fmS(fc||c).resExp=v};
   var end=function(){if(!sh)return;var f=sh;sh=null;var col=+f.dataset.col||0;
+    if(mv){var eat=function(ev){ev.stopPropagation();ev.preventDefault();document.removeEventListener('click',eat,true)};document.addEventListener('click',eat,true);setTimeout(function(){document.removeEventListener('click',eat,true)},0)}
+    if(tch&&f.style.transform===''&&!(col&&f.dataset.exp==='0')&&Math.abs(vy)>.2){var v=-vy*16;var go=function(){f.scrollTop+=v;v*=.94;if(Math.abs(v)>.5)f._ia=requestAnimationFrame(go)};f._ia=requestAnimationFrame(go)}
     if(col&&f.dataset.exp==='0'&&dy<0){f.style.transition='max-height .22s';if(-dy>40){f.style.maxHeight=f.scrollHeight+'px';f.dataset.exp='1';snap(true,f)}else f.style.maxHeight=col+'px';return}
     if(col&&f.dataset.exp==='1'&&dy>90){f.style.transition='max-height .22s,transform .2s';f.style.transform='';f.style.maxHeight=col+'px';f.dataset.exp='0';snap(false,f);return}
     if(dy>90){var pb=f.previousElementSibling,x=f.querySelector('.px-xa')||(pb&&pb.classList&&pb.classList.contains('px-bd')?pb:null);if(x){x.click();return}}f.style.transition='transform .2s';f.style.transform=''};
@@ -2604,8 +2652,15 @@ document.addEventListener('click',function(e){
      if(pl0.cards.filter(function(k){return !supportFlow(k)}).length===1&&pl0.cards.filter(function(k){return !supportFlow(k)})[0].module==='allocation'){P.cur=pl0.cards.filter(function(k){return !supportFlow(k)})[0].id;P.scr='job';P.resetScroll=true}break}
    case 'ptab':P.ptab=v;break;
    case 'pchip':P.chip=v;break;
+   case 'unx':P.unx=!P.unx;break;
+   case 'ubike':{var ur=POOL_DATA.pool.rows.filter(function(r){return r.no===el.dataset.no})[0];if(ur){setBike(ur);if(!P.ongoing||P.ongoing.no!==ur.no){P.st={};P.note='';P.t0=Date.now();P.mini=null}P.ongoing=ur;P.scr='dash';P.tab='work'}break}
    case 'bike':{var pl1=P.pools[P.pool],rw=POOL_DATA[pl1.kind].rows.filter(function(r){return r.no===el.dataset.no})[0];if(rw){setBike(rw);if(!P.ongoing||P.ongoing.no!==rw.no){P.st={};P.note='';P.t0=Date.now();P.mini=null}P.ongoing=rw;P.scr='dash';P.tab='work'}break}
-   case 'scan':{var pl2=P.pools[P.pool],rw2=POOL_DATA[pl2.kind].rows.filter(function(r){return !P.fin[r.no]})[0];if(rw2){setBike(rw2);P.st={};P.t0=Date.now();P.mini=null;P.ongoing=rw2;P.scr='dash';P.tab='work'}break}
+   case 'scan':P.bs=null;P.scr='bscan';break;
+   case 'bsx':P.bs=null;P.scr='list';break;
+   case 'bsagain':P.bs=null;break;
+   case 'bsok':{var br=bsPick();P.bs=br?{row:br}:{bad:'none'};break}
+   case 'bsbad':P.bs={bad:'qr'};break;
+   case 'bsstart':{var rw2=P.bs&&P.bs.row;if(rw2){setBike(rw2);P.st={};P.note='';P.t0=Date.now();P.mini=null;P.ongoing=rw2;P.bs=null;P.scr='dash';P.tab='work'}break}
    case 'resume':if(P.mini){var mn=P.mini;P.mini=null;P.scr=mn.scr;P.cur=mn.cur;P.tab=mn.tab||'work'}else{P.scr='dash';P.tab='work'}break;
    case 'restart':pLeave('restart');return;
    case 'go':P.scr=el.dataset.s;break;
@@ -3702,9 +3757,15 @@ function alLeft(a){return AL_BIKES.map(function(b,i){return i}).filter(function(
 function alVis(a){return alLeft(a).filter(function(i){var b=AL_BIKES[i];return a.f==='mech'?b[3]>0:a.f==='elec'?b[4]>0:a.f==='none'?(b[3]+b[4]===0):true})}
 function alSub(b){var t=(b[3]?b[3]+' mech.':'')+(b[3]&&b[4]?' • ':'')+(b[4]?b[4]+' elect. faults':'');return t||'No faults'}
 function alDots(m){var d='';for(var k=0;k<18;k++){var col=k<m[1]?'#2F6B55':k<m[1]+m[2]?'#D98324':k<m[1]+m[2]+m[3]?'#B0B0B0':'#E6E6E6';d+='<i style="background:'+col+'"></i>'}return '<span class="al-dots" aria-hidden="true">'+d+'</span>'}
+/* mechanic avatars: drawn from the name, so every mechanic gets the same one everywhere. A soft tint, one bold shape in a deeper tone of it, and the initials */
+var AV_PAL=[['#E6F2EC','#9FD0B8','#1F5C46'],['#EAE8FB','#B9B2F0','#3B2E8F'],['#FDEBDD','#F5BE94','#8A4515'],['#E3F1FA','#A6D3EE','#1C5677'],['#FBE6EC','#F0AFC2','#86304B'],['#FBF3D9','#EBD58B','#6E5612'],['#E8EEF3','#B4C6D4','#334B5E']];
+function avSvg(name,sz){var h=0;for(var k=0;k<name.length;k++)h=(h*111+name.charCodeAt(k))>>>0;
+  var p=AV_PAL[h%AV_PAL.length],v=(h>>>4)%6,pr=name.replace(/\./g,'').trim().split(/\s+/),ini=(pr[0].charAt(0)+(pr.length>1?pr[pr.length-1].charAt(0):'')).toUpperCase();
+  var shp=['<circle cx="34" cy="34" r="20" fill="'+p[1]+'"/>','<path d="M0 40V22a20 20 0 0140 0v18z" fill="'+p[1]+'"/>','<path d="M40 0v40H0z" fill="'+p[1]+'"/>','<path d="M0 0h22a18 18 0 01-18 18H0z" fill="'+p[1]+'"/><circle cx="31" cy="31" r="6" fill="'+p[1]+'"/>','<path d="M-4 30L30-4h14L-4 44z" fill="'+p[1]+'"/>','<rect x="20" y="20" width="26" height="26" rx="6" fill="'+p[1]+'" transform="rotate(20 33 33)"/>'][v];
+  return '<svg class="avs" viewBox="0 0 40 40" width="'+(sz||40)+'" height="'+(sz||40)+'" aria-hidden="true"><defs><clipPath id="avc'+h+'"><rect width="40" height="40" rx="10"/></clipPath></defs><g clip-path="url(#avc'+h+')"><rect width="40" height="40" fill="'+p[0]+'"/>'+shp+'</g><text x="20" y="20" dy=".36em" text-anchor="middle" font-family="var(--font-body),system-ui,sans-serif" font-weight="700" font-size="14" letter-spacing=".3" fill="'+p[2]+'">'+esc(ini)+'</text></svg>'}
 function alMInfo(m,ld,extra){
   var st=m[5]==='On shift'?'ok':'br';
-  return '<span class="al-av" aria-hidden="true">'+m[0].charAt(0)+'</span><span class="grow al-mi"><b>'+m[0]+'<em class="al-stat '+st+'">'+m[5]+'</em></b>'+(ld?alDots(m):'')+'<small class="al-leg">'+(m[2]+m[3])+' in the queue'+(extra||'')+'</small></span>';
+  return '<span class="al-av" aria-hidden="true">'+avSvg(m[0])+'</span><span class="grow al-mi"><b>'+m[0]+'<em class="al-stat '+st+'">'+m[5]+'</em></b>'+(ld?alDots(m):'')+'<small class="al-leg">'+(m[2]+m[3])+' in the queue'+(extra||'')+'</small></span>';
 }
 function alMore(m){
   return '<p><span class="al-ic chk sm" aria-hidden="true">⌖</span>'+m[4]+' · '+m[6]+'</p>'+
@@ -4030,7 +4091,7 @@ function allocScreen(c){
       var jb=AL_BIKES[r.length?r[0][0]:alCur()],jm=r.map(function(x){return x[1]}).filter(function(v,k,arr){return arr.indexOf(v)===k});
       var who=jm.length===1?AL_MECH[jm[0]][0]:jm.length+' mechanics';
       body='<div class="al-sum"><b>'+esc(jb[0])+' • '+jb[1]+'</b><small>'+alSub(jb)+'</small></div><div class="al-ok"><span class="ck-st g" style="width:44px;height:44px;font-size:22px">✓</span><b>Allocated to '+esc(who)+'</b>'+(kon(c,'notify')?'<small>'+(jm.length===1?'They have':'They have all')+' been notified.</small>':'')+'</div>'+
-        (jm.length>1?'<div class="al-grp">'+jm.map(function(mi){var m=AL_MECH[mi];return '<div class="ck-row" style="cursor:default"><span class="al-av" aria-hidden="true">'+m[0].charAt(0)+'</span><span class="grow"><b>'+esc(m[0])+'</b></span></div>'}).join('')+'<small style="display:block;color:#888;padding:8px 2px 0">Whoever starts first takes the job.</small></div>':'')+
+        (jm.length>1?'<div class="al-grp">'+jm.map(function(mi){var m=AL_MECH[mi];return '<div class="ck-row" style="cursor:default"><span class="al-av" aria-hidden="true">'+avSvg(m[0])+'</span><span class="grow"><b>'+esc(m[0])+'</b></span></div>'}).join('')+'<small style="display:block;color:#888;padding:8px 2px 0">Whoever starts first takes the job.</small></div>':'')+
         '<button type="button" class="pm-cta ck-end" data-pa="ckfinish2">Done</button>';
       return head+'<div class="ck-body">'+body+'</div>';
     }
@@ -4056,16 +4117,11 @@ function allocScreen(c){
       '<button type="button" class="pm-cta ck-end" data-pa="alassign"'+(nmj?'':' disabled')+'>'+(nmj?(kon(c,'notify')?'Assign and notify':'Assign')+(nmj>1?' · '+nmj+' mechanics':''):'Pick '+(mm?'a mechanic':'mechanics'))+'</button>';
     return head+'<div class="ck-body">'+body+'</div>';
   }
-  var g=a.g||'un',nB=alLeft(a).length,nA=alBikesDone(a).length;
-  var gtabs='<div class="pq-tabs al-g" role="tablist">'+[['un','Unallocated',nB],['al','Allocated',nA]].map(function(t){return '<button type="button" role="tab" aria-selected="'+(g===t[0])+'" class="'+(g===t[0]?'on':'')+'" data-pa="algrp" data-t="'+t[0]+'">'+t[1]+' <i>'+t[2]+'</i></button>'}).join('')+'</div>';
-  head=alHd(c,a,'Allocation','',canLeave,gtabs);
-  var nMech=g==='un'?AL_MECH.length:alMechsDone(a).length;
-  var nav='<nav class="al-nav" role="tablist" aria-label="Bikes or mechanics">'+[['mechs','Mechanics',nMech,PQI.prof],['bikes','Bikes',g==='un'?nB:nA,'<svg viewBox="0 0 48 48" fill="none"><circle cx="12" cy="31" r="7" stroke="currentColor" stroke-width="3"/><circle cx="36" cy="31" r="7" stroke="currentColor" stroke-width="3"/><path d="M12 31l8-14h8l8 14M20 17l5 14" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>']].map(function(t){return '<button type="button" role="tab" aria-selected="'+(a.tab===t[0])+'" class="'+(a.tab===t[0]?'on':'')+'" data-pa="altab" data-t="'+t[0]+'">'+t[3]+'<span>'+t[1]+' · '+t[2]+(g==='un'&&((t[0]==='bikes'&&a.sel.length)||(t[0]==='mechs'&&a.ms.length))?'<em>'+(t[0]==='bikes'?a.sel.length:a.ms.length)+'</em>':'')+'</span></button>'}).join('')+'</nav>';
+  /* one list of unallocated bikes; Mechanics / Bikes sit at the top as the screen's tabs (allocated bikes leave the list) */
+  var g='un',nB=alLeft(a).length;
+  var nav='<div class="pq-tabs al-g" role="tablist" aria-label="Mechanics or bikes">'+[['mechs','Mechanics',AL_MECH.length,a.ms.length],['bikes','Bikes',nB,a.sel.length]].map(function(t){return '<button type="button" role="tab" aria-selected="'+(a.tab===t[0])+'" class="'+(a.tab===t[0]?'on':'')+'" data-pa="altab" data-t="'+t[0]+'">'+t[1]+' <i>'+t[2]+'</i>'+(t[3]?'<em aria-label="'+t[3]+' selected">'+t[3]+'</em>':'')+'</button>'}).join('')+'</div>';
+  head=alHd(c,a,'Allocation','',canLeave,nav);nav='';
   var tabs=(a.note?'<p class="al-lim warn">'+a.note+'</p>':'');
-  if(g==='al'){
-    body=alAllocated(a,c,wait);
-    return head+'<div class="ck-body">'+tabs+body+'</div>'+nav;
-  }
   if(a.tab==='bikes'){
     var vis=alVis(a);
     body=alChips(c,a)+(mb&&vis.length?'<button type="button" class="al-all" data-pa="alall">'+(a.sel.length?'Clear selection':'Select '+(cp[0]===Infinity?'all '+vis.length:'first '+Math.min(cp[0],vis.length)))+'</button>':'')+
