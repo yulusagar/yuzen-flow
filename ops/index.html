@@ -316,10 +316,10 @@ main{max-width:1360px;margin:0 auto;padding-top:28px}
 .pm-row{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #E3E5F2;border-radius:12px;padding:9px 10px;min-height:44px}
 .pm-row .grow,.grow{flex:1;min-width:0}
 .pm-row small,.pm-card small{color:#5A5F8E;font-size:12px}
-.pm-cta{margin:auto 16px 18px;padding:13px;border-radius:14px;border:0;background:#5A2DC0;color:#fff!important;font:700 15px var(--font-body);flex:none;width:calc(100% - 32px)}
-.pm-cta[disabled]{background:#C9CBE0;cursor:not-allowed}
+.pm-cta{margin:auto 16px 18px;padding:13px;border-radius:14px;border:0;background:#003ce6;color:#fff!important;font:700 15px var(--font-body);flex:none;width:calc(100% - 32px)}
+.pm-cta[disabled]{background:#003ce6;opacity:.4;cursor:not-allowed}
 .pm-btn{padding:9px 14px;border-radius:12px;border:1px solid #5A2DC0;background:#fff;color:#5A2DC0!important;font-weight:700;font-size:13px}
-.pm-btn.p{background:#5A2DC0;color:#fff!important}
+.pm-btn.p{background:#003ce6;border-color:#003ce6;color:#fff!important}
 .pm-sq{width:36px;height:36px;border-radius:10px;border:1.5px solid #D5D8EA;background:#fff;font-weight:700;flex:none}
 .pm-sq.g{background:#DBF2E6;border-color:#1E6B4B;color:#1E6B4B}.pm-sq.f{background:#F9DDD7;border-color:#A33A2A;color:#A33A2A}.pm-sq.s{background:#F3E9C9;border-color:#8A5A00}
 .pm-chips{display:flex;gap:6px;flex-wrap:wrap}
@@ -1240,13 +1240,34 @@ video.cam-v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-
 .fr.rt-so{transition:transform .6s cubic-bezier(.45,0,.2,1)!important;transform:translateX(105%)!important}.fr.rtin{animation:rtrow .45s ease-out}@keyframes rtrow{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.ck-sheet.af.rt-grow,.rt-in,.ck-sheet.af.rt-out,.px-bd.rt-out{animation-duration:.01s}.fr.rt-so{transition:none!important}}
 
-.rs-rl{flex:1;min-width:0}.rs-st{flex:none;font:500 14px/20px var(--font-body);color:#919191}.rs-st.oos{color:#c13515}.rs-req:disabled:has(.rs-st.oos)>svg,.rs-req:disabled:has(.rs-st.oos) .rs-rl{opacity:.4}
+.rs-rl{flex:1;min-width:0}.rs-st{flex:none;font:500 14px/20px var(--font-body);color:#919191}.rs-st.oos{color:#919191}.rs-req:disabled:has(.rs-st.oos)>svg,.rs-req:disabled:has(.rs-st.oos) .rs-rl{opacity:.4}
 .fr-tx small.rq-os{color:#c13515}.fr.rq-oos{cursor:default}
 
 .fr.sw-r{transition:transform .6s cubic-bezier(.45,0,.2,1)!important;transform:translateX(105%)!important}.fr.sw-l{transition:transform .6s cubic-bezier(.45,0,.2,1)!important;transform:translateX(-105%)!important}
 .ck-sheet.rt-out{animation:rtout .28s ease-in forwards}
 .fr-la.sw-tap{animation:swtap .3s ease-in-out}@keyframes swtap{50%{transform:translateX(0) scale(.94)}}
 @media (prefers-reduced-motion:reduce){.fr.sw-r,.fr.sw-l{transition:none!important}}
+.alx-prw{overflow:hidden}
+
+.alx-chips{margin:0;border-bottom:1px solid #f0f0f0;padding:12px 16px;background:#fafafa}
+.alx-sa{display:flex;align-items:center;justify-content:space-between;padding:4px 16px 8px;font:500 14px/20px var(--font-body);color:#919191}.alx-sa button{border:0;background:none;padding:0;font:700 14px/20px var(--font-body);color:#003ce6;text-decoration:underline dotted;text-underline-position:from-font;cursor:pointer}
+
+/* list items: a second subheading always sits on the image's bottom edge */
+.fr-tx:has(>small+small){align-self:stretch;display:flex;flex-direction:column}.fr-tx>small+small{margin-top:auto}
+
+.afi-t{display:flex;align-items:center;gap:8px;min-width:0}.afi-t>b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.afi-b{flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid #919191;background:#fff;color:#717171;font:italic 700 14px/1 Georgia,'Times New Roman',serif;padding:0;cursor:pointer;display:grid;place-items:center;transition:background .15s,border-color .15s,color .15s}
+.afi-b.on{border-color:#003ce6;color:#003ce6;background:rgba(0,60,230,.08)}
+.afi{overflow:hidden}.afi-in{display:flex;flex-direction:column;gap:16px;padding:0 24px 20px}
+.afi.in{opacity:0}
+
+.afi-h{margin:0 0 8px;font:700 12px/16px var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:#919191}
+.afi .fm-ib{margin:0;gap:8px}.afi .fm-ib span{background:#f7f7f7;border-radius:8px;padding:10px 12px}.afi .fm-ib small{font:500 12px/16px var(--font-body);color:#919191}.afi .fm-ib b{font:700 14px/20px var(--font-body);color:#222;margin-top:2px}.afi .fm-ib em{display:block;font:500 12px/16px var(--font-body);font-style:normal;color:#717171}
+.af-hd{transition:padding-bottom .3s cubic-bezier(.2,.8,.2,1)}.af-hd.v:has(+.afi:not(.in)){padding-bottom:16px}
+@media (prefers-reduced-motion:reduce){.afi.in,.afi.out{animation-duration:.01s}}
+
+.ck-sheet.af.rt-open{animation:ovup .3s cubic-bezier(.22,.61,.36,1) backwards}.px-bd.rt-bdin{animation:rtbdin .3s ease-out backwards}@keyframes rtbdin{from{opacity:0}}
+.fr.sw-held{transform:translateX(105%)!important;transition:none!important}
 </style><style>/* installed-app overrides: the deck's phone fills the real screen */
 html.ops,html.ops body{margin:0;height:100%;background:#fff;overflow:hidden;padding:0!important}
 html.ops body>*:not(#phone):not(#opspick):not(#toast):not(script):not(style){display:none!important}
@@ -2453,9 +2474,9 @@ var OV={"icCmd": "<svg viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\">
 
 /* ⋮ → the old prototype's More options sheet: Bike commands, Discard task, Minimize */
 function ovIn(key){var now=Date.now();P.ovAt=P.ovAt||{};if(!P.ovAt[key])P.ovAt[key]=now;var e=now-P.ovAt[key];return e<300?' ov-in" style="animation-delay:-'+e+'ms':''}
-/* ⋮ inside a task: one menu everywhere, styled like the Resolve faults menu. Always Minimize and Discard task (red, last); Bike commands only in the checklist; Auto-request spare only in Resolve faults */
+/* ⋮ inside a task: one menu everywhere, styled like the Resolve faults menu. Always Minimize and Discard task (red, last); Bike commands in the checklist and Resolve faults (first); Auto-request spare only in Resolve faults */
 function ovSheet(){var c=(P.cur&&P.scr==='job')?pcard():null,/* screen-specific options only inside that task's screen, never on the task home */rows=[],row=function(pa,ic,t,sub,cls,ex,tail){return '<div class="af-row"><button type="button" class="mn-r'+(cls?' '+cls:'')+'" data-pa="'+pa+'"'+(ex||'')+'>'+ic+'<span><b>'+t+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</span>'+(tail||'')+'</button></div>'};
-  if(c&&c.module==='checklist')rows.push(row('ovcmd',OV.icCmd,'Bike commands'));
+  if(c&&(c.module==='checklist'||isRes(c)))rows.push(row('ovcmd',OV.icCmd,'Bike commands'));/* first in the checklist and Resolve faults menus */
   if(c&&isRes(c)){var on=fmS(c).reqRemove!==false;rows.push(row('rsmreq',FR_ICON_INV,'Auto-request spare','On removing parts','',' role="switch" aria-checked="'+on+'"','<span class="mn-tk">'+(on?RS_CHK_ON:RS_CHK_OFF)+'</span>'))/* icon left, checkbox right */}
   if(c&&c.module==='electrical'){var ds=pst(c.id).dbg;if(ds&&ds.res!=='cleared'&&ds.res!=='ask'){rows.push(row('elovr','','Mark as resolved'));rows.push(row('elleave','','Leave it open'))}}
   if(P.pools&&P.mode==='profile')rows.push(row('ovmin',OV.icMin,'Minimize'));
@@ -2641,7 +2662,7 @@ function phoneScreen(){
     }else{
       body=essHero()+'<div class="ess-sp"></div><section class="ov-ess" aria-label="Essentials">'+ovCmdBody()+'<button type="button" class="ess-more" data-pa="essdown" aria-label="Show more"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.5203 14.174L8.369 11.023C8.32567 10.9795 8.2915 10.9309 8.2665 10.8773C8.2415 10.8238 8.229 10.7663 8.229 10.705C8.229 10.5825 8.27042 10.476 8.35325 10.3855C8.43608 10.2952 8.54525 10.25 8.68075 10.25H15.3193C15.4548 10.25 15.5639 10.2957 15.6467 10.387C15.7296 10.4782 15.771 10.5846 15.771 10.7063C15.771 10.7368 15.7242 10.8423 15.6307 11.023L12.4798 14.174C12.4074 14.2465 12.3326 14.2994 12.2552 14.3327C12.1779 14.3661 12.0928 14.3828 12 14.3828C11.9072 14.3828 11.8221 14.3661 11.7448 14.3327C11.6674 14.2994 11.5926 14.2465 11.5203 14.174Z" fill="#919191"/></svg></button><div class="ess-wb"><h4 class="hm-h">Bike workbench</h4><div class="hm-short">'+[['bike','Bike status'],['spare','Spare card'],['cmd','Diagnostics']].map(function(x){return '<span><i>'+PQI[x[0]]+'</i>'+x[1]+'</span>'}).join('')+'</div></div></section>';/* the old prototype's Essentials panel, same as Bike commands */
     }
-    if(!P.t0)P.t0=Date.now();var hp=(P.tab==='work'&&P.hdProg)?'<div class="hd-prog" role="progressbar" aria-label="Tasks progress" aria-valuemin="0" aria-valuemax="'+tot+'" aria-valuenow="'+done+'">'+P.hdProg+'</div>':'';P.hdProg=null;return sbHTML()+(P.tab==='info'&&biRole()?biHd('Bike Info','bitab'):dashHd(BIKE.no,'\u0001',!(P.mode==='module'&&supportFlow(P.cards[0])),!(P.mode==='module'&&supportFlow(P.cards[0]))||dashTabs().length>1)).replace('<div class="pm-hd rb-hd">',hp?'<div class="dh-stk"><div class="pm-hd rb-hd">':'<div class="pm-hd rb-hd">')+(hp?hp+'</div>':'')+'<div class="pm-body">'+body+'</div>'+
+    if(!P.t0)P.t0=Date.now();var hp=(P.tab==='work'&&P.hdProg)?'<div class="hd-prog" role="progressbar" aria-label="Tasks progress" aria-valuemin="0" aria-valuemax="'+tot+'" aria-valuenow="'+done+'">'+P.hdProg+'</div>':'';P.hdProg=null;return sbHTML()+(dashHd(BIKE.no,'\u0001',!(P.mode==='module'&&supportFlow(P.cards[0])),!(P.mode==='module'&&supportFlow(P.cards[0]))||dashTabs().length>1)).replace('<div class="pm-hd rb-hd">',hp?'<div class="dh-stk"><div class="pm-hd rb-hd">':'<div class="pm-hd rb-hd">')+(hp?hp+'</div>':'')+'<div class="pm-body">'+body+'</div>'+
       (P.tab==='work'&&P.mode!=='module'&&all?'<div class="dh-fin"><button type="button" class="pm-cta" data-pa="finishjob">Finish task</button></div>':'')/* the finish button appears only once every task is done */+(dashTabs().length>1?'<div class="dt-bar" role="tablist">'+dashTabs().map(function(t){return '<button type="button" role="tab" aria-selected="'+(P.tab===t[0])+'" class="dt-tab'+(P.tab===t[0]?' on':'')+'" data-pa="tab" data-v="'+t[0]+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+(DT_IC[t[0]]||'')+'</svg><span>'+t[1]+'</span></button>'}).join('')+'</div>':'')+frToastHTML(false);/* tab bar pinned at the bottom, as on the RnM dashboard */
   }
   if(P.scr==='job'&&c.module==='checklist')return tkHdify(ckScreen(c),c);
@@ -2688,7 +2709,7 @@ function camSync(){var tg=document.querySelector('#phone .sc-cam,#phone .bs-cam'
   var put=function(){var t=document.querySelector('#phone .sc-cam,#phone .bs-cam');if(!t||!CAM.s)return;var v=t.querySelector('video.cam-v');if(!v){v=document.createElement('video');v.className='cam-v';v.setAttribute('playsinline','');v.setAttribute('autoplay','');v.muted=true;t.insertBefore(v,t.firstChild);t.classList.add('live')}if(v.srcObject!==CAM.s){v.srcObject=CAM.s;var pr=v.play();if(pr&&pr.catch)pr.catch(function(){})}};
   if(CAM.s){put();return}if(CAM.p)return;CAM.p=true;
   navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false}).then(function(st){CAM.p=false;CAM.s=st;if(!document.querySelector('#phone .sc-cam,#phone .bs-cam')){camSync();return}put()}).catch(function(){CAM.p=false;CAM.no=true})}
-function phoneRender(){try{scAuto()}catch(e){}setTimeout(function(){try{camSync()}catch(e){}},0);setTimeout(function(){try{foldFix()}catch(e){}},30);setTimeout(essLayout,0);setTimeout(tkAfter,0);fitPhone();
+function phoneRender(){try{scAuto()}catch(e){}setTimeout(function(){try{camSync()}catch(e){}},0);setTimeout(function(){try{foldFix()}catch(e){}},30);setTimeout(essLayout,0);setTimeout(tkAfter,0);setTimeout(alxAfter,0);setTimeout(afiAfter,0);fitPhone();
   var L=(P&&P.inline)?document.getElementById('ckinline'):document.getElementById('phone');
   if(!L)return;
   if(!P){L.innerHTML=MIRROR?'<div class="mir-wait"><b>Waiting for the deck</b><span>Play a module or flow on the Ops control deck and it appears here.</span></div>':'';var ci=document.getElementById('ckinline');if(ci)ci.innerHTML='';return}
@@ -2728,17 +2749,19 @@ function finishTask(c){
   document.addEventListener('click',function(e){if(sw&&e.target.closest&&e.target.closest('.cp-slide')&&!e.__swipe){e.stopPropagation();e.preventDefault()}},true);
 })();
 /* swipe a part dialog down to close it, like tapping ✕ */
-(function(){var sh=null,y0=0,dy=0,s0=0,tch=false,mv=false,ly=0,lt=0,vy=0;
+(function(){var sh=null,y0=0,dy=0,s0=0,tch=false,mv=false,ly=0,lt=0,vy=0,h0=0;
+  var shMax=function(f){var p=f.parentNode;return Math.min(f.scrollHeight,p?p.clientHeight*.96:f.scrollHeight)};
+  var SET='max-height .34s cubic-bezier(.2,.8,.2,1),transform .34s cubic-bezier(.2,.8,.2,1)';
   /* on a phone the sheet is its own scroll box, so the browser would take the pull as a scroll and cancel the gesture: the sheet turns off native touch panning (CSS) and this handler expands, closes or scrolls it itself */
-  document.addEventListener('pointerdown',function(e){var f=e.target.closest&&e.target.closest('.px-fs');if(!f||(e.button||0)>0)return;sh=f;y0=ly=e.clientY;lt=e.timeStamp;vy=0;dy=0;s0=f.scrollTop;mv=false;tch=e.pointerType!=='mouse';cancelAnimationFrame(f._ia||0)});
-  document.addEventListener('pointermove',function(e){if(!sh)return;dy=e.clientY-y0;if(Math.abs(dy)>8)mv=true;var dt=Math.max(1,e.timeStamp-lt);vy=(e.clientY-ly)/dt;ly=e.clientY;lt=e.timeStamp;var col=+sh.dataset.col||0;if(col&&dy<0&&sh.dataset.exp==='0'){sh.style.transition='none';sh.style.maxHeight=Math.min(sh.scrollHeight,col-dy)+'px';return}if(dy>0&&s0<=0&&sh.scrollTop<=0){sh.style.transition='none';sh.style.transform='translateY('+dy+'px)';return}if(tch)sh.scrollTop=s0-dy});
+  document.addEventListener('pointerdown',function(e){var f=e.target.closest&&e.target.closest('.px-fs');if(!f||(e.button||0)>0)return;sh=f;h0=f.offsetHeight;y0=ly=e.clientY;lt=e.timeStamp;vy=0;dy=0;s0=f.scrollTop;mv=false;tch=e.pointerType!=='mouse';cancelAnimationFrame(f._ia||0)});
+  document.addEventListener('pointermove',function(e){if(!sh)return;dy=e.clientY-y0;if(Math.abs(dy)>8)mv=true;var dt=Math.max(1,e.timeStamp-lt);vy=vy*.6+((e.clientY-ly)/dt)*.4;ly=e.clientY;lt=e.timeStamp;var col=+sh.dataset.col||0;if(col&&sh.dataset.exp==='0'){sh.style.transition='none';if(dy<0){sh.style.transform='';sh.style.maxHeight=Math.min(shMax(sh),col-dy)+'px'}else{sh.style.maxHeight=col+'px';sh.style.transform='translateY('+dy*.9+'px)'}return}if(col&&sh.dataset.exp==='1'&&dy>0&&s0<=0&&sh.scrollTop<=0){sh.style.transition='none';var hh=h0-dy;if(hh>=col){sh.style.maxHeight=hh+'px';sh.style.transform=''}else{sh.style.maxHeight=col+'px';sh.style.transform='translateY('+(col-hh)+'px)'}return}if(dy>0&&s0<=0&&sh.scrollTop<=0){sh.style.transition='none';sh.style.transform='translateY('+dy+'px)';return}if(tch)sh.scrollTop=s0-dy});
   var snap=function(v,f){var c=(typeof P!=='undefined'&&P&&P.cur)?pcard():null;if(!c)return;var fc=P.cards.filter(isRes)[0];if(f&&f.dataset.sk==='np')scS(c).npExp=v;else if(f&&f.dataset.sk==='fn')scS(c).fnExp=v;else if(f&&f.dataset.sk==='tg')scS(c).tgExp=v;else if(f&&f.dataset.sk==='nb')fmS(fc||c).nbExp=v;else fmS(fc||c).resExp=v};
   var end=function(){if(!sh)return;var f=sh;sh=null;var col=+f.dataset.col||0;
     if(mv){var eat=function(ev){ev.stopPropagation();ev.preventDefault();document.removeEventListener('click',eat,true)};document.addEventListener('click',eat,true);setTimeout(function(){document.removeEventListener('click',eat,true)},0)}
     if(tch&&f.style.transform===''&&!(col&&f.dataset.exp==='0')&&Math.abs(vy)>.2){var v=-vy*16;var go=function(){f.scrollTop+=v;v*=.94;if(Math.abs(v)>.5)f._ia=requestAnimationFrame(go)};f._ia=requestAnimationFrame(go)}
-    if(col&&f.dataset.exp==='0'&&dy<0){f.style.transition='max-height .22s';if(-dy>40){f.style.maxHeight=f.scrollHeight+'px';f.dataset.exp='1';snap(true,f)}else f.style.maxHeight=col+'px';return}
-    if(col&&f.dataset.exp==='1'&&dy>90){f.style.transition='max-height .22s,transform .2s';f.style.transform='';f.style.maxHeight=col+'px';f.dataset.exp='0';snap(false,f);return}
-    if(dy>90){var pb=f.previousElementSibling,x=f.querySelector('.px-xa')||(pb&&pb.classList&&pb.classList.contains('px-bd')?pb:null);if(x){x.click();return}}f.style.transition='transform .2s';f.style.transform=''};
+    if(col&&f.dataset.exp==='0'){f.style.transition=SET;if(dy<0&&(-dy>40||vy<-.35)){f.style.transform='';f.style.maxHeight=shMax(f)+'px';f.dataset.exp='1';snap(true,f);return}if(dy>0&&(dy>90||vy>.6)){var pb0=f.previousElementSibling;if(pb0&&pb0.classList&&pb0.classList.contains('px-bd')){f.style.transform='translateY(100%)';setTimeout(function(){pb0.click()},200);return}}f.style.transform='';f.style.maxHeight=col+'px';return}
+    if(col&&f.dataset.exp==='1'&&dy>0&&s0<=0){f.style.transition=SET;var hh=h0-dy;if(hh<col-90||(hh<col&&vy>.6)){var pb1=f.previousElementSibling;if(pb1&&pb1.classList&&pb1.classList.contains('px-bd')){f.style.transform='translateY(100%)';setTimeout(function(){pb1.click()},200);return}}if(hh<(h0+col)/2||vy>.35){f.style.transform='';f.style.maxHeight=col+'px';f.dataset.exp='0';snap(false,f);return}f.style.transform='';f.style.maxHeight=h0+'px';return}
+    if(dy>90||(dy>30&&vy>.6)){var pb=f.previousElementSibling,x=f.querySelector('.px-xa')||(pb&&pb.classList&&pb.classList.contains('px-bd')?pb:null);if(x){f.style.transition='transform .2s ease-in';f.style.transform='translateY(100%)';setTimeout(function(){x.click()},180);return}}f.style.transition='transform .34s cubic-bezier(.2,.8,.2,1)';f.style.transform=''};
   document.addEventListener('pointerup',end);document.addEventListener('pointercancel',end);
 })();
 document.addEventListener('click',function(e){if(S.ycMore&&!(e.target.closest&&e.target.closest('.ycmore'))){S.ycMore=false;render()}});
@@ -2873,7 +2896,7 @@ document.addEventListener('click',function(e){
    case 'iafit':{var pp7=pst(c.id);pp7.req[IA[i][0]]='fitted';break}
    case 'gknob':{var gk=P.cards[0];gk.knobs[el.dataset.k]=!kon(gk,el.dataset.k);break}
    case 'frrm':{var fr1=fmS(c).faults[i];if(!fr1)break;if(frNeedsTag(c,fr1)){rtOpen(c,i,'old','swipe');break}frRemove(c,i);break}
-   case 'frin':{var fr2=fmS(c).faults[i];if(fr2){var fp2=pxP(pxS(c),fr2.n),cd2=frCands(fr2,fp2);if(cd2.length>1)P.frPick={i:i,sel:null};else if(cd2.length)frInstall(c,i,cd2[0])}break}
+   case 'frin':{var fr2=fmS(c).faults[i];if(fr2){var fp2=pxP(pxS(c),fr2.n),cd2=frCands(fr2,fp2);if(cd2.length>1)P.frPick={i:i,sel:null,sw:!!el.dataset.sw};else if(cd2.length)frInstall(c,i,cd2[0])}break}
    case 'frps':{if(P.frPick)P.frPick.sel=v;break}
    case 'frpx':{P.frPick=null;break}
    case 'frpgo':{var pk=P.frPick;if(pk&&pk.sel){frInstall(c,pk.i,pk.sel);P.frPick=null}break}
@@ -2948,7 +2971,7 @@ document.addEventListener('click',function(e){
    case 'nbgo0':{var sg=fmS(c),ng=sg.nb,fg=sg.faults[i];if(!ng||!ng.r.length||!fg)break;var pg=pxP(pxS(c),fg.n);
      var autoR=frWant(c,pg)&&!pg.req&&!(pg.recv>1);
      P.frT={msg:pbase(fg.n)+' moved to sparecard',ic:'out',i:i,prev:{off:!!pg.off,inst:!!pg.inst,sOld:!!pg.sOld,autoReq:autoR,fnew:pg.fnew||null,recv:pg.recv}};
-     pg.inst=false;pg.off=true;pg.fnew={r:ng.r.slice()};pg.recv=Math.max(0,pg.recv-1);frToastTimer();
+     pg.inst=false;pg.off=true;pg.fnew={r:ng.r.slice(),at:pxClock()};pg.recv=Math.max(0,pg.recv-1);frToastTimer();
      sg.sheet=null;sg.nb=null;sg.nbExp=false;if(autoR&&!(pg.recv>0))scFire('pxreq',{n:fg.n});break}
    case 'rsmore':{P.moreOpen=false;P.optOpen=true;break}
    case 'rsmx':{fmS(c).menu=false;break}
@@ -2973,11 +2996,12 @@ document.addEventListener('click',function(e){
      var onb=frState(rf,Object.assign({},rp,{off:false,inst:false})).k==='fault'&&!rp.off&&!rp.sOld;
      if(rp.req){rp.req=false;rp.acc=false}else if(onb){if(fmS(c).reqRemove===false)rp.wantSpare=!rp.wantSpare}else{scFire('pxreq',{n:rf.n})}break}
    case 'rsrm':{var rf4=fmS(c).faults[i];if(rf4&&frNeedsTag(c,rf4)){rtOpen(c,i,'old','sheet');break}fmS(c).sheet=null;pxS(c).draft=null;scFire('frrm',{i:i});break}
+   case 'afi':{var an=el.dataset.n;if(P.afi===an){var sec0=document.querySelector('.scr .afi');if(sec0){var H0=sec0.offsetHeight,sh0=sec0.closest('.ck-sheet'),fold0=sh0&&sh0.dataset.col0&&sh0.dataset.exp==='0',hd0=sec0.previousElementSibling,dh0=hd0&&hd0.classList.contains('v')?20:0;sec0.style.transition='none';sec0.style.maxHeight=H0+'px';if(fold0){sh0.style.transition='none';sh0.style.maxHeight=(+sh0.dataset.col0+H0-dh0)+'px'}void sec0.offsetHeight;if(dh0)hd0.style.paddingBottom='36px';sec0.style.transition='max-height .3s cubic-bezier(.2,.8,.2,1),opacity .2s ease-in';sec0.style.maxHeight='0px';sec0.style.opacity='0';if(fold0){sh0.style.transition='max-height .3s cubic-bezier(.2,.8,.2,1)';sh0.style.maxHeight=sh0.dataset.col0+'px';sh0.dataset.col=sh0.dataset.col0}setTimeout(function(){if(P&&P.afi===an){P.afi=null;phoneRender()}},310);return}P.afi=null}else{P.afi=an;P.afiAt=Date.now()}break}
    case 'rtx':{var rx=fmS(c),rsh=rx.sheet;if(!rsh||!rsh.rt)break;if(rsh.rt.from==='swipe'){rx.sheet=null;rx.nb=null;pxS(c).draft=null}else if(rsh.rt.kind==='fnew'){rx.sheet={t:'res',i:rsh.i}}else{delete rsh.rt;rsh.back=Date.now()}break}
    case 'rtscan':{var rs9=fmS(c).sheet;if(!rs9||!rs9.rt)break;rs9.rt.tag=scTagId();rs9.rt.st='tagged';rs9.rt.at=Date.now();rtAuto(c,rs9);break}
    case 'rtretag':{var rr9=fmS(c).sheet;if(!rr9||!rr9.rt)break;rr9.rt.st='scan';rr9.rt.at=Date.now();rr9.rt.retag=1;break}
    case 'rsedit':{var re1=fmS(c),rf1=re1.faults[i];if(!rf1)break;re1.sheet={t:'part',n:rf1.n};re1.af={n:rf1.n,mode:'edit',r:rf1.r.slice(),from:i};break}
-   case 'rsfix':case 'rsfalse':{var rf2=fmS(c).faults[i];if(!rf2)break;if(a==='rsfix'&&(rf2.r.indexOf('Missing')>=0||pxP(pxS(c),rf2.n).miss))break;var want=a==='rsfix'?'Repaired':'False issue';rf2.res=(rf2.res&&rf2.res.act===want)?null:{act:want};if(!rf2.res)delete rf2.res;break}/* one of the two at a time; the sheet stays open and drops the request and remove sections once the fault is resolved */
+   case 'rsfix':case 'rsfalse':{var rf2=fmS(c).faults[i];if(!rf2)break;if(a==='rsfix'&&(rf2.r.indexOf('Missing')>=0||pxP(pxS(c),rf2.n).miss))break;var want=a==='rsfix'?'Repaired':'False issue';rf2.res=(rf2.res&&rf2.res.act===want)?null:{act:want,at:pxClock(),by:'You'};if(!rf2.res)delete rf2.res;break}/* one of the two at a time; the sheet stays open and drops the request and remove sections once the fault is resolved */
    case 'rsdel':{var re3=fmS(c),rf3=re3.faults[i];if(!rf3)break;re3.af={n:rf3.n,mode:'view',r:rf3.r.slice()};scFire('afdel');break}
    case 'afx':{var sx=fmS(c);sx.sheet=null;sx.af=null;break}
    case 'afedit':{var ae=fmS(c).af;if(ae)ae.mode='edit';break}
@@ -3452,9 +3476,9 @@ function frRow(c,x,i,f){
   var bd=gap?FR_BADGE.miss:st.k==='new'?FR_BADGE['new']:st.k==='fixed'?FR_BADGE.fixed:st.k==='false'?FR_BADGE['false']:FR_BADGE.fault;
   var sw=gap?'l':(st.k==='fault'||st.k==='new')?'r':'';
   var cd=gap?frCands(f,p):[],spare=cd.length>0;
-  var an=P.frAnim&&P.frAnim.i===i?(' '+P.frAnim.k):'';
+  var an=P.frAnim&&P.frAnim.i===i?(' '+P.frAnim.k):'';var shx=fmS(c).sheet,held=!!(shx&&shx.rt&&shx.rt.from==='swipe'&&shx.i===i);if(held)an+=' sw-held';/* swiped away while its tag is scanned: the row stays out */
   var la=!gap?'':spare?'':p.req?'<span class="fr-la dis" aria-disabled="true">Requested</span>':'<button type="button" class="fr-la" data-pa="pxreq" data-n="'+esc(f.n)+'">Request<br>spare</button>';
-  return '<div class="fr-w'+(gap?' g':'')+'" data-i="'+i+'">'+(sw==='r'?'<span class="fr-ra">'+FR_ICON_OUT_D+'<span>'+((st.k==='fault'&&frWant(c,p)&&!p.req&&!(p.recv>0))?'Remove and<br>request part':'Remove<br>part')+'</span></span>':'')+
+  return '<div class="fr-w'+(gap?' g':'')+(held?' r-on':'')+'" data-i="'+i+'">'+(sw==='r'?'<span class="fr-ra">'+FR_ICON_OUT_D+'<span>'+((st.k==='fault'&&frWant(c,p)&&!p.req&&!(p.recv>0))?'Remove and<br>request part':'Remove<br>part')+'</span></span>':'')+
    '<button type="button" class="fr'+(gap?' g':'')+an+'" data-pa="fmrow" data-i="'+i+'"'+(sw?' data-sw="'+(gap&&!spare?'b':sw)+'"':'')+(spare?' data-spare="1"':'')+'>'+
    '<span class="fr-th'+(gap?' d':'')+'">'+frThumb(f.n)+bd+'</span>'+frSubs(st.sub,'<b>'+pnm(f.n,PART_QTY[pbase(f.n)]?(f.q||1):null)+'</b>')+'</button>'+(sw==='l'&&!spare?la:'')+(spare?'<div class="fr-in" aria-hidden="true"><span class="fr-th">'+frThumb(f.n)+cd.map(function(k,j){var b=frCandBadge(f,k);return j?b.replace('class="fr-bd"','class="fr-bd" style="right:'+(4+j*28)+'px"'):b}).join('')+'</span><span class="fr-tx"><b>'+pnm(f.n,PART_QTY[pbase(f.n)]?(f.q||1):null)+'</b><small>'+cd.map(function(k){return k==='new'?'New part':'Fixed part'}).join(' • ')+'</small></span></div>':'')+'</div>';
 }
@@ -3533,7 +3557,7 @@ function scInvPage(c,s){
   var x=pxS(c),L=[];Object.keys(x.p).forEach(function(n){(x.p[n].rl||[]).forEach(function(r){if(!r.acc||r.cancel)return;L.push({n:n,r:r})})});
   L.sort(function(a,b){return b.r.t-a.r.t});
   var rows=L.map(function(o){var r=o.r,done=!!r.acc;
-    return '<div class="fr-w"><div class="fr"><span class="fr-th">'+frThumb(o.n)+(((r.k==='new'&&r.bk==='fault')||r.k==='fnew')?scDualBadges():scBadge(r.bk||(r.k==='new'?'new':'fault')))+'</span><span class="fr-tx rt"><span><b>'+pnm(o.n,r.q>1?r.q:null)+'</b><small>'+((((r.k==='new'&&r.bk==='fault')||r.k==='fnew')&&r.fr&&r.fr.length)?'New part: '+r.fr.join(' \u2022 '):r.bk==='fixed'?'Fixed part':r.bk==='false'?'False issue':(r.bk==='fault'||r.k==='old')?'Faulty part':'New part')+'</small></span><small class="fr-ret">Returned at '+esc(r.accAt||'')+'</small></span></div></div>'}).join('');
+    return '<div class="fr-w"><div class="fr"><span class="fr-th">'+frThumb(o.n)+(r.tag?scTagBadges((r.bk==='fixed'||r.bk==='false')?r.bk:'fault'):((r.k==='new'&&r.bk==='fault')||r.k==='fnew')?scDualBadges():scBadge(r.bk||(r.k==='new'?'new':'fault')))+'</span><span class="fr-tx rt"><span><b>'+pnm(o.n,r.q>1?r.q:null)+'</b><small>'+((((r.k==='new'&&r.bk==='fault')||r.k==='fnew')&&r.fr&&r.fr.length)?'New part: '+r.fr.join(' \u2022 '):r.bk==='fixed'?'Fixed part':r.bk==='false'?'False issue':(r.bk==='fault'||r.k==='old')?'Faulty part':'New part')+'</small></span><small class="fr-ret">Returned at '+esc(r.accAt||'')+'</small></span></div></div>'}).join('');
   return scHead(c,'Inventory',BIKE.no,false,'',true)+'<div class="fr-body"><div class="fr-list">'+(rows||'<div class="sc-empty"><b>No returns yet</b><small>Parts you return from the sparecard are listed here until IA receives them.</small></div>')+'</div></div>';
 }
 /* parts that need a new part and have not received one: fault marked, nothing received yet */
@@ -3573,7 +3597,7 @@ function scRqList(c,s){
 function scRqSheet(c,s){
   var pk=s.pick;if(!pk)return '';
   var chips=FM_REASONS.concat(['Missing']).map(function(r){return '<button type="button" class="af-chip'+(pk.r.indexOf(r)>=0?' on':'')+'" data-pa="rqr" data-v="'+esc(r)+'">'+esc(r)+'</button>'}).join('');
-  return '<div class="px-bd" data-pa="rqx"></div><div class="ck-sheet px-fs af"><span class="px-grab" aria-hidden="true"></span><div class="af-hd"><span class="fr-th">'+frThumb(pk.n)+FR_BADGE['new']+'</span><span class="fr-tx"><b>'+pnm(pk.n,null)+'</b><small>New part</small></span></div><div class="af-body"><p class="af-lbl">Pick faults</p><div class="af-chips">'+chips+'</div></div><div class="af-bar"><button type="button" class="ca" data-pa="rqx">Cancel</button><button type="button" class="go" data-pa="rqgo"'+(pk.r.length?'':' disabled')+'>Mark faulty &amp; request</button></div></div>';
+  return '<div class="px-bd" data-pa="rqx"></div><div class="ck-sheet px-fs af"><span class="px-grab" aria-hidden="true"></span><div class="af-hd"><span class="fr-th">'+frThumb(pk.n)+FR_BADGE['new']+'</span><span class="fr-tx"><b>'+pnm(pk.n,null)+'</b><small>New part</small></span></div><div class="af-body"><p class="af-lbl">Pick faults</p><div class="af-chips">'+chips+'</div></div><div class="af-bar"><button type="button" class="ca" data-pa="rqx">Cancel</button><button type="button" class="go" data-pa="rqgo"'+(pk.r.length?'':' disabled')+'>Mark and request</button></div></div>';
 }
 function scReqPage(c,s){
   var tabs=[['marked','Marked']].concat(Object.keys(PX_CAT).map(function(a){return [a,a]}));
@@ -3647,14 +3671,56 @@ function frRemove(c,i){var fr1=fmS(c).faults[i];if(fr1){var fp1=pxP(pxS(c),fr1.n
 function nbRemove(c,i){var sg=fmS(c),ng=sg.nb,fg=sg.faults[i];if(!ng||!fg)return;var pg=pxP(pxS(c),fg.n);
   var autoR=frWant(c,pg)&&!pg.req&&!(pg.recv>1);
   P.frT={msg:pbase(fg.n)+' moved to sparecard',ic:'out',i:i,prev:{off:!!pg.off,inst:!!pg.inst,sOld:!!pg.sOld,autoReq:autoR,fnew:pg.fnew||null,recv:pg.recv}};
-  pg.inst=false;pg.off=true;pg.fnew={r:ng.r.slice()};pg.recv=Math.max(0,pg.recv-1);frToastTimer();
+  pg.inst=false;pg.off=true;pg.fnew={r:ng.r.slice(),at:pxClock()};pg.recv=Math.max(0,pg.recv-1);frToastTimer();
   sg.sheet=null;sg.nb=null;sg.nbExp=false;if(autoR&&!(pg.recv>0))scFire('pxreq',{n:fg.n})}
 
+
+/* ───────── part info: an "i" beside the part name on every part sheet; it opens and closes the info section like an accordion ───────── */
+function afAgoClock(t){if(!t)return '';var m=/(\d+):(\d+)\s*(am|pm)/i.exec(t);if(!m)return t;var d=new Date(),h=(+m[1])%12+(/pm/i.test(m[3])?12:0),then=new Date(d.getFullYear(),d.getMonth(),d.getDate(),h,+m[2]),mins=Math.max(0,Math.round((d-then)/60000));return mins<1?'Just now':mins<60?mins+(mins===1?' min':' mins')+' ago':Math.floor(mins/60)+(mins<120?' hr':' hrs')+' ago'}
+function afWho(n,f){var w=fmWho(n,f);if(f&&f.added)return {by:'You',role:(P&&P.role)||'Mechanic',ago:'Just now'};var h=pxHash(n),ago=h%3===0?(1+h%6)+((1+h%6)===1?' day':' days')+' ago':(2+h%20)+' hrs ago';return {by:w.by,role:w.role,ago:ago}}
+function afTile(l,v,sub){return '<span><small>'+l+'</small><b>'+esc(v)+'</b>'+(sub?'<em>'+esc(sub)+'</em>':'')+'</span>'}
+function afInfoBody(c,n,kind){var p=pxP(pxS(c),n),f=fmFind(n),h='';
+  var grp=function(t,tiles){return '<div class="afi-g"><p class="afi-h">'+t+'</p><div class="fm-ib">'+tiles+'</div></div>'};
+  var faultOnNew=kind==='new'&&p.fnew&&p.fnew.r&&p.fnew.r.length;
+  if(kind==='old'&&f){var w=afWho(n,f);h+=grp('Fault info',afTile('Marked by',w.by,w.role)+afTile('Marked',w.ago));
+    var r=f.res;if(r&&r.act==='Repaired')h+=grp('Fixed',afTile('Fixed by',r.by||'You',(P&&P.role)||'Mechanic')+afTile('Fixed at',r.at?afAgoClock(r.at):'Just now'));
+    else if(r&&r.act==='False issue')h+=grp('False issue',afTile('Marked false by',r.by||'You',(P&&P.role)||'Mechanic')+afTile('Marked at',r.at?afAgoClock(r.at):'Just now'))}
+  if(faultOnNew)h+=grp('Fault info',afTile('Marked by','You',(P&&P.role)||'Mechanic')+afTile('Marked',p.fnew.at?afAgoClock(p.fnew.at):'Just now'));
+  if(kind==='old'){var ag=pxAge(n);h+=grp('Part info',afTile('On bike since',ag.age)+afTile('Distance since',ag.km))}
+  else h+=grp('Part info',afTile('Received',p.recvAt?afAgoClock(p.recvAt):'5 mins ago'));
+  return h}
+/* put the "i" after the name in the sheet header and the section right under the header; an open section shows the sheet in full */
+function afInfoWrap(html,c,n,kind){if(!html||!n||html.indexOf('af-hd')<0)return html;var on=P.afi===n,at=P.afiAt&&Date.now()-P.afiAt<320;
+  var btn='<button type="button" class="afi-b'+(on?' on':'')+'" data-pa="afi" data-n="'+esc(n)+'" aria-label="Part info" aria-expanded="'+on+'">i</button>';
+  var hi=html.indexOf('<div class="af-hd');var bi=html.indexOf('<b>',hi),be=html.indexOf('</b>',bi);if(bi<0||be<0)return html;
+  html=html.slice(0,bi)+'<span class="afi-t">'+html.slice(bi,be+4)+btn+'</span>'+html.slice(be+4);
+  if(!on)return html;
+  /* the header ends where its two spans close: find the matching </div> */
+  var depth=0,k=hi,end=-1;while(k<html.length){var o=html.indexOf('<div',k),cl=html.indexOf('</div>',k);if(cl<0)break;if(o>=0&&o<cl){depth++;k=o+4}else{depth--;k=cl+6;if(depth===0){end=k;break}}}
+  if(end<0)return html;
+  var sec='<div class="afi'+(at?' in':'')+'"'+(at?' style="max-height:0px"':'')+' role="region" aria-label="Part info"><div class="afi-in">'+afInfoBody(c,n,kind)+'</div></div>';
+  return html.slice(0,end)+sec+html.slice(end)}
+/* a folded sheet grows by the info section only: the primary action stays in view, the secondary actions stay folded below */
+function afiAfter(){if(P&&P.afi&&!document.querySelector('#phone .afi-b,#ckinline .afi-b'))P.afi=null;/* a closed sheet forgets its open info: it opens folded next time */var sec=document.querySelector('.scr .afi.in');if(!sec)return;var hd=sec.previousElementSibling,dh=hd&&hd.classList.contains('v')?20:0;sec.classList.remove('in');var sh=sec.closest('.ck-sheet'),H=sec.scrollHeight,fold=sh&&sh.dataset.col&&sh.dataset.exp==='0';
+  var base=fold?+(sh.dataset.col0||sh.dataset.col):0;if(fold){sh.dataset.col0=base;sh.style.transition='none';sh.style.maxHeight=base+'px'}
+  sec.style.transition='none';sec.style.maxHeight='0px';void sec.offsetHeight;
+  sec.style.transition='max-height .3s cubic-bezier(.2,.8,.2,1),opacity .2s ease-out';sec.style.maxHeight=H+'px';sec.style.opacity='1';
+  if(fold){sh.style.transition='max-height .3s cubic-bezier(.2,.8,.2,1)';sh.dataset.col=base+H-dh;sh.style.maxHeight=(base+H-dh)+'px'}/* the header gives back 20px as the section opens, so the sheet grows by the difference */
+  setTimeout(function(){sec.style.maxHeight='none'},320)}
+
+(function(){
+  var a1=frResSheet;frResSheet=function(c,s,f,i){return afInfoWrap(a1.apply(this,arguments),c,f&&f.n,'old')};
+  var a2=frNewBikeSheet;frNewBikeSheet=function(c,s,f,i){return afInfoWrap(a2.apply(this,arguments),c,f&&f.n,'new')};
+  var a3=rtSheet;rtSheet=function(c,s,f,sh){return afInfoWrap(a3.apply(this,arguments),c,f&&f.n,sh&&sh.rt&&sh.rt.kind==='fnew'?'new':'old')};
+  var a4=scNewSheet;scNewSheet=function(c,s){var n=s&&s.np&&s.np.n;return afInfoWrap(a4.apply(this,arguments),c,n,'new')};
+  var a5=scTagSheet;scTagSheet=function(c,s){var t=s&&s.tg;return afInfoWrap(a5.apply(this,arguments),c,t&&t.n,t&&t.k!=='old'?'new':'old')};
+  var a6=scFnewSheet;scFnewSheet=function(c,s){var n=s&&s.fn&&s.fn.n;return afInfoWrap(a6.apply(this,arguments),c,n,'new')};
+})();
 /* ───────── swipe teaching: when a sheet button does what a swipe on the row does, the sheet slides away and the row plays that swipe, then the action runs ───────── */
 var SW_TEACH={
   rsrm:function(c,el){var f=fmS(c).faults[+el.dataset.i];if(!f||frNeedsTag(c,f))return null;return {i:+el.dataset.i,row:'.fr[data-pa="fmrow"][data-i="'+el.dataset.i+'"]',dir:'r'}},
   rsspare:function(c,el){return {i:+el.dataset.i,row:'.fr[data-pa="fmrow"][data-i="'+el.dataset.i+'"]',dir:'b',after:function(){var fs=fmS(c);fs.sheet=null;pxS(c).draft=null;phoneRender()}}},
-  frpgo:function(c,el){var pk=P.frPick;if(!pk||!pk.sel)return null;return {i:pk.i,row:'.fr[data-pa="fmrow"][data-i="'+pk.i+'"]',dir:'in'}},
+  frpgo:function(c,el){var pk=P.frPick;if(!pk||!pk.sel||pk.sw)return null;/* the swipe already showed it */return {i:pk.i,row:'.fr[data-pa="fmrow"][data-i="'+pk.i+'"]',dir:'in'}},
   spinst:function(c,el){var np=scS(c).np;if(!np||!scSlotEmpty(np.n))return null;var ix=-1;scParts(c).forEach(function(r,q){if(r.n===np.n&&r.k==='new'&&ix<0)ix=q});return ix<0?null:{row:'.fr-w[data-i="'+ix+'"] > .fr',dir:'l'}},
   spret:function(c,el){var np=scS(c).np;if(!np)return null;var ix=-1;scParts(c).forEach(function(r,q){if(r.n===np.n&&r.k==='new'&&ix<0)ix=q});return ix<0?null:{row:'.fr-w[data-i="'+ix+'"] > .fr',dir:'r'}}
 };
@@ -3680,13 +3746,14 @@ function swTeach(a,el,c){if(!c)return false;var t=null;try{t=SW_TEACH[a](c,el)}c
 /* ───────── Remove part & initiate return: a faulty part leaves the bike only with a tag, so nothing untagged reaches the sparecard ───────── */
 function frNeedsTag(c,f){if(!pxKon('tag'))return false;var p=pxP(pxS(c),f.n),st=frState(f,Object.assign({},p,{off:false,inst:false}));return st.k==='fault'&&!p.off&&!p.sOld&&!p.inst}
 function rtOpen(c,i,kind,from){var s=fmS(c),f=s.faults[i];if(!f)return;var sh=(s.sheet&&s.sheet.t==='res'&&s.sheet.i===i)?s.sheet:{t:'res',i:i};
-  sh.rt={kind:kind,from:sh===s.sheet?from:'swipe',st:'scan',at:from==='sheet'&&sh===s.sheet?Date.now():0,r:kind==='fnew'&&s.nb?s.nb.r.slice():f.r.slice()};var se=document.querySelector('.scr .ck-sheet.af');sh.rt.h0=se?se.offsetHeight:0;s.sheet=sh;pxS(c).draft=null}
+  sh.rt={kind:kind,from:sh===s.sheet?from:'swipe',st:'scan',at:from==='sheet'&&sh===s.sheet?Date.now():0,o:sh===s.sheet?0:Date.now(),r:kind==='fnew'&&s.nb?s.nb.r.slice():f.r.slice()};var se=document.querySelector('.scr .ck-sheet.af');sh.rt.h0=se?se.offsetHeight:0;s.sheet=sh;pxS(c).draft=null}
 /* the tagged sheet stays a moment, then slides away while the row slides off to the right */
 function rtAuto(c,sh){clearTimeout(P.rtT);var live=function(){return P&&fmS(c).sheet===sh&&sh.rt&&sh.rt.st==='tagged'};
   P.rtT=setTimeout(function(){if(!live())return;
     /* 1. the sheet slides away */
     [].forEach.call(document.querySelectorAll('.scr .ck-sheet.af.rt,.scr .px-bd'),function(e){e.classList.add('rt-out')});
     var row=document.querySelector('.scr .fr[data-pa="fmrow"][data-i="'+sh.i+'"]');
+    if(sh.rt.from==='swipe'){P.rtT=setTimeout(function(){if(P&&fmS(c).sheet===sh)rtCommit(c,sh)},300);return}/* the swipe already showed the row leaving */
     if(row&&row.scrollIntoView)row.scrollIntoView({block:'nearest',behavior:'smooth'});
     P.rtT=setTimeout(function(){if(!live())return;
       [].forEach.call(document.querySelectorAll('.scr .ck-sheet.af.rt,.scr .px-bd'),function(e){e.style.visibility='hidden'});
@@ -3706,9 +3773,10 @@ function rtSheet(c,s,f,sh){var rt=sh.rt,tg=rt.st==='tagged',fresh=rt.at&&Date.no
   var th=frThumb(f.n)+(tg?scTagBadges('fault'):rt.kind==='fnew'?scDualBadges('fault'):FR_BADGE.fault);
   var head='<div class="af-hd v"><span class="fr-th">'+th+'</span><span class="fr-tx'+(tg?' rt':'')+'">'+(tg?'<span>':'')+'<b>'+pnm(f.n,null)+'</b><small>'+esc(rs)+'</small>'+(tg?'</span><small class="fr-ret">Return initiated...</small>':'')+'</span></div>';
   var vf='<span class="sc-cr" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="sc-pl"></span>';
-  var body=tg?'<div class="tg-row rt-in"'+dl+'>'+SC_TAG_I+'<span class="tg-tx"><b>'+esc(rt.tag)+'</b><small>Tag details</small></span><button type="button" class="tg-re" data-pa="rtretag">Re-tag</button></div>'
-    :'<div class="sc-sb rt-in"'+dl+'><p class="sc-sl">'+SC_TAG_I+'Scan tag</p><button type="button" class="sc-cam" data-pa="rtscan" aria-label="Scan tag (tap to simulate a scan)">'+vf+'</button><button type="button" class="sc-cx" data-pa="rtx">Cancel</button></div>';
-  return '<div class="px-bd" data-pa="fmsheetx"></div><div class="ck-sheet px-fs af rt'+(fresh&&!tg?' rt-grow':'')+'"'+(fresh&&!tg?' style="--rt-h0:'+(rt.h0||260)+'px;animation-delay:-'+(Date.now()-rt.at)+'ms"':'')+'><span class="px-grab" aria-hidden="true"></span>'+head+body+'</div>'}
+  var body=tg?'<div class="tg-row'+(fresh?' rt-in':'')+'"'+dl+'>'+SC_TAG_I+'<span class="tg-tx"><b>'+esc(rt.tag)+'</b><small>Tag details</small></span><button type="button" class="tg-re" data-pa="rtretag">Re-tag</button></div>'
+    :'<div class="sc-sb'+(fresh&&!rt.o?' rt-in':'')+'"'+dl+'><p class="sc-sl">'+SC_TAG_I+'Scan tag</p><button type="button" class="sc-cam" data-pa="rtscan" aria-label="Scan tag (tap to simulate a scan)">'+vf+'</button><button type="button" class="sc-cx" data-pa="rtx">Cancel</button></div>';
+  var op=rt.o&&!tg&&Date.now()-rt.o<320,od=op?'animation-delay:-'+(Date.now()-rt.o)+'ms':'';/* opened by the swipe: the sheet slides up once, as one piece */
+  return '<div class="px-bd'+(op?' rt-bdin':'')+'" data-pa="fmsheetx"'+(op?' style="'+od+'"':'')+'></div><div class="ck-sheet px-fs af rt'+(fresh&&!tg?' rt-grow':'')+(op?' rt-open':'')+'"'+(op?' style="'+od+'"':'')+(fresh&&!tg?' style="--rt-h0:'+(rt.h0||260)+'px;animation-delay:-'+(Date.now()-rt.at)+'ms"':'')+'><span class="px-grab" aria-hidden="true"></span>'+head+body+'</div>'}
 function frInstall(c,i,k){var f=fmS(c).faults[i],p=pxP(pxS(c),f.n);P.frT={msg:pbase(f.n)+' installed on bike',ic:'ok',i:i,cid:c.id,prev:{off:!!p.off,inst:!!p.inst,sOld:!!p.sOld}};frToastTimer();p.off=false;if(k==='new')p.inst=true;else p.sOld=false;P.frAnim=null}
 function frPickSheet(c,s){
   var pk=P.frPick,f=s.faults[pk.i];if(!f){P.frPick=null;return ''}
@@ -3783,7 +3851,7 @@ function ckFly(dir,after){var c=document.querySelector('#phone .ck-swc');if(!c){
 /* swipe a row: right = take the part off the bike (to the sparecard), left = fit the new part from the sparecard, or reveal Request spare */
 (function(){
   var d=null,dragged=false,OPEN=124,TH=90;
-  function fire(act,i){var b=document.createElement('button');b.type='button';b.hidden=true;b.dataset.pa=act;b.dataset.i=i;document.body.appendChild(b);b.click();b.parentNode.removeChild(b)}
+  function fire(act,i){var b=document.createElement('button');b.type='button';b.hidden=true;b.dataset.pa=act;b.dataset.i=i;b.dataset.sw='1';/* started by a swipe: the row already moved */document.body.appendChild(b);b.click();b.parentNode.removeChild(b)}
   function shut(except){[].forEach.call(document.querySelectorAll('.fr-w.l-open'),function(w){if(w===except)return;w.classList.remove('l-open');var b=w.querySelector('.fr-la');if(b){b.style.transition='transform .2s';b.style.transform=''}})}
   document.addEventListener('pointerdown',function(e){
     var t=e.target.closest&&e.target.closest('.fr-la');shut(t&&t.parentNode);/* any other touch puts the Request spare button away */
@@ -3974,7 +4042,7 @@ var AL_MECH=[
  ['Anita R.',2,1,1,'Koramangala hub','On shift','Until 6 pm','Dex · Miracle · Dex NV','33 min']
 ];
 function alLeft(a){return AL_BIKES.map(function(b,i){return i}).filter(function(i){return !a.gone[i]})}
-function alVis(a){return alLeft(a).filter(function(i){var b=AL_BIKES[i];return a.f==='mech'?b[3]>0:a.f==='elec'?b[4]>0:a.f==='none'?(b[3]+b[4]===0):true})}
+function alVis(a){return alLeft(a).filter(function(i){var b=AL_BIKES[i];return a.f==='mech'?(b[3]>0&&!b[4]):a.f==='elec'?(b[4]>0&&!b[3]):a.f==='none'?(b[3]+b[4]===0):true})}
 function alSub(b){var t=(b[3]?b[3]+' mech.':'')+(b[3]&&b[4]?' • ':'')+(b[4]?b[4]+' elect. faults':'');return t||'No faults'}
 function alDots(m){var d='';for(var k=0;k<18;k++){var col=k<m[1]?'#2F6B55':k<m[1]+m[2]?'#D98324':k<m[1]+m[2]+m[3]?'#B0B0B0':'#E6E6E6';d+='<i style="background:'+col+'"></i>'}return '<span class="al-dots" aria-hidden="true">'+d+'</span>'}
 /* mechanic avatars: drawn from the name, so every mechanic gets the same one everywhere. A soft tint, one bold shape in a deeper tone of it, and the initials */
@@ -3996,7 +4064,7 @@ function alMechName(i){return i<0?'You':AL_MECH[i][0]}
 function alHd(c,a,title,sub,back,extra){return sbHTML()+'<div class="ck-stk"><div class="ck-hd">'+(back?'<button type="button" class="ck-back" data-pa="alback" aria-label="Back">‹</button>':'')+'<p>'+esc(title)+(sub?' <span>/ '+esc(sub)+'</span>':'')+'</p>'+moreDots()+'</div>'+(extra||'')+'</div>'}
 function alChips(c,a){
   
-  var L=alLeft(a),n=function(f){return L.filter(function(i){var b=AL_BIKES[i];return f==='mech'?b[3]>0:f==='elec'?b[4]>0:f==='none'?(b[3]+b[4]===0):true}).length};
+  var L=alLeft(a),n=function(f){return L.filter(function(i){var b=AL_BIKES[i];return f==='mech'?(b[3]>0&&!b[4]):f==='elec'?(b[4]>0&&!b[3]):f==='none'?(b[3]+b[4]===0):true}).length};
   return '<div class="pm-chips al-chips" style="margin-bottom:6px">'+[['all','All'],['mech','Mechanical only'],['elec','Electrical only'],['none','No faults']].map(function(f){return '<button type="button" class="pm-chip'+(a.f===f[0]?' on':'')+'" data-pa="alf" data-v="'+f[0]+'">'+f[1]+' • '+n(f[0])+'</button>'}).join('')+'</div>';
 }
 function alGroups(r,c){
@@ -4048,9 +4116,13 @@ function alxMRow(m,i,on,multi){return '<button type="button" class="alx-r'+(on?'
 /* bike row: number with its wait time on the right, then the model, then the fault summary */
 function alxBRow(i,on,multi){var b=AL_BIKES[i];return '<button type="button" class="alx-r'+(on?' on':'')+'" data-pa="albike" data-i="'+i+'" role="'+(multi?'checkbox':'radio')+'" aria-checked="'+on+'"><span class="alx-t bk">'+rqArt('Bike')+'</span><span class="alx-tx bk"><span class="alx-l1"><b>'+b[1]+'</b><em>'+b[2]+'</em></span><small>'+esc(b[0])+'</small><small class="alx-avg">'+alSub(b)+'</small></span></button>'}
 /* the sheet that rises once anything is picked: compact (counts) or expanded (who gets which bike); scrolling the list down folds it, scrolling up opens it */
+/* the allocation sheet's pair list: from its last height to open or folded, on one smooth curve */
+function alxAfter(){if(!P||P.alxFrom==null)return;var from=P.alxFrom;P.alxFrom=null;var pw=document.querySelector('#phone .alx-prw');if(!pw)return;var to=P.alx===true?pw.scrollHeight:0;
+  pw.style.transition='none';pw.style.maxHeight=from+'px';void pw.offsetHeight;pw.style.transition='max-height .34s cubic-bezier(.2,.8,.2,1)';pw.style.maxHeight=to+'px';
+  clearTimeout(pw._t);pw._t=setTimeout(function(){if(P&&P.alx===true)pw.style.maxHeight='none'},360)}
 function alxSheet(a){var nm=a.ms.length,nb=a.sel.length,ex=P.alx===true,ok=nm&&nb,first=!P.alxOn;P.alxOn=true;
   var seg=function(t,lb,n){return '<button type="button" class="alx-sg'+(a.tab===t?' on':'')+'" data-pa="altab" data-t="'+t+'"><b>'+lb+'</b><i>'+n+'</i></button>'};
-  var pairs=ex?'<div class="alx-pr"><div class="alx-col">'+(nm?a.ms.map(function(mi){var m=AL_MECH[mi];return '<div class="alx-pm"><span class="alx-pa">'+avSvg(m[0],42,0)+'</span><span><b>'+esc(alNm(m))+'</b><small>'+alAvg(m,true)+'</small></span></div>'}).join(''):'<p class="alx-none">No mechanic yet</p>')+'</div><span class="alx-vl" aria-hidden="true"></span><div class="alx-col r">'+(nb?a.sel.map(function(bi){var b=AL_BIKES[bi];return '<div class="alx-pb"><b>'+b[1]+'</b><small>'+esc(b[0])+'</small></div>'}).join(''):'<p class="alx-none">No bike yet</p>')+'</div></div>':'';
+  var pairs='<div class="alx-prw"'+(ex?'':' aria-hidden="true" inert')+' style="max-height:'+(P.alxFrom!=null?P.alxFrom+'px':ex?'none':'0px')+'"><div class="alx-pr"><div class="alx-col">'+(nm?a.ms.map(function(mi){var m=AL_MECH[mi];return '<div class="alx-pm"><span class="alx-pa">'+avSvg(m[0],42,0)+'</span><span><b>'+esc(alNm(m))+'</b><small>'+alAvg(m,true)+'</small></span></div>'}).join(''):'<p class="alx-none">No mechanic yet</p>')+'</div><span class="alx-vl" aria-hidden="true"></span><div class="alx-col r">'+(nb?a.sel.map(function(bi){var b=AL_BIKES[bi];return '<div class="alx-pb"><b>'+b[1]+'</b><small>'+esc(b[0])+'</small></div>'}).join(''):'<p class="alx-none">No bike yet</p>')+'</div></div></div>';
   return '<div class="alx-sh'+(ex?' ex':'')+(first?' in':'')+'" role="region" aria-label="Selection"><button type="button" class="alx-grab" data-pa="alshx" aria-label="'+(ex?'Fold':'Open')+' the selection"></button>'+
     '<div class="alx-seg">'+seg('mechs','Mechanic',nm)+'<span class="alx-lk" aria-hidden="true">'+ALX_I.link+'</span>'+seg('bikes','Bike',nb)+'</div>'+
     '<button type="button" class="alx-car" data-pa="alshx" aria-label="'+(ex?'Fold':'Open')+' the selection">'+ALX_I.drop+'</button>'+pairs+
@@ -4360,8 +4432,11 @@ function allocScreen(c){
   head=alHd(c,a,'Allocation','',canLeave,nav);nav='';
   var tabs=(a.note?'<p class="al-lim warn">'+a.note+'</p>':'');
   if(a.tab==='bikes'){
-    var vis=alVis(a);
-    body=vis.length?vis.map(function(i){return alxBRow(i,a.sel.indexOf(i)>=0,mb)}).join(''):'<div class="pm-note">No bikes left to allocate.</div>';
+    var vis=alVis(a),L0=alLeft(a),fN=function(f){return L0.filter(function(i){var b=AL_BIKES[i];return f==='mech'?(b[3]>0&&!b[4]):f==='elec'?(b[4]>0&&!b[3]):f==='none'?(b[3]+b[4]===0):true}).length};
+    /* filter chips with counts, filter and sort, as on the other list views; then select all */
+    var chips='<div class="pq-chips alx-chips" role="group" aria-label="Filter bikes">'+[['mech','Mechanical only'],['elec','Electrical only'],['none','No faults']].map(function(f){return '<button type="button" class="'+(a.f===f[0]?'on':'')+'" data-pa="alf" data-v="'+f[0]+'" aria-pressed="'+(a.f===f[0])+'">'+f[1]+' • '+fN(f[0])+'</button>'}).join('')+'</div>';/* no chip on = every bike; tap the chip again to clear it */
+    var selAll=(mb&&vis.length)?'<div class="alx-sa"><span>'+vis.length+(vis.length===1?' bike':' bikes')+'</span><button type="button" data-pa="alall">'+(a.sel.length?'Clear selection':'Select '+(cp[0]===Infinity?'all':'first '+Math.min(cp[0],vis.length)))+'</button></div>':'';
+    body=chips+(vis.length?vis.map(function(i){return alxBRow(i,a.sel.indexOf(i)>=0,mb)}).join(''):'<div class="pm-note">'+(L0.length?'No bikes match this filter.':'No bikes left to allocate.')+'</div>');
   }else{
     body=AL_MECH.map(function(m,i){return alxMRow(m,i,a.ms.indexOf(i)>=0,mm)}).join('');
   }
@@ -4397,9 +4472,9 @@ function alAct(act,el,c){
   };
   switch(act){
    case 'altab':a.tab=d.t;break;
-   case 'alshx':P.alx=P.alx!==true;break;
+   case 'alshx':{var pw0=document.querySelector('#phone .alx-prw');P.alxFrom=pw0?pw0.offsetHeight:0;P.alx=P.alx!==true;break}
    case 'algrp':a.g=d.t;break;
-   case 'alf':a.f=d.v;break;
+   case 'alf':a.f=(a.f===d.v)?'all':d.v;break;
    case 'alpeek':a.peek[d.i]=!a.peek[d.i];break;
    case 'almpeek':a.mpeek[d.i]=!a.mpeek[d.i];break;
    case 'aldet':a.cur=+d.i;a.v='detail';a.open={};break;
@@ -4417,15 +4492,17 @@ function alAct(act,el,c){
   }
 }
 /* allocation sheet: swipe up on it to see who gets which bike, swipe down to fold it, from anywhere on the sheet (the pair list too); the list scrolling never moves it */
-(function(){var d=null;document.addEventListener('pointerdown',function(e){var sh=e.target.closest&&e.target.closest('#phone .alx-sh');if(!sh||(e.button||0)>0)return;var pr=e.target.closest('.alx-pr');d={y:e.clientY,mv:false,pr:pr,s0:pr?pr.scrollTop:0,tch:e.pointerType!=='mouse'}});
-  document.addEventListener('pointermove',function(e){if(!d)return;var dy=e.clientY-d.y;if(Math.abs(dy)>8)d.mv=true;
+(function(){var d=null,vyA=0;document.addEventListener('pointerdown',function(e){var sh=e.target.closest&&e.target.closest('#phone .alx-sh');if(!sh||(e.button||0)>0)return;var pr=e.target.closest('.alx-pr');vyA=0;d={y:e.clientY,ly:e.clientY,lt:e.timeStamp,mv:false,pr:pr,s0:pr?pr.scrollTop:0,tch:e.pointerType!=='mouse',h:null}});
+  document.addEventListener('pointermove',function(e){if(!d)return;var dy=e.clientY-d.y;if(Math.abs(dy)>8)d.mv=true;var dt=Math.max(1,e.timeStamp-d.lt);vyA=vyA*.6+((e.clientY-d.ly)/dt)*.4;d.ly=e.clientY;d.lt=e.timeStamp;
     /* inside a long pair list: scroll it, until it is at the top and the pull continues down */
-    if(d.pr&&d.tch&&d.pr.scrollHeight>d.pr.clientHeight+1&&!(dy>0&&d.s0<=0))d.pr.scrollTop=d.s0-dy});
+    if(d.pr&&d.tch&&d.pr.scrollHeight>d.pr.clientHeight+1&&!(dy>0&&d.s0<=0)){d.pr.scrollTop=d.s0-dy;return}
+    /* the pair list opens and folds with the finger */
+    var pw=document.querySelector('#phone .alx-prw');if(pw&&d.mv){if(d.h==null){d.h=pw.offsetHeight;d.H=pw.scrollHeight}pw.style.transition='none';pw.style.maxHeight=Math.max(0,Math.min(d.H,d.h-dy))+'px'}});
   var end=function(e){if(!d)return;var dy=(e.clientY||d.y)-d.y,mv=d.mv,pr=d.pr,s0=d.s0;d=null;if(!mv||!P)return;
     if(pr&&pr.scrollHeight>pr.clientHeight+1&&!(dy>0&&s0<=0))return;
-    var ex=P.alx===true,want=dy<-30?true:dy>30?false:ex;
+    var ex=P.alx===true,pw=document.querySelector('#phone .alx-prw'),H=pw?pw.scrollHeight:0,cur=pw?pw.offsetHeight:0,want=vyA<-.35?true:vyA>.35?false:(H?cur>H/2:(dy<-30?true:dy>30?false:ex));
     var eat=function(ev){ev.stopPropagation();ev.preventDefault();document.removeEventListener('click',eat,true)};document.addEventListener('click',eat,true);setTimeout(function(){document.removeEventListener('click',eat,true)},0);
-    if(want!==ex){P.alx=want;phoneRender()}};
+    P.alxFrom=cur;P.alx=want;phoneRender()};
   document.addEventListener('pointerup',end);document.addEventListener('pointercancel',end)})();
 var DEP_ZONES=['Koramangala hub','HSR Layout hub','Indiranagar hub','Whitefield hub'];
 function deployScreen(c){
@@ -4502,7 +4579,7 @@ var BI_VOC={en:[['My bike is '],['not working',1],[', its keeps '],['stopping ',
   hi:[['मेरी बाइक '],['काम नहीं कर रही',1],[', स्पीड ब्रेकर पर बार-बार '],['रुक जाती है',1],['। एक बार रुकने के बाद '],['दोबारा स्टार्ट करना बहुत मुश्किल',1],[' है। बाइक '],['आवाज़ भी करती है,',1],[' '],['ब्रेक ढीला है',1],['।']],
   kn:[['ನನ್ನ ಬೈಕ್ '],['ಕೆಲಸ ಮಾಡುತ್ತಿಲ್ಲ',1],[', ಸ್ಪೀಡ್ ಬ್ರೇಕರ್‌ಗಳಲ್ಲಿ ಪದೇ ಪದೇ '],['ನಿಂತುಹೋಗುತ್ತದೆ',1],['. ಒಮ್ಮೆ ನಿಂತ ನಂತರ '],['ಮತ್ತೆ ಸ್ಟಾರ್ಟ್ ಮಾಡುವುದು ತುಂಬಾ ಕಷ್ಟ',1],['. ಬೈಕ್ '],['ಶಬ್ದವನ್ನೂ ಮಾಡುತ್ತದೆ,',1],[' '],['ಬ್ರೇಕ್ ಸಡಿಲವಾಗಿದೆ',1],['.']]};
 var BI_LEN=45;
-function biRole(){var r=(P&&P.role)||'';return r==='Captain'?'cap':(r==='Mechanic'||r==='Sr. Mechanic')?'mec':''}
+function biRole(){if(!P)return '';return P.role==='Captain'?'voc':'sum'}/* the captain sees the customer's voice; every other role sees the assessment summary */
 function biIc(d,cls){return '<svg viewBox="0 0 24 24" aria-hidden="true"'+(cls?' class="'+cls+'"':'')+'><path d="'+d+'"/></svg>'}
 function biHd(t,a){return '<div class="pm-hd rb-hd bi-hd"><button type="button" class="bi-bk" data-pa="'+a+'" aria-label="Back">'+biIc(BI.back)+'</button><h3>'+esc(t)+'</h3></div>'}
 function biBike(){return '<div class="bi-id"><span class="bi-im"><img src="'+BI.bike+'" alt=""></span><span><b>'+esc(BIKE.no)+'</b><small>'+esc(BIKE.model==='Dex NV'?'Dex NV 3.2':BIKE.model)+'</small></span></div>'}/* Bike Info names the full model */
@@ -4514,7 +4591,7 @@ function biVoc(){var lg=P.biLang||'en';return '<div class="bi-vh"><span class="b
 function biRes(){var o=!!P.biAcc;return '<section class="bi-acc'+(o?' open':'')+'"><button type="button" class="bi-ah" data-pa="biacc" aria-expanded="'+o+'">Last reservation details'+biIc(BI.chev)+'</button>'+(o?'<div class="bi-ab"><div class="bi-st"><span><b>14hrs</b><small>Plan end since</small></span><span><b>5d 12h</b><small>Rent period</small></span></div><div class="bi-cu"><span><b>**********</b><small>Customer name (*on-call)</small></span><button type="button" data-pa="bicall">Call customer</button></div></div>':'')+'</section>'}
 function biRow(t,chip,cls){return '<button type="button" class="bi-rw" data-pa="bipg" data-v="'+esc(t)+'"><span>'+esc(t)+'</span><em class="bi-ch '+cls+'">'+esc(chip)+'</em>'+biIc(BI.chev,'bi-go')+'</button>'}
 function biScreen(){var r=biRole();
-  if(r==='cap')return '<div class="bi">'+biBike()+'<div class="bi-sum"><span class="bi-tt">'+biIc(BI.rub)+'Assessment summary</span><div class="bi-ls">'+biRow('Current faults','4','b')+biRow('MRE fault history','Frequent','r')+biRow('Last repair','24d 732kms','g')+'</div></div></div>';
+  if(r==='sum')return '<div class="bi">'+biBike()+'<div class="bi-sum"><span class="bi-tt">'+biIc(BI.rub)+'Assessment summary</span><div class="bi-ls">'+biRow('Current faults','4','b')+biRow('MRE fault history','Frequent','r')+biRow('RnM history','Last 732kms 24d','g')+'</div></div></div>';
   return '<div class="bi">'+biBike()+biVoc()+biRes()+'</div>'}
 function biPage(){return sbHTML()+biHd(P.biPg,'bipgx')+'<div class="pm-body bi-blank"></div>'}
 
